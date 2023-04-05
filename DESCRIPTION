@@ -1,0 +1,19 @@
+Package: future.mirai
+Version: 0.0.0-9000
+Depends:
+    future
+Imports:
+    mirai,
+    parallelly,
+    utils
+Suggests:
+    future.tests
+Title: A Future API for Parallel Processing using 'mirai'
+Description: A Future API implementation on top of the 'mirai' package.
+Authors@R: c(
+  person("Henrik", "Bengtsson", role=c("aut", "cre", "cph"),
+         email = "henrikb@braju.com"))
+License: GPL (>= 3)
+LazyLoad: TRUE
+RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)

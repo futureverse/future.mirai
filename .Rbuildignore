@@ -1,0 +1,7 @@
+^[.]gitignore
+^[.]github
+^docs
+^incl
+
+
+^\.github$
