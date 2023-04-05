@@ -63,7 +63,10 @@ nbrOfWorkers.mirai <- function(evaluator) {
 
   if (is.matrix(workers)) {
     n_online <- sum(workers[, "status_online", drop = TRUE])
-    return(n_online)
+    if (n_online != nrow(workers)) {
+      warning(FutureWarning(sprintf("The number of mirai workers that are online does not match the total number of mirai workers: %d != %d", n_online, nrow(workers))))
+    }
+    return(nrow(workers))
   }
 
   if (length(workers) == 1L && workers == 0L) return(Inf)
