@@ -7,7 +7,9 @@
 #' @return An object of class `MiraiFuture`.
 #'
 #' @keywords internal
-#' @importFrom future getGlobalsAndPackages Future
+#' @importFrom parallelly availableCores
+#' @importFrom future getGlobalsAndPackages MultiprocessFuture
+#' @importFrom mirai daemons
 #' @export
 MiraiFuture <- function(expr = NULL,
                         substitute = TRUE,
@@ -15,6 +17,7 @@ MiraiFuture <- function(expr = NULL,
                         globals = TRUE,
                         packages = NULL,
                         lazy = FALSE,
+                        workers = availableCores(),
                         ...)
 {
   if(isTRUE(substitute)) expr <- substitute(expr)
@@ -28,15 +31,34 @@ MiraiFuture <- function(expr = NULL,
     gp <- NULL
   }
 
-  future <- Future(expr = expr,
-                   substitute = substitute,
-                   envir = envir,
-                   globals = globals,
-                   packages = packages,
-                   lazy = lazy,
-                   ...)
-  
-  structure(future, class = c("MiraiFuture", class(future)))
+  future <- MultiprocessFuture(
+              expr = expr, substitute = substitute,
+              envir = envir,
+              globals = globals,
+              packages = packages,
+              lazy = lazy,
+              ...)
+
+  if (is.function(workers)) workers <- workers()
+  if (!is.null(workers)) {
+    stop_if_not(length(workers) >= 1)
+    if (is.numeric(workers)) {
+      stop_if_not(length(workers) == 1L, !is.na(workers), workers >= 1)
+      
+      ## Do we need to change the number of mirai workers?
+      nworkers <- mirai_daemons_nworkers()
+      if (is.infinite(workers) && nworkers < +Inf) {
+        daemons(n = 0L)
+      } else if (workers != nworkers) {
+        daemons(n = 0L)  ## reset is required
+        daemons(n = workers)
+      }
+    } else {
+      stop("Argument 'workers' should be numeric: ", mode(workers))
+    }
+  }
+
+  future <- structure(future, class = c("MiraiFuture", class(future)))
 }
 
 

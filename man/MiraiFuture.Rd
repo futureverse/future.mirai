@@ -11,6 +11,7 @@ MiraiFuture(
   globals = TRUE,
   packages = NULL,
   lazy = FALSE,
+  workers = availableCores(),
   ...
 )
 }

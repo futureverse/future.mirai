@@ -12,64 +12,82 @@
 #' @importFrom parallelly availableCores
 #' @importFrom mirai mirai
 #' @export
-mirai_multisession <- local({
-  .workers <- NULL
-  .nworkers <- 0L
-  
-  function(expr,
-           substitute = TRUE,
-           envir = parent.frame(),
-           ...,
-           workers = availableCores())
-  {
-    if (substitute) expr <- substitute(expr)
+mirai_multisession <- function(expr,
+                               substitute = TRUE,
+                               envir = parent.frame(),
+                               ...,
+                               workers = availableCores()) {
+  if (substitute) expr <- substitute(expr)
 
-    future <- MiraiFuture(
-                expr = expr, substitute = FALSE,
-                envir = envir, 
-                ...
-              )
-    if(!isTRUE(future[["lazy"]])) future <- run(future)
-    invisible(future)
-  }
-})
+  future <- MiraiFuture(
+              expr = expr, substitute = FALSE,
+              envir = envir,
+              workers = workers,
+              ...
+            )
+  if(!isTRUE(future[["lazy"]])) future <- run(future)
+  invisible(future)
+}
 class(mirai_multisession) <- c("mirai_multisession", "mirai", "multiprocess", "future", "function")
 attr(mirai_multisession, "init") <- TRUE
 attr(mirai_multisession, "tweakable") <- "workers"
 
 
+#' @importFrom future tweak
+#' @export
+tweak.mirai_multisession <- function(strategy, ..., penvir = parent.frame()) {
+  attr(strategy, "init") <- TRUE
+  NextMethod("tweak")
+}
 
-#' @importFrom future nbrOfWorkers
+#' @importFrom future FutureError
+#' @importFrom mirai daemons
+mirai_daemons_nworkers <- function() {
+  res <- daemons()
+  workers <- res[["daemons"]]
+  if (is.matrix(workers)) return(nrow(workers))
+  if (length(workers) == 1L && workers == 0L) return(Inf)
+  stop(FutureError(sprintf("Unknown value of mirai::daemons()$daemons: %s", paste(workers, collapse = ", "))))
+}
+
+
+#' @importFrom future nbrOfWorkers FutureError
+#' @importFrom mirai daemons
 #' @export
 nbrOfWorkers.mirai <- function(evaluator) {
-  ## FIXME: Find a way to query Mirai for the number of active workers
-  Inf
+  res <- daemons()
+  workers <- res[["daemons"]]
+  if (!is.numeric(workers)) {
+    stop(FutureError(sprintf("Unknown type of mirai::daemons()$daemons: %s", typeof(workers))))
+  }
+
+  if (is.matrix(workers)) {
+    n_online <- sum(workers[, "status_online", drop = TRUE])
+    return(n_online)
+  }
+
+  if (length(workers) == 1L && workers == 0L) return(Inf)
+  
+  stop(FutureError(sprintf("Unknown value of mirai::daemons()$daemons: %s", paste(workers, collapse = ", "))))
 }
 
-#' @importFrom future nbrOfFreeWorkers
+#' @importFrom future nbrOfFreeWorkers FutureError
+#' @importFrom mirai daemons
 #' @export
 nbrOfFreeWorkers.mirai <- function(evaluator, background = FALSE, ...) {
-  ## FIXME: Find a way to query Mirai for the number of free workers
-  Inf
-}
+  res <- daemons()
+  workers <- res[["daemons"]]
+  if (!is.numeric(workers)) {
+    stop(FutureError(sprintf("Unknown type of mirai::daemons()$daemons: %s", typeof(workers))))
+  }
 
-#' @importFrom future nbrOfWorkers
-#' @export
-nbrOfWorkers.mirai_multisession <- function(evaluator) {
-  expr <- formals(evaluator)$workers
-  workers <- eval(expr, enclos = baseenv())
-  if (is.function(workers)) {
-    workers <- workers()
+  if (is.matrix(workers)) {
+    n_online <- sum(workers[, "status_online", drop = TRUE])
+    n_busy <- sum(workers[, "status_busy", drop = TRUE])
+    return(n_online - n_busy)
   }
-  if (inherits(workers, "MiraiWorkerConfiguration")) {
-    ## FIXME: Find a way to query Mirai for the number of active workers
-    workers <- Inf
-  } else if (is.numeric(workers)) {
-  } else {
-      stopf("Unsupported type of 'workers' for evaluator of class %s: %s", 
-          paste(sQuote(class(evaluator)), collapse = ", "), 
-          class(workers)[1])
-  }
-  stopifnot(length(workers) == 1L, !is.na(workers), workers >= 1L)
-  workers
+
+  if (length(workers) == 1L && workers == 0L) return(Inf)
+  
+  stop(FutureError(sprintf("Unknown value of mirai::daemons()$daemons: %s", paste(workers, collapse = ", "))))
 }
