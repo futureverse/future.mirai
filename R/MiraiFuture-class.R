@@ -51,7 +51,7 @@ MiraiFuture <- function(expr = NULL,
         daemons(n = 0L)
       } else if (workers != nworkers) {
         daemons(n = 0L)  ## reset is required
-        daemons(n = workers)
+        daemons(n = workers, dispatcher = TRUE)
       }
     } else {
       stop("Argument 'workers' should be numeric: ", mode(workers))
