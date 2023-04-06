@@ -51,7 +51,7 @@ mirai_daemons_nworkers <- function() {
 }
 
 
-#' @importFrom future nbrOfWorkers FutureError
+#' @importFrom future nbrOfWorkers FutureWarning FutureError
 #' @importFrom mirai daemons
 #' @export
 nbrOfWorkers.mirai <- function(evaluator) {
