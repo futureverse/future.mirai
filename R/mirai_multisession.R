@@ -46,8 +46,13 @@ mirai_daemons_nworkers <- function() {
   res <- daemons()
   workers <- res[["daemons"]]
   if (is.matrix(workers)) return(nrow(workers))
-  if (length(workers) == 1L && workers == 0L) return(Inf)
-  stop(FutureError(sprintf("Unknown value of mirai::daemons()$daemons: %s", paste(workers, collapse = ", "))))
+  
+  if (length(workers) != 1L) {
+    stop(FutureError(sprintf("Length of mirai::daemons()$daemons is not one: %d", length(workers))))
+  }
+  
+  if (workers == 0L) return(Inf)
+  workers
 }
 
 
@@ -69,9 +74,12 @@ nbrOfWorkers.mirai <- function(evaluator) {
     return(nrow(workers))
   }
 
-  if (length(workers) == 1L && workers == 0L) return(Inf)
-  
-  stop(FutureError(sprintf("Unknown value of mirai::daemons()$daemons: %s", paste(workers, collapse = ", "))))
+  if (length(workers) != 1L) {
+    stop(FutureError(sprintf("Length of mirai::daemons()$daemons is not one: %d", length(workers))))
+  }
+
+  if (workers == 0L) return(Inf)
+  workers
 }
 
 #' @importFrom future nbrOfFreeWorkers FutureError
@@ -90,7 +98,10 @@ nbrOfFreeWorkers.mirai <- function(evaluator, background = FALSE, ...) {
     return(n_online - n_busy)
   }
 
-  if (length(workers) == 1L && workers == 0L) return(Inf)
-  
-  stop(FutureError(sprintf("Unknown value of mirai::daemons()$daemons: %s", paste(workers, collapse = ", "))))
+  if (length(workers) != 1L) {
+    stop(FutureError(sprintf("Length of mirai::daemons()$daemons is not one: %d", length(workers))))
+  }
+
+  if (workers == 0L) return(Inf)
+  workers
 }
