@@ -115,26 +115,9 @@ run.MiraiFuture <- function(future, ...) {
 
   future[["state"]] <- "submitted"
 
+  expr <- getExpression(future)
   globals <- future[["globals"]]
-  fexpr <- getExpression(future)
-
-  if (mirai_version() >= "0.8.2-9038") {
-    mirai <- mirai(fexpr, .args = globals)
-  } else {
-    fexpr <- bquote({
-      local({
-        genv <- globalenv()
-        for (name in names(globals)) {
-          assign(name, value = globals[[name]], envir = genv)
-        }
-      })
-      .(fexpr)
-    })
-  
-    expr <- bquote(mirai(.(fexpr), .args = list(globals)))
-    mirai <- eval(expr)
-  }
-  
+  mirai <- mirai(expr, .args = globals)
   future[["mirai"]] <- mirai
 
   future[["state"]] <- "running"

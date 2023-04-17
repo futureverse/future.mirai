@@ -67,11 +67,7 @@ nbrOfWorkers.mirai <- function(evaluator) {
   }
 
   if (is.matrix(workers)) {
-    if (mirai_version() >= "0.8.2-9038") {
-      n_online <- sum(workers[, "online", drop = TRUE])
-    } else {
-      n_online <- sum(workers[, "status_online", drop = TRUE])
-    }
+    n_online <- sum(workers[, "online", drop = TRUE])
     if (n_online != nrow(workers)) {
       warning(FutureWarning(sprintf("The number of mirai workers that are online does not match the total number of mirai workers: %d != %d", n_online, nrow(workers))))
     }
@@ -97,13 +93,8 @@ nbrOfFreeWorkers.mirai <- function(evaluator, background = FALSE, ...) {
   }
 
   if (is.matrix(workers)) {
-    if (mirai_version() >= "0.8.2-9038") {
-      n_online <- sum(workers[, "online", drop = TRUE])
-      n_busy <- sum(workers[, "assigned", drop = TRUE])
-    } else {
-      n_online <- sum(workers[, "status_online", drop = TRUE])
-      n_busy <- sum(workers[, "status_busy", drop = TRUE])
-    }
+    n_online <- sum(workers[, "online", drop = TRUE])
+    n_busy <- sum(workers[, "assigned", drop = TRUE])
     return(n_online - n_busy)
   }
 
