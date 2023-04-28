@@ -1,7 +1,5 @@
 ^[.]gitignore
 ^[.]github
+^[.]Rdump
 ^docs
 ^incl
-
-
-^\.github$
