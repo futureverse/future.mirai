@@ -23,14 +23,15 @@ jobs:
           - {os: macOS-latest,   r: 'release'  }
           - {os: macOS-latest,   r: 'oldrel'   }
           - {os: ubuntu-latest,  r: 'devel'    }
+          - {os: ubuntu-latest,  r: 'devel'    , mirai: 'devel', label: "mirai & nanonext devel" }
           - {os: ubuntu-latest,  r: 'release'  }
           - {os: ubuntu-latest,  r: 'oldrel'   }
           - {os: ubuntu-latest,  r: 'oldrel-1' }
           - {os: ubuntu-latest,  r: 'oldrel-2' }
           - {os: ubuntu-latest,  r: '3.6'      }
-#          - {os: ubuntu-latest,  r: 'release'  , language: ko,    label: ko    }
+#         - {os: ubuntu-latest,  r: 'release'  , language: ko,    label: ko    }
           - {os: ubuntu-latest,  r: 'release'  , language: zh_CN, label: zh_CN }
-#          - {os: ubuntu-latest,  r: 'release'  , language: zh_TW, label: zh_TW }
+#         - {os: ubuntu-latest,  r: 'release'  , language: zh_TW, label: zh_TW }
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -61,6 +62,14 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      - name: Check against mirai development version?
+        if: matrix.config.mirai == 'devel'
+        run: |
+          install.packages("remotes")
+          remotes::install_github("shikokuchuo/nanonext")
+          remotes::install_github("shikokuchuo/mirai")
+        shell: Rscript {0}
+ 
       - name: Session info
         run: |
           options(width = 100)
