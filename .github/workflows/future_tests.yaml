@@ -10,13 +10,14 @@ jobs:
     
     runs-on: ubuntu-22.04
 
-    name: future.plan=${{ matrix.future.plan }}
+    name: future.plan=${{ matrix.future.plan }} (${{ matrix.config.label }})
 
     strategy:
       fail-fast: false
       matrix:
         future:
           - { plan: 'future.mirai::mirai_multisession' }
+          - { plan: 'future.mirai::mirai_multisession', mirai: 'devel', label: 'mirai & nanonext devel' }
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -74,6 +75,14 @@ jobs:
           remotes::install_github("HenrikBengtsson/future.tests", ref="develop")
         shell: Rscript {0}
 
+      - name: Check against mirai development version?
+        if: matrix.future.mirai == 'devel'
+        run: |
+          install.packages("remotes")
+          remotes::install_github("shikokuchuo/nanonext")
+          remotes::install_github("shikokuchuo/mirai")
+        shell: Rscript {0}
+        
       - name: Session info
         run: |
           options(width = 100)
