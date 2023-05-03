@@ -94,7 +94,9 @@ nbrOfFreeWorkers.mirai <- function(evaluator, background = FALSE, ...) {
 
   if (is.matrix(workers)) {
     n_online <- sum(workers[, "online", drop = TRUE])
-    n_busy <- sum(workers[, "assigned", drop = TRUE])
+    n_assigned <- sum(workers[, "assigned", drop = TRUE])
+    n_complete <- sum(workers[, "complete", drop = TRUE])
+    n_busy <- n_assigned - n_complete
     return(n_online - n_busy)
   }
 
