@@ -1,19 +1,19 @@
-#' Mirai-based localhost multisession futures
+#' Mirai-based cluster futures
 #'
 #' @inheritParams MiraiFuture
-#' @inheritParams future::multisession
+#' @inheritParams future::cluster
 #'
 #' @return An object of class [MiraiFuture].
 #'
-#' @example incl/mirai_multisession.R
+#' @example incl/mirai_cluster.R
 #'
-#' @importFrom parallelly availableCores
+#' @importFrom parallelly availableWorkers
 #' @export
-mirai_multisession <- function(expr,
+mirai_cluster <- function(expr,
                                substitute = TRUE,
                                envir = parent.frame(),
                                ...,
-                               workers = availableCores()) {
+                               workers = availableWorkers()) {
   if (substitute) expr <- substitute(expr)
 
   future <- MiraiFuture(
@@ -25,14 +25,14 @@ mirai_multisession <- function(expr,
   if(!isTRUE(future[["lazy"]])) future <- run(future)
   invisible(future)
 }
-class(mirai_multisession) <- c("mirai_multisession", "mirai_cluster", "mirai", "multiprocess", "future", "function")
-attr(mirai_multisession, "init") <- TRUE
-attr(mirai_multisession, "tweakable") <- "workers"
+class(mirai_cluster) <- c("mirai_cluster", "mirai", "multiprocess", "future", "function")
+attr(mirai_cluster, "init") <- TRUE
+attr(mirai_cluster, "tweakable") <- "workers"
 
 
 #' @importFrom future tweak
 #' @export
-tweak.mirai_multisession <- function(strategy, ..., penvir = parent.frame()) {
+tweak.mirai_cluster <- function(strategy, ..., penvir = parent.frame()) {
   attr(strategy, "init") <- TRUE
   NextMethod("tweak")
 }
