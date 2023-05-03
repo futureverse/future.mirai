@@ -9,6 +9,7 @@ launch_mirai_servers <- function(hostnames, ..., timeout = 60) {
 
   ## Assert that mirai daemons have been configured
   dd <- daemons()$daemons
+  print(dd)
   stopifnot(is.matrix(dd))
   dd <- as.data.frame(dd)
   dd <- subset(dd, online == 0L)
