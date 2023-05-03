@@ -158,3 +158,20 @@ result.MiraiFuture <- function(future, ...) {
 
   result
 }
+
+
+
+#' @importFrom future FutureError
+#' @importFrom mirai daemons
+mirai_daemons_nworkers <- function() {
+  res <- daemons()
+  workers <- res[["daemons"]]
+  if (is.matrix(workers)) return(nrow(workers))
+  
+  if (length(workers) != 1L) {
+    stop(FutureError(sprintf("Length of mirai::daemons()$daemons is not one: %d", length(workers))))
+  }
+  
+  if (workers == 0L) return(Inf)
+  workers
+}
