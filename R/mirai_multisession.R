@@ -16,6 +16,18 @@ mirai_multisession <- function(expr,
                                workers = availableCores()) {
   if (substitute) expr <- substitute(expr)
 
+  if (is.function(workers)) workers <- workers()
+  if (!is.numeric(workers)) {
+    stop(sprintf("Argument 'workers' is not numeric: %s", mode(workers)))
+  } else if (length(workers) != 1L) {
+    stop(sprintf("Argument 'workers' does not have length one: %d", length(workers)))
+  } else if (!is.finite(workers)) {
+    stop(sprintf("Argument 'workers' is not finite: %g", workers))
+  } else if (workers <= 0) {
+    stop(sprintf("Argument 'workers' is non-positive: %g", workers))
+  }
+  workers <- as.integer(workers)
+  
   future <- MiraiFuture(
               expr = expr, substitute = FALSE,
               envir = envir,
