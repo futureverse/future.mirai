@@ -9,7 +9,11 @@ launch_mirai_servers <- function(hostnames, ..., timeout = 60) {
 
   ## Assert that mirai daemons have been configured
   dd <- daemons()$daemons
-  print(dd)
+  utils::str(dd)
+  if (inherits(dd, "errorValue")) {
+    msg <- sprintf("mirai::daemons() failed to communicate with dispatcher: %s", conditionMessage(dd))
+    stop(FutureError(msg))
+  }
   stopifnot(is.matrix(dd))
   dd <- as.data.frame(dd)
   dd <- subset(dd, online == 0L)
