@@ -56,9 +56,13 @@ MiraiFuture <- function(expr = NULL,
     }
   } else if (is.character(workers)) {
     stop_if_not(length(workers) >= 1L, !anyNA(workers))
-    dd <- daemons()$daemons
-    uris <- rownames(dd)
-    n <- length(grep("^ws://", uris))
+    dd <- get_mirai_daemons()
+    if (is.data.frame(dd)) {
+      uris <- rownames(dd)
+      n <- length(grep("^ws://", uris))
+    } else {
+      n <- -1L
+    }
     if (length(workers) != n) {
       daemons(n = 0L)  ## reset is required
       daemons(n = length(workers), url = "ws://:0", dispatcher = TRUE)
@@ -176,9 +180,8 @@ result.MiraiFuture <- function(future, ...) {
 #' @importFrom future FutureError
 #' @importFrom mirai daemons
 mirai_daemons_nworkers <- function() {
-  res <- daemons()
-  workers <- res[["daemons"]]
-  if (is.matrix(workers)) return(nrow(workers))
+  workers <- get_mirai_daemons()
+  if (is.data.frame(workers)) return(nrow(workers))
   
   if (length(workers) != 1L) {
     stop(FutureError(sprintf("Length of mirai::daemons()$daemons is not one: %d", length(workers))))

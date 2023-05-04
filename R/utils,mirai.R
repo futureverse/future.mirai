@@ -1,6 +1,23 @@
+#' @importFrom mirai daemons
+#' @importFrom utils capture.output
+get_mirai_daemons <- function() {
+  res <- daemons()$daemons
+  
+  if (inherits(res, "errorValue")) {
+    reason <- capture.output(print(res))
+    msg <- sprintf("mirai::daemons() failed to communicate with dispatcher: %s", reason)
+    stop(FutureError(msg))
+  }
+
+  if (is.matrix(res)) {
+    res <- as.data.frame(res)
+  }
+  
+  res
+}
+
 #' @importFrom parallelly makeClusterPSOCK
 #' @importFrom parallel parLapply stopCluster
-#' @importFrom mirai daemons
 launch_mirai_servers <- function(hostnames, ..., timeout = 60) {
   online <- NULL  ## To please R CMD check
   
@@ -8,14 +25,10 @@ launch_mirai_servers <- function(hostnames, ..., timeout = 60) {
   stopifnot(is.numeric(timeout), !is.na(timeout), is.finite(timeout), timeout > 0.0)
 
   ## Assert that mirai daemons have been configured
-  dd <- daemons()$daemons
-  utils::str(dd)
-  if (inherits(dd, "errorValue")) {
-    msg <- sprintf("mirai::daemons() failed to communicate with dispatcher: %s", conditionMessage(dd))
-    stop(FutureError(msg))
-  }
-  stopifnot(is.matrix(dd))
-  dd <- as.data.frame(dd)
+  dd <- get_mirai_daemons()
+  stopifnot(is.data.frame(dd))
+
+  ## Consider only non-connected daemons
   dd <- subset(dd, online == 0L)
 
   ## Nothing to do?
@@ -52,10 +65,9 @@ launch_mirai_servers <- function(hostnames, ..., timeout = 60) {
   t0 <- Sys.time()
   ready <- FALSE
   while (!ready) {
-    dd2 <- daemons()$daemons
-    stopifnot(is.matrix(dd2))
+    dd2 <- get_mirai_daemons()
+    stopifnot(is.data.frame(dd))
     dd2 <- dd2[rownames(dd), , drop = FALSE]
-    dd2 <- as.data.frame(dd2)
     dd2 <- subset(dd2, online == 0L)
     ready <- (nrow(dd2) == 0)
     Sys.sleep(1.0)
