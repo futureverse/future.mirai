@@ -23,7 +23,9 @@ identified.}
 
 \item{...}{Additional named elements of the future.}
 
-\item{workers}{Ignored in \strong{future} (>= 1.31.0).}
+\item{workers}{The number of parallel processes to use.
+If a function, it is called without arguments \emph{when the future
+is created} and its value is used to configure the workers.}
 }
 \value{
 An object of class \link{MiraiFuture}.
