@@ -1,0 +1,269 @@
+<%------------------------------------------------------------------------
+ Usage:
+ md <- R.rsp::rfile("README.md.rsp", postprocess=FALSE)
+ ------------------------------------------------------------------------%>
+<%
+format <- c("markdown", "html")[2]
+
+find_file <- function(filename) {
+  path <- file.path("incl", filename)
+  if (file.exists(path)) return(path)
+  if (file.exists(filename)) return(filename)
+  NA_character_
+}
+
+
+pkg <- local({
+  name <- NULL
+  function() {
+    if (is.null(name)) {
+      pd <- as.list(as.data.frame(read.dcf("DESCRIPTION"), stringsAsFactors=FALSE))
+      name <<- pd$Package
+    }
+	name
+  }
+})
+
+pkg_title <- local({
+  title <- NULL
+  function() {
+    if (is.null(title)) {
+      pd <- as.list(as.data.frame(read.dcf("DESCRIPTION"), stringsAsFactors=FALSE))
+      title <<- pd$Title
+    }
+	title
+  }
+})
+
+git_branch <- local({
+  branch <- NULL
+  function() {
+    if (is.null(branch)) {
+      branch <<- system2("git", args=c("rev-parse", "--abbrev-ref", "HEAD"), stdout=TRUE)
+	}
+	branch
+  }
+})
+
+cran <- local({
+  available <- NULL
+  function() {
+    if (is.null(available)) {
+	  repos <- "https://cloud.r-project.org"
+          message(sprintf("available.packages(%s) ...", shQuote(repos)), appendLF = FALSE)
+	  data <- utils::available.packages(contriburl=contrib.url(repos, "source"))
+          message(" OK")
+	  available <<- pkg() %in% rownames(data)
+	}
+	available
+  }
+})
+
+bioc <- local({
+  available <- NULL
+  function() {
+    if (is.null(available)) {
+	  repos <- "https://www.bioconductor.org/packages/devel/bioc/"
+          message(sprintf("available.packages(%s) ...", shQuote(repos)), appendLF = FALSE)
+	  data <- utils::available.packages(contriburl=contrib.url(repos, "source"))
+          message(" OK")
+	  available <<- pkg() %in% rownames(data)
+	}
+	available
+  }
+})
+
+github_repos <- local({
+  repos <- NULL;
+  function() {
+    if (is.null(repos)) repos <<- gsub(".*:", "", gsub("[.]git", "", system2("git", args=c("config", "--get remote.origin.url"), stdout=TRUE)))
+	repos
+  }
+})
+
+repos <- function() {
+  if (cran()) "CRAN" else if (bioc()) "Bioconductor" else "GitHub"
+}
+
+a <- function(url, ..., body) {
+  url <- sprintf(url, ...)
+  if (format == "markdown") {
+    sprintf('[%s](%s)', body, url)
+  } else if (format == "html") {
+    sprintf('<a href="%s">%s</a>', url, body)
+  } else {
+    stop("Unknown format: ", sQuote(format))
+  }
+}
+
+img <- function(url, ..., alt, align=NULL) {
+  url <- sprintf(url, ...)
+  if (format == "markdown") {
+    sprintf('![%s](%s)', alt, url)
+  } else if (format == "html") {
+    attrs <- ""
+    if (!is.null(align)) attrs <- paste(attrs, sprintf('align="%s"', align))
+    sprintf('<img border="0" src="%s" alt="%s"%s/>', url, alt, attrs)
+  } else {
+    stop("Unknown format: ", sQuote(format))
+  }
+}
+
+repos_page <- function() {
+  if (cran()) {
+    sprintf("[CRAN](https://cran.r-project.org/package=%s)", pkg())
+  } else {
+    sprintf("[Bioconductor](https://www.bioconductor.org/packages/devel/bioc/html/%s.html)", pkg())
+  }
+}
+ 
+repos_status <- function() {
+  if (cran()) {
+    a("https://CRAN.R-project.org/web/checks/check_results_%s.html", pkg(), body = img("https://www.r-pkg.org/badges/version/%s", pkg(), alt="CRAN check status"))
+  } else if (bioc()) {
+    biocSince <- function() {
+      a("https://bioconductor.org/packages/%s/", pkg(), body = img("https://bioconductor.org/shields/years-in-bioc/%s.svg", pkg(), alt="Bioconductor since badge"))
+    }
+    biocURL <- function(type) {
+      a("https://bioconductor.org/checkResults/%s/bioc-LATEST/%s/", type, pkg(), body = img("https://bioconductor.org/shields/build/%s/bioc/%s.svg", type, pkg(), alt="Bioconductor build status"))
+    }
+    paste(c(biocSince(), biocURL(c("release", "devel"))), collapse=" ")
+  } else {
+    ""
+  }
+}
+
+github_r_cmd_check <- function(name = "R-CMD-check", text = FALSE) {
+  if (!file.exists(sprintf(".github/workflows/%s.yaml", name))) return("")
+  repos <- github_repos()
+  body <- img("https://github.com/%s/actions/workflows/%s.yaml/badge.svg?branch=develop", github_repos(), name, alt="R CMD check status")
+  if (text) body <- "GitHub Actions"
+  a("https://github.com/%s/actions?query=workflow%%3A%s", repos, name, body=body)
+}
+
+
+github_revdepcheck_top <- function(name = "revdepcheck-top", text = FALSE) {
+  if (!file.exists(sprintf(".github/workflows/%s.yaml", name))) return("")
+  repos <- github_repos()
+  body <- img("https://github.com/%s/actions/workflows/%s.yaml/badge.svg?branch=develop", github_repos(), name, alt="Top reverse-dependency checks status")
+  if (text) body <- "GitHub Actions"
+  a("https://github.com/%s/actions?query=workflow%%3A%s", repos, name, body=body)
+}
+
+github_future.tests <- function(name = "future_tests", text = FALSE) {
+  if (!file.exists(sprintf(".github/workflows/%s.yaml", name))) return("")
+  repos <- github_repos()
+  body <- img("https://github.com/%s/actions/workflows/%s.yaml/badge.svg?branch=develop", github_repos(), name, alt="future.tests checks status")
+  if (text) body <- "GitHub Actions"
+  a("https://github.com/%s/actions?query=workflow%%3A%s", repos, name, body=body)
+}
+
+github <- function(text = FALSE) {
+  paste(c(
+    github_r_cmd_check(text = text),
+    github_revdepcheck_top(text = text),
+    github_future.tests(text = text)
+  ), collapse = " ")
+}
+
+
+travis <- function(text = FALSE) {
+  if (!file.exists(".travis.yml")) return("")
+  repos <- github_repos()
+  body <- img("https://travis-ci.org/%s.svg", repos, alt="Build status")
+  if (text) body <- "Travis CI"
+  a("https://travis-ci.org/%s", repos, body=body)
+}
+
+appveyor <- function(text = FALSE) {
+  if (!file.exists("appveyor.yml")) return("")
+  repos <- github_repos()
+  repos <- strsplit(repos, split="/")[[1]]
+  repos[2] <- gsub("[.]", "-", tolower(repos[2]))
+  repos <- paste(repos, collapse="/")
+  body <- img("https://ci.appveyor.com/api/projects/status/github/%s?svg=true", github_repos(), alt="Build status")
+  if (text) body <- "AppVeyor CI"
+  a("https://ci.appveyor.com/project/%s", repos, body=body)
+}
+
+covr <- function() {
+  bfr <- NULL
+  files <- c("covr.yaml", "R-CMD-check.yaml")
+  for (file in file.path(".github/workflows", files)) {
+    if (file.exists(file)) {
+      bfr <- readLines(file)
+      break
+    }
+  }
+  if (!any(grepl("covr::codecov", bfr, fixed=TRUE))) return()
+  a("https://app.codecov.io/gh/%s", github_repos(), body=img("https://codecov.io/gh/%s/branch/develop/graph/badge.svg", github_repos(), alt="Coverage Status"))
+}
+%>
+
+<%
+optional_badges <- function() {
+  if (file.exists(file <- ".make/extra_badges.md")) {
+    bfr <- readLines(file, warn=FALSE)
+    R.rsp::rstring(bfr)
+  }
+}
+%>
+
+<div id="badges"><!-- pkgdown markup -->
+<%=repos_status()%> <%=github()%> <%=travis()%> <%=appveyor() %> <%=covr()%> <%=optional_badges()%>
+</div>
+
+# <%=pkg()%>: <%=pkg_title()%> <% if (file.exists(file <- "man/figures/logo.png")) { cat(img(file, alt=sprintf("The '%s' hexlogo", pkg()), align="right")) } %>
+
+<% if (!is.na(file <- find_file("OVERVIEW.md"))) { R.rsp::rcat(file=file) } %>
+
+<%
+if (!is.na(file <- find_file("INSTALL.md"))) {
+  R.rsp::rcat(file=file)
+} else { %>
+## Installation
+<% if (cran()) { %>
+R package <%=pkg()%> is available on <%=repos_page()%> and can be installed in R as:
+```r
+install.packages("<%=pkg()%>")
+```
+<% } else if (bioc()) { %>
+R package <%=pkg()%> is available on <%=repos_page()%> and can be installed in R as:
+
+```r
+install.packages("BiocManager")
+BiocManager::install("<%=pkg()%>")
+```
+<% } else { %>
+R package <%=pkg()%> is only available via [GitHub](https://github.com/<%=github_repos()%>) and can be installed in R as:
+```r
+remotes::install_github("<%=github_repos()%>", ref="master")
+<%---
+source("https://callr.org/install#<%=github_repos()%>")
+---%>
+```
+<% } %>
+
+
+### Pre-release version
+
+To install the pre-release version that is available in Git branch `develop` on GitHub, use:
+```r
+remotes::install_github("<%=github_repos()%>", ref="develop")
+```
+This will install the package from source.  <% if (file.exists("src")) { %><%-%>
+Because of this and because this package also compiles native code, Windows users need to have [Rtools](https://cran.r-project.org/bin/windows/Rtools/) installed and macOS users need to have [Xcode](https://developer.apple.com/xcode/) installed.
+<% } # if (file.exists("src")) %>
+<% } # if (... "INSTALL.md" ...) %>
+
+
+<!-- pkgdown-drop-below -->
+
+<% if (!is.na(file <- find_file("CONTRIBUTING.md")) &&
+       any(grepl("README.*md", readLines(".Rbuildignore")))) { %>
+
+## Contributing
+
+To contribute to this package, please see [CONTRIBUTING.md](<%= file %>).
+
+<% } # if (...) %>

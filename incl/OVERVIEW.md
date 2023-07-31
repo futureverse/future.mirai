@@ -1,11 +1,3 @@
-
-
-<div id="badges"><!-- pkgdown markup -->
- <a href="https://github.com/HenrikBengtsson/future.mirai/actions?query=workflow%3AR-CMD-check"><img border="0" src="https://github.com/HenrikBengtsson/future.mirai/actions/workflows/R-CMD-check.yaml/badge.svg?branch=develop" alt="R CMD check status"/></a>  <a href="https://github.com/HenrikBengtsson/future.mirai/actions?query=workflow%3Afuture_tests"><img border="0" src="https://github.com/HenrikBengtsson/future.mirai/actions/workflows/future_tests.yaml/badge.svg?branch=develop" alt="future.tests checks status"/></a>    
-</div>
-
-# future.mirai: A Future API for Parallel Processing using 'mirai' 
-
 ## Introduction
 
 The **[future]** package provides a generic API for using futures in
@@ -80,21 +72,3 @@ demo("mandelbrot", package = "future", ask = FALSE)
 [future.mirai]: https://github.com/HenrikBengtsson/future.mirai
 [future.apply]: https://cran.r-project.org/package=future.apply
 [doFuture]: https://cran.r-project.org/package=doFuture
-
-## Installation
-R package future.mirai is only available via [GitHub](https://github.com/HenrikBengtsson/future.mirai) and can be installed in R as:
-```r
-remotes::install_github("HenrikBengtsson/future.mirai", ref="master")
-```
-
-
-### Pre-release version
-
-To install the pre-release version that is available in Git branch `develop` on GitHub, use:
-```r
-remotes::install_github("HenrikBengtsson/future.mirai", ref="develop")
-```
-This will install the package from source.  
-
-<!-- pkgdown-drop-below -->
-

@@ -1,5 +1,7 @@
 ^[.]gitignore
-^[.]github
-^[.]Rdump
-^docs
-^incl
+^[.]github/
+^[.]Rdump/
+^[.]make/
+^docs/
+^incl/
+^Makefile
