@@ -1,8 +1,5 @@
-# Version (development version)
+# Version 0.1.0
 
- * ...
+## Signficant Changes
 
-
-# Version 0.0.0
-
- * A first draft of the package.
+ * A working, proof-of-concept implementation.
