@@ -65,12 +65,13 @@ is an added overhead of launching a new R process.
 The **[future]** package provides a demo using futures for calculating
 a set of Mandelbrot planes.  The demo does not assume anything about
 what type of futures are used.  _The user has full control of how
-futures are evaluated_.  For instance, to use `mirai` futures, run the
-demo as:
+futures are evaluated_.  For instance, to use `mirai_multisession`
+futures, run the demo as:
 
 ```r
 library(future.mirai)
-plan(mirai)
+plan(mirai_multisession)
+
 demo("mandelbrot", package = "future", ask = FALSE)
 ```
 
