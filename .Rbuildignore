@@ -3,5 +3,8 @@
 ^[.]Rdump/
 ^[.]make/
 ^docs/
+^pkgdown/
 ^incl/
 ^Makefile
+^CONTRIBUTING.md
+
