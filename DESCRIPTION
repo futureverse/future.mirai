@@ -15,7 +15,7 @@ Authors@R: c(
   person("Henrik", "Bengtsson", role=c("aut", "cre", "cph"),
          email = "henrikb@braju.com"))
 License: GPL (>= 3)
-LazyLoad: TRUE
+Encoding: UTF-8
 URL: https://future.mirai.futureverse.org, https://github.com/HenrikBengtsson/future.mirai
 BugReports: https://github.com/HenrikBengtsson/future.mirai/issues
 RoxygenNote: 7.2.3

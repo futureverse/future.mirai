@@ -59,7 +59,7 @@ MiraiFuture <- function(expr = NULL,
     dd <- get_mirai_daemons()
     if (is.data.frame(dd)) {
       uris <- rownames(dd)
-      n <- length(grep("^ws://", uris))
+      n <- length(uris)
     } else {
       n <- -1L
     }
@@ -67,7 +67,7 @@ MiraiFuture <- function(expr = NULL,
       daemons(n = 0L)  ## reset is required
       daemons(n = length(workers), url = "ws://:0", dispatcher = TRUE)
     }
-    cluster <- launch_mirai_servers(workers)
+    cluster <- launch_mirai_daemons(workers)
   } else if (!is.null(workers)) {
     stop("Argument 'workers' should be a numeric scalar or a character vector: ", mode(workers))
   }
@@ -184,7 +184,7 @@ mirai_daemons_nworkers <- function() {
   if (is.data.frame(workers)) return(nrow(workers))
   
   if (length(workers) != 1L) {
-    stop(FutureError(sprintf("Length of mirai::daemons()$daemons is not one: %d", length(workers))))
+    stop(FutureError(sprintf("Length of mirai::status()$daemons is not one: %d", length(workers))))
   }
   
   if (workers == 0L) return(Inf)

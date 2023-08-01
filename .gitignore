@@ -4,4 +4,5 @@
 [.]Rhistory
 [.]Rdump/
 docs/
-
+.Rproj.user
+*.Rproj
