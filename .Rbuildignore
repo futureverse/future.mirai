@@ -8,3 +8,5 @@
 ^Makefile
 ^CONTRIBUTING.md
 
+^.*\.Rproj$
+^\.Rproj\.user$
