@@ -1,8 +1,8 @@
 #' @importFrom future nbrOfWorkers FutureWarning FutureError
-#' @importFrom mirai daemons
+#' @importFrom mirai status
 #' @export
 nbrOfWorkers.mirai <- function(evaluator) {
-  res <- daemons()
+  res <- status()
   workers <- res[["daemons"]]
   if (!is.numeric(workers)) {
     stop(FutureError(sprintf("Unknown type of mirai::daemons()$daemons: %s", typeof(workers))))
@@ -25,10 +25,10 @@ nbrOfWorkers.mirai <- function(evaluator) {
 }
 
 #' @importFrom future nbrOfFreeWorkers FutureError
-#' @importFrom mirai daemons
+#' @importFrom mirai status
 #' @export
 nbrOfFreeWorkers.mirai <- function(evaluator, background = FALSE, ...) {
-  res <- daemons()
+  res <- status()
   workers <- res[["daemons"]]
   if (!is.numeric(workers)) {
     stop(FutureError(sprintf("Unknown type of mirai::daemons()$daemons: %s", typeof(workers))))

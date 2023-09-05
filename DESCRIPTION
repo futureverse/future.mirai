@@ -1,5 +1,5 @@
 Package: future.mirai
-Version: 0.1.0
+Version: 0.1.1
 Depends:
     future
 Imports:
@@ -12,9 +12,19 @@ Suggests:
 Title: A Future API for Parallel Processing using 'mirai'
 Description: A Future API implementation on top of the 'mirai' package.
 Authors@R: c(
-  person("Henrik", "Bengtsson", role=c("aut", "cre", "cph"),
-         email = "henrikb@braju.com"))
+  person("Henrik", "Bengtsson",
+         role = c("aut", "cre", "cph"),
+         email = "henrikb@braju.com",
+         comment = c(ORCID = "0000-0002-7579-5165")
+        ),
+  person("Charlie", "Gao",
+         role = c("ctb"),
+         email = "charlie.gao@shikokuchuo.net",
+         comment = c(ORCID = "0000-0002-0750-061X")
+        ))
 License: GPL (>= 3)
-LazyLoad: TRUE
+Encoding: UTF-8
+URL: https://future.mirai.futureverse.org, https://github.com/HenrikBengtsson/future.mirai
+BugReports: https://github.com/HenrikBengtsson/future.mirai/issues
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)

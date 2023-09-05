@@ -85,7 +85,7 @@ demo("mandelbrot", package = "future", ask = FALSE)
 ## Installation
 R package future.mirai is only available via [GitHub](https://github.com/HenrikBengtsson/future.mirai) and can be installed in R as:
 ```r
-remotes::install_github("HenrikBengtsson/future.mirai", ref="master")
+remotes::install_github("HenrikBengtsson/future.mirai", ref="main")
 ```
 
 
