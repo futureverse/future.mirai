@@ -1,4 +1,4 @@
-# Version (development version)
+# Version 0.1.1
 
 ## Miscelleanous
 
