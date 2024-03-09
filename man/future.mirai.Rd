@@ -15,3 +15,21 @@ TRUE
 }
 
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://future.mirai.futureverse.org}
+  \item \url{https://github.com/HenrikBengtsson/future.mirai}
+  \item Report bugs at \url{https://github.com/HenrikBengtsson/future.mirai/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Henrik Bengtsson \email{henrikb@braju.com} (\href{https://orcid.org/0000-0002-7579-5165}{ORCID}) [copyright holder]
+
+Other contributors:
+\itemize{
+  \item Charlie Gao \email{charlie.gao@shikokuchuo.net} (\href{https://orcid.org/0000-0002-0750-061X}{ORCID}) [contributor]
+}
+
+}

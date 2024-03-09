@@ -8,7 +8,8 @@
 #' TRUE
 #' }
 #'
-#' @docType package
 #' @aliases future.mirai-package
 #' @name future.mirai
-NULL
+"_PACKAGE"
+
+
