@@ -1,12 +1,10 @@
 ^[.]gitignore
-^[.]github/
-^[.]Rdump/
-^[.]make/
-^docs/
-^pkgdown/
-^incl/
+^[.]github
+^[.]make
+^docs
+^pkgdown
+^incl
 ^Makefile
 ^CONTRIBUTING.md
-
 ^.*\.Rproj$
 ^\.Rproj\.user$
