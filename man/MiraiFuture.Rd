@@ -12,6 +12,7 @@ MiraiFuture(
   packages = NULL,
   lazy = FALSE,
   workers = availableCores(),
+  dispatcher = "auto",
   ...
 )
 }
