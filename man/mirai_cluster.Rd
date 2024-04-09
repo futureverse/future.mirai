@@ -39,6 +39,8 @@ An object of class \link{MiraiFuture}.
 Mirai-based cluster futures
 }
 \examples{
+if (.Platform[["OS.type"]] != "windows") {
+
 mirai::daemons(parallelly::availableCores())
 plan(mirai_cluster, workers = NULL)
 
@@ -50,4 +52,6 @@ N <- 1e6  # samples per worker
 M <- 10   # iterations
 pi_est <- Reduce(sum, Map(value, replicate(M, f()))) / M
 print(pi_est)
+
+} ## if (.Platform[["OS.type"]] != "windows")
 }

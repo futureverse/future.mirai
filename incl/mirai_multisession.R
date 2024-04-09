@@ -1,3 +1,5 @@
+if (.Platform[["OS.type"]] != "windows") {
+
 plan(mirai_multisession)
 
 # A function that returns a future, note that N uses lexical scoping...
@@ -8,3 +10,5 @@ N <- 1e6  # samples per worker
 M <- 10   # iterations
 pi_est <- Reduce(sum, Map(value, replicate(M, f()))) / M
 print(pi_est)
+
+} ## if (.Platform[["OS.type"]] != "windows")
