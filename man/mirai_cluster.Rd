@@ -23,14 +23,13 @@ identified.}
 
 \item{...}{Additional named elements of the future.}
 
-\item{workers}{A \code{\link[parallel:makeCluster]{cluster}} object,
-a character vector of host names, a positive numeric scalar,
-or a function.
-If a character vector or a numeric scalar, a \code{cluster} object
-is created using \code{\link[parallelly:makeClusterPSOCK]{makeClusterPSOCK}(workers)}.
-If a function, it is called without arguments \emph{when the future
-is created} and its value is used to configure the workers.
-The function should return any of the above types.}
+\item{workers}{Specifies \strong{mirai} workers to use as parallel workers.
+If a numeric scalar, then this number of local \strong{mirai} daemons will
+be launched.
+If a character vector, then this it specifies the hostnames of where
+the \strong{mirai} daemons will be launched.
+If \code{NULL}, then any \strong{mirai} daemons previously created by
+\code{\link[mirai:daemons]{mirai::daemons()}} will be used as parallel workers.}
 }
 \value{
 An object of class \link{MiraiFuture}.
@@ -39,7 +38,8 @@ An object of class \link{MiraiFuture}.
 Mirai-based cluster futures
 }
 \examples{
-mirai::daemons(parallelly::availableCores())
+\dontshow{if (.Platform[["OS.type"]] != "windows" || interactive()) \{}
+mirai::daemons(parallelly::availableCores(), dispatcher = FALSE)
 plan(mirai_cluster, workers = NULL)
 
 # A function that returns a future, note that N uses lexical scoping...
@@ -52,7 +52,7 @@ pi_est <- Reduce(sum, Map(value, replicate(M, f()))) / M
 print(pi_est)
 
 plan(sequential)
-mirai::daemons(0) ## Shut down mirai workers
-if (.Platform[["OS.type"]] != "windows") {
-} ## if (.Platform[["OS.type"]] != "windows")
+invisible(mirai::daemons(0)) ## Shut down mirai workers
+\dontshow{\}}
+
 }

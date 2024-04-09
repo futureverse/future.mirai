@@ -3,6 +3,14 @@
 #' @inheritParams MiraiFuture
 #' @inheritParams future::cluster
 #'
+#' @param workers Specifies **mirai** workers to use as parallel workers.
+#' If a numeric scalar, then this number of local **mirai** daemons will
+#' be launched.
+#' If a character vector, then this it specifies the hostnames of where
+#' the **mirai** daemons will be launched.
+#' If `NULL`, then any **mirai** daemons previously created by
+#' [mirai::daemons()] will be used as parallel workers.
+#'
 #' @return An object of class [MiraiFuture].
 #'
 #' @example incl/mirai_cluster.R
