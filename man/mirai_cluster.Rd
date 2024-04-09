@@ -39,8 +39,6 @@ An object of class \link{MiraiFuture}.
 Mirai-based cluster futures
 }
 \examples{
-if (.Platform[["OS.type"]] != "windows") {
-
 mirai::daemons(parallelly::availableCores())
 plan(mirai_cluster, workers = NULL)
 
@@ -55,5 +53,6 @@ print(pi_est)
 
 plan(sequential)
 mirai::daemons(0) ## Shut down mirai workers
+if (.Platform[["OS.type"]] != "windows") {
 } ## if (.Platform[["OS.type"]] != "windows")
 }
