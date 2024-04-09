@@ -53,5 +53,7 @@ M <- 10   # iterations
 pi_est <- Reduce(sum, Map(value, replicate(M, f()))) / M
 print(pi_est)
 
+plan(sequential)
+mirai::daemons(0) ## Shut down mirai workers
 } ## if (.Platform[["OS.type"]] != "windows")
 }

@@ -34,8 +34,6 @@ An object of class \link{MiraiFuture}.
 Mirai-based localhost multisession futures
 }
 \examples{
-if (.Platform[["OS.type"]] != "windows") {
-
 plan(mirai_multisession)
 
 # A function that returns a future, note that N uses lexical scoping...
@@ -47,5 +45,6 @@ M <- 10   # iterations
 pi_est <- Reduce(sum, Map(value, replicate(M, f()))) / M
 print(pi_est)
 
-} ## if (.Platform[["OS.type"]] != "windows")
+plan(sequential)
+mirai::daemons(0) ## Shut down mirai workers
 }
