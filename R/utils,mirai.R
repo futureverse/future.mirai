@@ -53,7 +53,7 @@ launch_mirai_daemons <- function(hostnames, ..., timeout = 60) {
   uris <- sub("//:", sprintf("//%s:", host_ip), uris)
 
   ## Launching parallel PSOCK workers
-  cl <- makeClusterPSOCK(hostnames, ...)
+  cl <- makeClusterPSOCK(hostnames, ..., autoStop = TRUE)
 
   ## Use them to launch mirai daemons to connect back to host
   void <- parLapply(cl, uris, function(uri) {
