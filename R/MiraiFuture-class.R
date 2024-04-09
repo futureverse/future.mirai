@@ -42,6 +42,9 @@ MiraiFuture <- function(expr = NULL,
   if (is.function(workers)) workers <- workers()
   if (!is.null(workers)) stop_if_not(length(workers) >= 1)
 
+  ## FIXME: Expose 'dispatcher' in the API
+  dispatcher <- TRUE
+  
   cluster <- NULL
   if (is.numeric(workers)) {
     stop_if_not(length(workers) == 1L, !is.na(workers), workers >= 1)
@@ -52,7 +55,7 @@ MiraiFuture <- function(expr = NULL,
       daemons(n = 0L)
     } else if (workers != nworkers) {
       daemons(n = 0L)  ## reset is required
-      daemons(n = workers, dispatcher = TRUE)
+      daemons(n = workers, dispatcher = dispatcher)
     }
   } else if (is.character(workers)) {
     stop_if_not(length(workers) >= 1L, !anyNA(workers))
@@ -65,7 +68,7 @@ MiraiFuture <- function(expr = NULL,
     }
     if (length(workers) != n) {
       daemons(n = 0L)  ## reset is required
-      daemons(n = length(workers), url = "ws://:0", dispatcher = TRUE)
+      daemons(n = length(workers), url = "ws://:0", dispatcher = dispatcher)
     }
     cluster <- launch_mirai_daemons(workers)
   } else if (!is.null(workers)) {

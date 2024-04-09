@@ -1,6 +1,7 @@
 ^[.]gitignore
 ^[.]github
 ^[.]make
+^[.]local
 ^docs
 ^pkgdown
 ^incl
