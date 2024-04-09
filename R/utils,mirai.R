@@ -28,7 +28,7 @@ launch_mirai_daemons <- function(hostnames, ..., timeout = 60) {
 
   ## Assert that mirai daemons have been configured
   dd <- get_mirai_daemons()
-  stopifnot(is.data.frame(dd))
+  stopifnot(is.data.frame(dd) || is.numeric(dd))
 
   ## Consider only non-connected daemons
   dd <- subset(dd, online == 0L)
@@ -61,7 +61,6 @@ launch_mirai_daemons <- function(hostnames, ..., timeout = 60) {
     bin <- file.path(R.home("bin"), "Rscript")
     system2(bin, args = c("-e", shQuote(code)), wait = FALSE)
   }, chunk.size = 1L)
-
 
   ## Wait for mirai servers to connect back
   t0 <- Sys.time()

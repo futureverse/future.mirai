@@ -18,10 +18,15 @@ MiraiFuture <- function(expr = NULL,
                         packages = NULL,
                         lazy = FALSE,
                         workers = availableCores(),
+                        dispatcher = "auto",
                         ...)
 {
   if(isTRUE(substitute)) expr <- substitute(expr)
 
+  if (!identical(dispatcher, "auto")) {
+    stopifnot(is.logical(dispatcher), length(dispatcher) == 1L, !is.na(dispatcher))
+  }
+  
   ## Record globals
   if(!isTRUE(attr(globals, "already-done", exact = TRUE))) {
     gp <- getGlobalsAndPackages(expr, envir = envir, persistent = FALSE, globals = globals)
@@ -41,13 +46,11 @@ MiraiFuture <- function(expr = NULL,
 
   if (is.function(workers)) workers <- workers()
   if (!is.null(workers)) stop_if_not(length(workers) >= 1)
-
-  ## FIXME: Expose 'dispatcher' in the API
-  dispatcher <- TRUE
-  
+ 
   cluster <- NULL
   if (is.numeric(workers)) {
     stop_if_not(length(workers) == 1L, !is.na(workers), workers >= 1)
+    if (identical(dispatcher, "auto")) dispatcher <- FALSE
       
     ## Do we need to change the number of mirai workers?
     nworkers <- mirai_daemons_nworkers()
@@ -59,6 +62,8 @@ MiraiFuture <- function(expr = NULL,
     }
   } else if (is.character(workers)) {
     stop_if_not(length(workers) >= 1L, !anyNA(workers))
+    if (identical(dispatcher, "auto")) dispatcher <- TRUE
+    
     dd <- get_mirai_daemons()
     if (is.data.frame(dd)) {
       uris <- rownames(dd)
