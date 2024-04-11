@@ -60,24 +60,8 @@ MiraiFuture <- function(expr = NULL,
       daemons(n = 0L)  ## reset is required
       daemons(n = workers, dispatcher = dispatcher)
     }
-  } else if (is.character(workers)) {
-    stop_if_not(length(workers) >= 1L, !anyNA(workers))
-    if (identical(dispatcher, "auto")) dispatcher <- TRUE
-    
-    dd <- get_mirai_daemons()
-    if (is.data.frame(dd)) {
-      uris <- rownames(dd)
-      n <- length(uris)
-    } else {
-      n <- -1L
-    }
-    if (length(workers) != n) {
-      daemons(n = 0L)  ## reset is required
-      daemons(n = length(workers), url = "ws://:0", dispatcher = dispatcher)
-    }
-    cluster <- launch_mirai_daemons(workers)
   } else if (!is.null(workers)) {
-    stop("Argument 'workers' should be a numeric scalar or a character vector: ", mode(workers))
+    stop("Argument 'workers' should be a numeric scalar or NULL: ", mode(workers))
   }
 
   future <- structure(future, class = c("MiraiFuture", class(future)))

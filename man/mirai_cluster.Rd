@@ -4,13 +4,7 @@
 \alias{mirai_cluster}
 \title{Mirai-based cluster futures}
 \usage{
-mirai_cluster(
-  expr,
-  substitute = TRUE,
-  envir = parent.frame(),
-  ...,
-  workers = availableWorkers()
-)
+mirai_cluster(expr, substitute = TRUE, envir = parent.frame(), ...)
 }
 \arguments{
 \item{expr}{An \R \link[base]{expression}.}
@@ -22,14 +16,6 @@ mirai_cluster(
 identified.}
 
 \item{...}{Additional named elements of the future.}
-
-\item{workers}{Specifies \strong{mirai} workers to use as parallel workers.
-If a numeric scalar, then this number of local \strong{mirai} daemons will
-be launched.
-If a character vector, then this it specifies the hostnames of where
-the \strong{mirai} daemons will be launched.
-If \code{NULL}, then any \strong{mirai} daemons previously created by
-\code{\link[mirai:daemons]{mirai::daemons()}} will be used as parallel workers.}
 }
 \value{
 An object of class \link{MiraiFuture}.
@@ -38,9 +24,8 @@ An object of class \link{MiraiFuture}.
 Mirai-based cluster futures
 }
 \examples{
-\dontshow{if (.Platform[["OS.type"]] != "windows" || interactive()) \{}
 mirai::daemons(parallelly::availableCores(), dispatcher = FALSE)
-plan(mirai_cluster, workers = NULL)
+plan(mirai_cluster)
 
 # A function that returns a future, note that N uses lexical scoping...
 f <- \() future({4 * sum((runif(N) ^ 2 + runif(N) ^ 2) < 1) / N}, seed = TRUE)
@@ -53,6 +38,4 @@ print(pi_est)
 
 plan(sequential)
 invisible(mirai::daemons(0)) ## Shut down mirai workers
-\dontshow{\}}
-
 }

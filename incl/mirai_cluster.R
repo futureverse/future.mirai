@@ -1,6 +1,5 @@
-\dontshow{if (.Platform[["OS.type"]] != "windows" || interactive()) \{}
 mirai::daemons(parallelly::availableCores(), dispatcher = FALSE)
-plan(mirai_cluster, workers = NULL)
+plan(mirai_cluster)
 
 # A function that returns a future, note that N uses lexical scoping...
 f <- \() future({4 * sum((runif(N) ^ 2 + runif(N) ^ 2) < 1) / N}, seed = TRUE)
@@ -13,5 +12,3 @@ print(pi_est)
 
 plan(sequential)
 invisible(mirai::daemons(0)) ## Shut down mirai workers
-\dontshow{\}}
-
