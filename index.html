@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">future.mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1-9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1-9011</span>
       </span>
     </div>
 
@@ -166,7 +166,7 @@
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="sc">&gt;</span> y <span class="sc">%&lt;-%</span> { <span class="fu">Sys.sleep</span>(<span class="dv">5</span>); <span class="fl">2.71</span> }</span>
 <span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="sc">&gt;</span> x <span class="sc">+</span> y</span>
 <span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>[<span class="dv">1</span>] <span class="fl">5.85</span></span></code></pre></div>
-<p>This is obviously a toy example to illustrate what futures look like and how to work with them. For further examples on how to use futures, see the vignettes of the <strong><a href="https://cran.r-project.org/package=future" class="external-link">future</a></strong> package as well as those of <strong><a href="https://cran.r-project.org/package=future.apply" class="external-link">future.apply</a></strong> and <strong><a href="https://cran.r-project.org/package=doFuture" class="external-link">doFuture</a></strong>.</p>
+<p>This is obviously a toy example to illustrate what futures look like and how to work with them. For further examples on how to use futures, see the vignettes of the <strong><a href="https://cran.r-project.org/package=future" class="external-link">future</a></strong> package as well as those of <strong><a href="https://cran.r-project.org/package=future.apply" class="external-link">future.apply</a></strong>, <strong><a href="https://cran.r-project.org/package=furrr" class="external-link">furrr</a></strong>, and <strong><a href="https://cran.r-project.org/package=doFuture" class="external-link">doFuture</a></strong>.</p>
 </div>
 <div class="section level2">
 <h2 id="using-the-futuremirai-backend">Using the future.mirai backend<a class="anchor" aria-label="anchor" href="#using-the-futuremirai-backend"></a>
@@ -183,16 +183,24 @@
 <th align="left">Description</th>
 <th align="left">Alternative in future package</th>
 </tr></thead>
-<tbody><tr class="odd">
+<tbody>
+<tr class="odd">
 <td align="left"><code>mirai_multisession</code></td>
-<td align="left">parallel evaluation in a separate R process (on current machine)</td>
+<td align="left">parallel evaluation in separate R processes (on current machine)</td>
 <td align="left"><code>plan(multisession)</code></td>
-</tr></tbody>
+</tr>
+<tr class="even">
+<td align="left"><code>mirai_cluster</code></td>
+<td align="left">parallel evaluation in mirai-configured workers</td>
+<td align="left"><code>plan(cluster)</code></td>
+</tr>
+</tbody>
 </table>
 <div class="section level3">
-<h3 id="each-mirai-future-uses-a-fresh-r-session">Each mirai future uses a fresh R session<a class="anchor" aria-label="anchor" href="#each-mirai-future-uses-a-fresh-r-session"></a>
+<h3 id="advantages-of-mirai-futures">Advantages of mirai futures<a class="anchor" aria-label="anchor" href="#advantages-of-mirai-futures"></a>
 </h3>
-<p>When using <code>mirai</code> futures, each future is resolved in a fresh background R session which ends as soon as the value of the future has been collected. In contrast, <code>multisession</code> futures are resolved in background R worker sessions that serve multiple futures over their life spans. The advantage with using a new R process for each future is that it is that the R environment is guaranteed not to be contaminated by previous futures, e.g. memory allocations, finalizers, modified options, and loaded and attached packages. The disadvantage, is an added overhead of launching a new R process.</p>
+<p>The <strong>mirai</strong> package provides a low-level future-like mechanism for evaluating R expression in separate R processes running on the local machine or on one or more remote machines. Centrally to <strong>mirai</strong> is its highly-optimized queueing mechanism, which is used to orchestrate communication between the main R process and parallel workers. A <strong>mirai</strong> cluster of workers can be configured to communicate securly via the well-established Transport Layer Security (TLS) protocol.</p>
+<p>Another advantage with <code>mirai_*</code> futures, compared to <code>multisession</code> and <code>cluster</code> futures, is that we can use more than 125 parallel workers. The current limit of 125 workers for <code>multisession</code> and <code>cluster</code> futures stems from how the underlying <strong>parallel</strong> package using one R connection per parallel worker and R has a limit of 125 R connections per session. In R (&gt;= 4.4.0), we can increase this limit when we launch R, e.g. <code>R --max-connections=200</code>. For R (&lt; 4.4.0), R has to be rebuilt from source after adjusting the source code. The <strong>mirai</strong> package does not rely on R connections for parallel workers and does therefore not suffer from this limit.</p>
 </div>
 </div>
 <div class="section level2">
@@ -204,18 +212,25 @@
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">mirai_multisession</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/demo.html" class="external-link">demo</a></span><span class="op">(</span><span class="st">"mandelbrot"</span>, package <span class="op">=</span> <span class="st">"future"</span>, ask <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p>and</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.mirai.futureverse.org">future.mirai</a></span><span class="op">)</span></span>
+<span><span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/mirai/reference/daemons.html" class="external-link">daemons</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">mirai_cluster</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/demo.html" class="external-link">demo</a></span><span class="op">(</span><span class="st">"mandelbrot"</span>, package <span class="op">=</span> <span class="st">"future"</span>, ask <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>R package future.mirai is only available via <a href="https://github.com/HenrikBengtsson/future.mirai" class="external-link">GitHub</a> and can be installed in R as:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"HenrikBengtsson/future.mirai"</span>, ref<span class="op">=</span><span class="st">"main"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"HenrikBengtsson/future.mirai"</span>, ref<span class="op">=</span><span class="st">"master"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="pre-release-version">Pre-release version<a class="anchor" aria-label="anchor" href="#pre-release-version"></a>
 </h3>
 <p>To install the pre-release version that is available in Git branch <code>develop</code> on GitHub, use:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"HenrikBengtsson/future.mirai"</span>, ref<span class="op">=</span><span class="st">"develop"</span><span class="op">)</span></span></code></pre></div>
 <p>This will install the package from source.</p>
 </div>
