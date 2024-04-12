@@ -1,9 +1,9 @@
 Package: future.mirai
-Version: 0.1.1-9016
+Version: 0.1.1-9017
 Depends:
     future
 Imports:
-    mirai (>= 0.13.2),
+    mirai (>= 0.12.1),
     parallelly,
     utils
 Suggests:
@@ -11,7 +11,7 @@ Suggests:
     future.apply,
     listenv
 Title: A Future API for Parallel Processing using 'mirai'
-Description: A Future API implementation on top of the 'mirai' package.
+Description: Implementation of the Future API on top of the 'mirai' package. This allows you to process futures, as defined by the 'future' package, in parallel out of the box, on your local (Linux, macOS, Windows, ...) machine. Contrary to backends relying on the 'parallel' package (e.g. 'future::multisession') and socket connections, the 'mirai_cluster' and 'mirai_multisession' backends provided here can run more than 125 parallel R processes.
 Authors@R: c(
   person("Henrik", "Bengtsson",
          role = c("aut", "cre", "cph"),
