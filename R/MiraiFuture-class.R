@@ -152,6 +152,7 @@ mirai_version <- local({
 })
 
 #' @importFrom future result
+#' @importFrom mirai call_mirai_
 #' @export
 result.MiraiFuture <- function(future, ...) {
   if(isTRUE(future[["state"]] == "finished")) {
@@ -165,11 +166,7 @@ result.MiraiFuture <- function(future, ...) {
   }
 
   mirai <- future[["mirai"]]
-  while (unresolved(mirai)) {
-    Sys.sleep(0.1)
-  }
-  
-  result <- mirai$data
+  result <- call_mirai_(mirai)$data
   future[["result"]] <- result
   future[["state"]] <- "finished"
 
