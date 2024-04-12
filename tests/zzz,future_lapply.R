@@ -1,3 +1,6 @@
+## This requires mirai (>= 0.13.2)
+if (packageVersion("mirai") >= "0.13.2") {
+
 source("incl/start.R")
 library("listenv")
 
@@ -129,3 +132,5 @@ if (requireNamespace("future.apply", quietly = TRUE)) {
 }
 
 source("incl/end.R")
+
+}
