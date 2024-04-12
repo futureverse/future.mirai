@@ -1,5 +1,5 @@
 Package: future.mirai
-Version: 0.1.1-9013
+Version: 0.1.1-9014
 Depends:
     future
 Imports:
@@ -7,7 +7,9 @@ Imports:
     parallelly,
     utils
 Suggests:
-    future.tests
+    future.tests,
+    future.apply,
+    listenv
 Title: A Future API for Parallel Processing using 'mirai'
 Description: A Future API implementation on top of the 'mirai' package.
 Authors@R: c(

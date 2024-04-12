@@ -30,6 +30,8 @@ mprint <- function(..., prefix = now(), debug = getOption("future.mirai.debug", 
   message(stdout)
 }
 
+mprintf <- function(...) message(now(), sprintf(...), appendLF = FALSE)
+
 stop_if_not <- function(...) {
   res <- list(...)
   for (ii in 1L:length(res)) {
