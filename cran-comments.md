@@ -19,7 +19,7 @@ The package has been verified using `R CMD check --as-cran` on:
 | --------- | ------ | --------------- |
 | 3.6.x     | L      |                 |
 | 4.2.x     | L   W  |    W            |
-| 4.3.x     | L M W  | M1 W            |
+| 4.3.x     | L M W  |  . W            |
 | 4.4.x     |        |    W            |
 | devel     | L M W  |                 |
 
