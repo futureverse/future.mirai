@@ -1,6 +1,6 @@
 library(future.mirai)
 mirai::daemons(1, dispatcher = FALSE)
-plan(mirai_cluster
+plan(mirai_cluster)
 
 g <- function() 42
 h <- function() g()
