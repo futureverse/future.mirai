@@ -1,5 +1,6 @@
 library(future.mirai)
-plan(mirai_multisession, workers = I(1))
+mirai::daemons(1, dispatcher = FALSE)
+plan(mirai_cluster
 
 g <- function() 42
 h <- function() g()
@@ -10,4 +11,5 @@ print(v)
 stopifnot(v == h())
 
 plan(sequential)
-mirai::daemons(0)
+mirai::daemons(0)  ## Reset any daemons running
+gc()
