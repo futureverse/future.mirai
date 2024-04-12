@@ -58,7 +58,7 @@ MiraiFuture <- function(expr = NULL,
       daemons(n = 0L)
     } else if (workers != nworkers) {
       daemons(n = 0L)  ## reset is required
-      daemons(n = workers, dispatcher = dispatcher)
+      daemons(n = workers, dispatcher = dispatcher, resilience = FALSE)
     }
   } else if (!is.null(workers)) {
     stop("Argument 'workers' should be a numeric scalar or NULL: ", mode(workers))
@@ -167,6 +167,14 @@ result.MiraiFuture <- function(future, ...) {
 
   mirai <- future[["mirai"]]
   result <- call_mirai_(mirai)$data
+
+  if (inherits(result, "errorValue")) {
+    label <- future$label
+    if (is.null(label)) label <- "<none>"
+    msg <- sprintf("Failed to retrieve results from %s (%s). The mirai framework reports on error value %s", class(future)[1], label, result)
+    stop(FutureError(msg))
+  }
+
   future[["result"]] <- result
   future[["state"]] <- "finished"
 
@@ -182,7 +190,8 @@ mirai_daemons_nworkers <- function() {
   if (is.data.frame(workers)) return(nrow(workers))
   
   if (length(workers) != 1L) {
-    stop(FutureError(sprintf("Length of mirai::status()$daemons is not one: %d", length(workers))))
+    msg <- sprintf("Length of mirai::status()$daemons is not one: %d", length(workers))
+    stop(FutureError(msg))
   }
   
   if (workers == 0L) return(Inf)
