@@ -125,7 +125,16 @@ run.MiraiFuture <- function(future, ...) {
 
   expr <- getExpression(future)
   globals <- future[["globals"]]
-  mirai <- mirai(expr, .args = globals)
+  
+  ## Sanity check
+  not_allowed <- intersect(names(globals), names(formals(mirai::mirai)))
+  if (length(not_allowed) > 0) {
+    stop(FutureError(sprintf("Detected global variables that clash with argument names of mirai::mirai(): %s", paste(sQuote(not_allowed), collapse = ", "))))
+  }
+
+  args = list(.expr = expr)
+  if (length(globals) > 0) args <- c(args, globals)
+  mirai <- do.call(mirai, args = args)
   future[["mirai"]] <- mirai
 
   future[["state"]] <- "running"
