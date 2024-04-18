@@ -1,6 +1,6 @@
-# Version (development version)
+# Version 0.2.0
 
- * ...
+ * First public release.
 
 
 # Version 0.1.1
