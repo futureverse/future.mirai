@@ -4,7 +4,10 @@
 nbrOfWorkers.mirai <- function(evaluator) {
   res <- status()
   workers <- res[["daemons"]]
-  if (!is.numeric(workers)) {
+  if (is.character(workers)) {
+    workers <- res[["connections"]]
+    stopifnot(is.numeric(workers))
+  } else if (!is.numeric(workers)) {
     stop(FutureError(sprintf("Unknown type of mirai::daemons()$daemons: %s", typeof(workers))))
   }
 
@@ -30,7 +33,10 @@ nbrOfWorkers.mirai <- function(evaluator) {
 nbrOfFreeWorkers.mirai <- function(evaluator, background = FALSE, ...) {
   res <- status()
   workers <- res[["daemons"]]
-  if (!is.numeric(workers)) {
+  if (is.character(workers)) {
+     workers <- res[["connections"]]
+     stopifnot(is.numeric(workers))
+  } else if (!is.numeric(workers)) {
     stop(FutureError(sprintf("Unknown type of mirai::daemons()$daemons: %s", typeof(workers))))
   }
 

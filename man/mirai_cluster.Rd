@@ -4,13 +4,7 @@
 \alias{mirai_cluster}
 \title{Mirai-based cluster futures}
 \usage{
-mirai_cluster(
-  expr,
-  substitute = TRUE,
-  envir = parent.frame(),
-  ...,
-  workers = availableWorkers()
-)
+mirai_cluster(expr, substitute = TRUE, envir = parent.frame(), ...)
 }
 \arguments{
 \item{expr}{An \R \link[base]{expression}.}
@@ -22,15 +16,6 @@ mirai_cluster(
 identified.}
 
 \item{...}{Additional named elements of the future.}
-
-\item{workers}{A \code{\link[parallel:makeCluster]{cluster}} object,
-a character vector of host names, a positive numeric scalar,
-or a function.
-If a character vector or a numeric scalar, a \code{cluster} object
-is created using \code{\link[parallelly:makeClusterPSOCK]{makeClusterPSOCK}(workers)}.
-If a function, it is called without arguments \emph{when the future
-is created} and its value is used to configure the workers.
-The function should return any of the above types.}
 }
 \value{
 An object of class \link{MiraiFuture}.
@@ -39,15 +24,18 @@ An object of class \link{MiraiFuture}.
 Mirai-based cluster futures
 }
 \examples{
-mirai::daemons(parallelly::availableCores())
-plan(mirai_cluster, workers = NULL)
+mirai::daemons(parallelly::availableCores(), dispatcher = FALSE)
+plan(mirai_cluster)
 
 # A function that returns a future, note that N uses lexical scoping...
-f <- \() future({4 * sum((runif(N) ^ 2 + runif(N) ^ 2) < 1) / N}, seed = TRUE)
+f <- function() future({4 * sum((runif(N) ^ 2 + runif(N) ^ 2) < 1) / N}, seed = TRUE)
 
 # Run a simple sampling approximation of pi in parallel using  M * N points:
 N <- 1e6  # samples per worker
 M <- 10   # iterations
 pi_est <- Reduce(sum, Map(value, replicate(M, f()))) / M
 print(pi_est)
+
+plan(sequential)
+invisible(mirai::daemons(0)) ## Shut down mirai workers
 }

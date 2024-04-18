@@ -18,10 +18,15 @@ MiraiFuture <- function(expr = NULL,
                         packages = NULL,
                         lazy = FALSE,
                         workers = availableCores(),
+                        dispatcher = "auto",
                         ...)
 {
   if(isTRUE(substitute)) expr <- substitute(expr)
 
+  if (!identical(dispatcher, "auto")) {
+    stopifnot(is.logical(dispatcher), length(dispatcher) == 1L, !is.na(dispatcher))
+  }
+  
   ## Record globals
   if(!isTRUE(attr(globals, "already-done", exact = TRUE))) {
     gp <- getGlobalsAndPackages(expr, envir = envir, persistent = FALSE, globals = globals)
@@ -41,10 +46,11 @@ MiraiFuture <- function(expr = NULL,
 
   if (is.function(workers)) workers <- workers()
   if (!is.null(workers)) stop_if_not(length(workers) >= 1)
-
+ 
   cluster <- NULL
   if (is.numeric(workers)) {
     stop_if_not(length(workers) == 1L, !is.na(workers), workers >= 1)
+    if (identical(dispatcher, "auto")) dispatcher <- FALSE
       
     ## Do we need to change the number of mirai workers?
     nworkers <- mirai_daemons_nworkers()
@@ -52,24 +58,10 @@ MiraiFuture <- function(expr = NULL,
       daemons(n = 0L)
     } else if (workers != nworkers) {
       daemons(n = 0L)  ## reset is required
-      daemons(n = workers, dispatcher = TRUE)
+      daemons(n = workers, dispatcher = dispatcher, resilience = FALSE)
     }
-  } else if (is.character(workers)) {
-    stop_if_not(length(workers) >= 1L, !anyNA(workers))
-    dd <- get_mirai_daemons()
-    if (is.data.frame(dd)) {
-      uris <- rownames(dd)
-      n <- length(uris)
-    } else {
-      n <- -1L
-    }
-    if (length(workers) != n) {
-      daemons(n = 0L)  ## reset is required
-      daemons(n = length(workers), url = "ws://:0", dispatcher = TRUE)
-    }
-    cluster <- launch_mirai_daemons(workers)
   } else if (!is.null(workers)) {
-    stop("Argument 'workers' should be a numeric scalar or a character vector: ", mode(workers))
+    stop("Argument 'workers' should be a numeric scalar or NULL: ", mode(workers))
   }
 
   future <- structure(future, class = c("MiraiFuture", class(future)))
@@ -133,7 +125,16 @@ run.MiraiFuture <- function(future, ...) {
 
   expr <- getExpression(future)
   globals <- future[["globals"]]
-  mirai <- mirai(expr, .args = globals)
+  
+  ## Sanity check
+  not_allowed <- intersect(names(globals), names(formals(mirai::mirai)))
+  if (length(not_allowed) > 0) {
+    stop(FutureError(sprintf("Detected global variables that clash with argument names of mirai::mirai(): %s", paste(sQuote(not_allowed), collapse = ", "))))
+  }
+
+  args = list(.expr = expr)
+  if (length(globals) > 0) args <- c(args, globals)
+  mirai <- do.call(mirai, args = args)
   future[["mirai"]] <- mirai
 
   future[["state"]] <- "running"
@@ -151,6 +152,7 @@ mirai_version <- local({
 })
 
 #' @importFrom future result
+#' @importFrom mirai call_mirai_
 #' @export
 result.MiraiFuture <- function(future, ...) {
   if(isTRUE(future[["state"]] == "finished")) {
@@ -164,11 +166,15 @@ result.MiraiFuture <- function(future, ...) {
   }
 
   mirai <- future[["mirai"]]
-  while (unresolved(mirai)) {
-    Sys.sleep(0.1)
+  result <- call_mirai_(mirai)$data
+
+  if (inherits(result, "errorValue")) {
+    label <- future$label
+    if (is.null(label)) label <- "<none>"
+    msg <- sprintf("Failed to retrieve results from %s (%s). The mirai framework reports on error value %s", class(future)[1], label, result)
+    stop(FutureError(msg))
   }
-  
-  result <- mirai$data
+
   future[["result"]] <- result
   future[["state"]] <- "finished"
 
@@ -184,7 +190,8 @@ mirai_daemons_nworkers <- function() {
   if (is.data.frame(workers)) return(nrow(workers))
   
   if (length(workers) != 1L) {
-    stop(FutureError(sprintf("Length of mirai::status()$daemons is not one: %d", length(workers))))
+    msg <- sprintf("Length of mirai::status()$daemons is not one: %d", length(workers))
+    stop(FutureError(msg))
   }
   
   if (workers == 0L) return(Inf)
