@@ -10,8 +10,8 @@ Suggests:
     future.tests,
     future.apply,
     listenv
-Title: A Future API for Parallel Processing using 'mirai'
-Description: Implementation of the Future API on top of the 'mirai' package. This allows you to process futures, as defined by the 'future' package, in parallel out of the box, on your local machine or across remote machines. Contrary to back-ends relying on the 'parallel' package (e.g. 'multisession') and socket connections, 'mirai_cluster' and 'mirai_multisession', provided here, can run more than 125 parallel R processes.
+Title: A 'Future' API for Parallel Processing using 'mirai'
+Description: Implementation of the 'Future' API <doi:10.32614/RJ-2021-048> on top of the 'mirai' package. This allows you to process futures, as defined by the 'future' package, in parallel out of the box, on your local machine or across remote machines. Contrary to back-ends relying on the 'parallel' package (e.g. 'multisession') and socket connections, 'mirai_cluster' and 'mirai_multisession', provided here, can run more than 125 parallel R processes.
 Authors@R: c(
   person("Henrik", "Bengtsson",
          role = c("aut", "cre", "cph"),
