@@ -2,7 +2,7 @@ pandoc: 3.1.12.3
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles: {}
-last_built: 2024-04-19T01:02Z
+last_built: 2024-04-19T15:39Z
 urls:
   reference: https://future.mirai.futureverse.org/reference
   article: https://future.mirai.futureverse.org/articles
