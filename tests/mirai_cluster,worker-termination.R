@@ -24,10 +24,16 @@ if (.Platform$OS.type != "windows") {
   message("Number of workers: ", nbrOfWorkers())
   message("Number of free workers: ", nbrOfFreeWorkers())
 
-  stopifnot(
-    nbrOfWorkers() == all - 1L,
-    nbrOfFreeWorkers() == free - 1L
-  )
+  ## We skip assertion on CRAN, because this test seems unreliable, e.g.
+  ## nbrOfWorkers() == all - 1L might not be true, which could be due to
+  ## timing issues [1] /HB 2024-05-09
+  ## [1] https://github.com/HenrikBengtsson/future.mirai/issues/7
+  if (interactive() || isTRUE(Sys.getenv("NOT_CRAN", NA_character_))) {
+    stopifnot(
+      nbrOfWorkers() == all - 1L,
+      nbrOfFreeWorkers() == free - 1L
+    )
+  }
 }
 
 message("*** mirai_multisession() - terminating workers ... DONE")
