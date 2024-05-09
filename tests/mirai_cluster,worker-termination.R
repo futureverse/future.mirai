@@ -20,7 +20,10 @@ if (.Platform$OS.type != "windows") {
   res <- tryCatch(value(f), error = identity)
   print(res)
   stopifnot(inherits(res, "FutureError"))
-  
+
+  message("Number of workers: ", nbrOfWorkers())
+  message("Number of free workers: ", nbrOfFreeWorkers())
+
   stopifnot(
     nbrOfWorkers() == all - 1L,
     nbrOfFreeWorkers() == free - 1L
