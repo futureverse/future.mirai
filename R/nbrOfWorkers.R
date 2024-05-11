@@ -1,5 +1,5 @@
 #' @importFrom future nbrOfWorkers FutureWarning FutureError
-#' @importFrom mirai status
+#' @importFrom mirai is_error_value status
 #' @export
 nbrOfWorkers.mirai <- function(evaluator) {
   res <- status()
@@ -7,7 +7,11 @@ nbrOfWorkers.mirai <- function(evaluator) {
   if (is.character(workers)) {
     workers <- res[["connections"]]
     stopifnot(is.numeric(workers))
-  } else if (!is.numeric(workers)) {
+  } else if (is_error_value(res)) {
+    reason <- capture.output(print(res))
+    stop(FutureError(sprintf("mirai::status() failed to communicate with dispatcher: %s", reason)))
+  } else if (is.numeric(workers)) { ## NOTE: Must come after is_error_value()
+  } else {
     stop(FutureError(sprintf("Unknown type of mirai::daemons()$daemons: %s", typeof(workers))))
   }
 
@@ -28,7 +32,7 @@ nbrOfWorkers.mirai <- function(evaluator) {
 }
 
 #' @importFrom future nbrOfFreeWorkers FutureError
-#' @importFrom mirai status
+#' @importFrom mirai is_error_value status
 #' @export
 nbrOfFreeWorkers.mirai <- function(evaluator, background = FALSE, ...) {
   res <- status()
@@ -36,7 +40,11 @@ nbrOfFreeWorkers.mirai <- function(evaluator, background = FALSE, ...) {
   if (is.character(workers)) {
      workers <- res[["connections"]]
      stopifnot(is.numeric(workers))
-  } else if (!is.numeric(workers)) {
+  } else if (is_error_value(res)) {
+    reason <- capture.output(print(res))
+    stop(FutureError(sprintf("mirai::status() failed to communicate with dispatcher: %s", reason)))
+  } else if (is.numeric(workers)) { ## NOTE: Must come after is_error_value()
+  } else {
     stop(FutureError(sprintf("Unknown type of mirai::daemons()$daemons: %s", typeof(workers))))
   }
 
