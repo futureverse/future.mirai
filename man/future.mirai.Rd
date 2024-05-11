@@ -4,7 +4,7 @@
 \name{future.mirai}
 \alias{future.mirai}
 \alias{future.mirai-package}
-\title{future.mirai: A Future API for Parallel Processing using 'callr'}
+\title{future.mirai: A Future API for Parallel Processing using 'mirai'}
 \description{
 The \pkg{future.mirai} package implements the Future API
 using the \pkg{mirai} package.
