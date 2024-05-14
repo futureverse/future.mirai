@@ -60,13 +60,14 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck
+          extra-packages: |
+            any::rcmdcheck
+            any::remotes
           needs: check
 
       - name: Check against mirai development version?
         if: matrix.config.mirai == 'devel'
         run: |
-          install.packages("remotes")
           remotes::install_github("shikokuchuo/nanonext")
           remotes::install_github("shikokuchuo/mirai")
         shell: Rscript {0}

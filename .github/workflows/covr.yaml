@@ -41,12 +41,15 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck
+          extra-packages: |
+            any::rcmdcheck
+            any::remotes
+            any::sessioninfo
+            any::covr
           needs: check
 
       - name: Install dependencies
         run: |
-          install.packages(c("covr", "sessioninfo"))
           remotes::install_deps(dependencies = TRUE)
           install.packages(".", repos=NULL, type="source")
         shell: Rscript {0}
