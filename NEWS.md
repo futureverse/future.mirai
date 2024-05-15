@@ -1,5 +1,10 @@
 # Version (development version)
 
+ * ...
+
+
+# Version 0.2.1
+
 ## Bug Fix
  
  * `nbrOfWorkers()` and `nbrOfFreeWorkers()` did not handle mirai
