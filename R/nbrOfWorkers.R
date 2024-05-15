@@ -1,9 +1,14 @@
 #' @importFrom future nbrOfWorkers FutureWarning FutureError
-#' @importFrom mirai status
+#' @importFrom mirai is_error_value status
 #' @export
 nbrOfWorkers.mirai <- function(evaluator) {
   res <- status()
   workers <- res[["daemons"]]
+  if (is_error_value(workers)) {
+    reason <- capture.output(print(workers))
+    stop(FutureError(sprintf("mirai::status() failed to communicate with dispatcher: %s", reason)))
+  }
+  
   if (is.character(workers)) {
     workers <- res[["connections"]]
     stopifnot(is.numeric(workers))
@@ -28,11 +33,16 @@ nbrOfWorkers.mirai <- function(evaluator) {
 }
 
 #' @importFrom future nbrOfFreeWorkers FutureError
-#' @importFrom mirai status
+#' @importFrom mirai is_error_value status
 #' @export
 nbrOfFreeWorkers.mirai <- function(evaluator, background = FALSE, ...) {
   res <- status()
   workers <- res[["daemons"]]
+  if (is_error_value(workers)) {
+    reason <- capture.output(print(workers))
+    stop(FutureError(sprintf("mirai::status() failed to communicate with dispatcher: %s", reason)))
+  }
+  
   if (is.character(workers)) {
      workers <- res[["connections"]]
      stopifnot(is.numeric(workers))

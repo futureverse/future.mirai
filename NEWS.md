@@ -1,3 +1,13 @@
+# Version (development version)
+
+## Bug Fix
+ 
+ * `nbrOfWorkers()` and `nbrOfFreeWorkers()` did not handle mirai
+   dispatcher errors. Because those are integers, these functions
+   would return the error integer value instead of giving a
+   `FutureError`.
+  
+
 # Version 0.2.0
 
  * First public release.
