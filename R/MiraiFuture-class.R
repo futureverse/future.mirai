@@ -58,7 +58,7 @@ MiraiFuture <- function(expr = NULL,
       daemons(n = 0L)
     } else if (workers != nworkers) {
       daemons(n = 0L)  ## reset is required
-      daemons(n = workers, dispatcher = dispatcher, resilience = FALSE)
+      daemons(n = workers, dispatcher = dispatcher)
     }
   } else if (!is.null(workers)) {
     stop("Argument 'workers' should be a numeric scalar or NULL: ", mode(workers))

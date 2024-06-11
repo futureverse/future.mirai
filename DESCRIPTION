@@ -1,9 +1,9 @@
 Package: future.mirai
-Version: 0.2.1
+Version: 0.2.1.9000
 Depends:
     future
 Imports:
-    mirai (>= 0.12.1),
+    mirai (>= 1.1.0),
     parallelly,
     utils
 Suggests:
