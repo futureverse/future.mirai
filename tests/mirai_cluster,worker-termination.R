@@ -14,7 +14,8 @@ stopifnot(free == 2L)
 ## Don't test on MS Windows, because that will leave behind a
 ## stray Rscript<hexcode> file, which 'R CMD check --as-cran'
 ## will complain about. /HB 2024-04-12
-if (.Platform$OS.type != "windows") {
+## This have been fixed in R-devel ("4.5.0") /HB 2024-06-18
+if (.Platform$OS.type != "windows" || getRversion() >= "4.5.0") {
   ## Force R worker to quit
   f <- future({ tools::pskill(pid = Sys.getpid()) })
   res <- tryCatch(value(f), error = identity)
