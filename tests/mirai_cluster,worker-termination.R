@@ -14,8 +14,7 @@ stopifnot(free == 2L)
 ## Don't test on MS Windows, because that will leave behind a
 ## stray Rscript<hexcode> file, which 'R CMD check --as-cran'
 ## will complain about. /HB 2024-04-12
-## This have been fixed in R-devel ("4.5.0") /HB 2024-06-18
-if (.Platform$OS.type != "windows" || getRversion() >= "4.5.0") {
+if (.Platform$OS.type != "windows") {
   ## Force R worker to quit
   f <- future({ tools::pskill(pid = Sys.getpid()) })
   res <- tryCatch(value(f), error = identity)
@@ -28,6 +27,13 @@ if (.Platform$OS.type != "windows" || getRversion() >= "4.5.0") {
   print(nworkers)
   if (!inherits(nworkers, "error")) {
     message("Number of workers: ", nworkers)
+    message("Expected number of workers: ", all - 1L)
+    count <- 0L
+    while (nworkers != all - 1L && count < 5L) {
+      Sys.sleep(1.0)
+      nworkers <- tryCatch(nbrOfWorkers(), error = identity)
+      message("Number of workers: ", nworkers)
+    }
     stopifnot(nworkers == all - 1L)
   }
 
