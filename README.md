@@ -1,6 +1,6 @@
 <div id="badges"><!-- pkgdown markup -->
 <a href="https://CRAN.R-project.org/web/checks/check_results_future.mirai.html"><img b
-order="0" src="https://www.r-pkg.org/badges/version/future.mirai" alt="CRAN check status"/></a> <a href="https://github.com/HenrikBengtsson/future.mirai/actions?query=workflow%3AR-CMD-check"><img border="0" src="https://github.com/HenrikBengtsson/future.mirai/actions/workflows/R-CMD-check.yaml/badge.svg?branch=develop" alt="R CMD check status"/></a>  <a href="https://github.com/HenrikBengtsson/future.mirai/actions?query=workflow%3Afuture_tests"><img border="0" src="https://github.com/HenrikBengtsson/future.mirai/actions/workflows/future_tests.yaml/badge.svg?branch=develop" alt="future.tests checks status"/></a>   <a href="https://app.codecov.io/gh/HenrikBengtsson/future.mirai"><img border="0" src="https://codecov.io/gh/HenrikBengtsson/future.mirai/branch/develop/graph/badge.svg" alt="Coverage Status"/></a> 
+order="0" src="https://www.r-pkg.org/badges/version/future.mirai" alt="CRAN check status"/></a> <a href="https://github.com/futureverse/future.mirai/actions?query=workflow%3AR-CMD-check"><img border="0" src="https://github.com/futureverse/future.mirai/actions/workflows/R-CMD-check.yaml/badge.svg?branch=develop" alt="R CMD check status"/></a>  <a href="https://github.com/futureverse/future.mirai/actions?query=workflow%3Afuture_tests"><img border="0" src="https://github.com/futureverse/future.mirai/actions/workflows/future_tests.yaml/badge.svg?branch=develop" alt="future.tests checks status"/></a>   <a href="https://app.codecov.io/gh/futureverse/future.mirai"><img border="0" src="https://codecov.io/gh/futureverse/future.mirai/branch/develop/graph/badge.svg" alt="Coverage Status"/></a> 
 </div>
 
 # future.mirai: A Future API for Parallel Processing using 'mirai' 
@@ -112,7 +112,7 @@ To install the pre-release version that is available in Git branch
 `develop` on GitHub, use:
 
 ```r
-remotes::install_github("HenrikBengtsson/future.mirai", ref="develop")
+remotes::install_github("futureverse/future.mirai", ref="develop")
 ```
 
 This will install the package from source.
@@ -120,7 +120,7 @@ This will install the package from source.
 
 [mirai]: https://cran.r-project.org/package=mirai
 [future]: https://cran.r-project.org/package=future
-[future.mirai]: https://github.com/HenrikBengtsson/future.mirai
+[future.mirai]: https://cran.r-project.org/package=future.mirai
 [future.apply]: https://cran.r-project.org/package=future.apply
 [furrr]: https://cran.r-project.org/package=furrr
 [doFuture]: https://cran.r-project.org/package=doFuture
