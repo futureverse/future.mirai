@@ -1,11 +1,8 @@
-# CRAN submission future.mirai 0.2.1
+# CRAN submission future.mirai 0.2.2
 
-on 2024-05-14
+on 2024-07-03
 
-This submission attempts to fix a check error that occurs sporadically
-and has been reported on the CRAN check servers.
-
-Thanks in advance
+<no comments>
 
 
 ## Notes not sent to CRAN
@@ -19,7 +16,7 @@ The package has been verified using `R CMD check --as-cran` on:
 | 3.6.x     | L      |                 |
 | 4.2.x     | L   W  |                 |
 | 4.3.x     | L M W  |    W            |
-| 4.4.x     |        | M1 W            |
+| 4.4.x     |        | .  W            |
 | devel     | L M W  |    W            |
 
 *Legend: OS: L = Linux, M = macOS, M1 = macOS M1, W = Windows*
