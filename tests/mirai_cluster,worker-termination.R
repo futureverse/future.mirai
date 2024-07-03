@@ -25,6 +25,8 @@ if (.Platform$OS.type != "windows") {
   ## cf. https://github.com/HenrikBengtsson/future.mirai/issues/7
   nworkers <- tryCatch(nbrOfWorkers(), error = identity)
   print(nworkers)
+
+  ## If a valid result, then validate the value
   if (!inherits(nworkers, "error")) {
     message("Number of workers: ", nworkers)
     message("Expected number of workers: ", all - 1L)
