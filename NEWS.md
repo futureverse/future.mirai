@@ -1,4 +1,12 @@
-# Version (development version)
+# Version 0.2.2
+
+## Miscellaneous
+
+ * Internal updates for **mirai** (>= 1.1.0), e.g. `mirai::daemons()`
+   argument `resilience` is being removed.
+ 
+
+# Version 0.2.1
 
 ## Bug Fix
  

@@ -1,9 +1,9 @@
 Package: future.mirai
-Version: 0.2.1
+Version: 0.2.2
 Depends:
     future
 Imports:
-    mirai (>= 0.12.1),
+    mirai (>= 1.1.0),
     parallelly,
     utils
 Suggests:
@@ -25,7 +25,7 @@ Authors@R: c(
         ))
 License: GPL (>= 3)
 Encoding: UTF-8
-URL: https://future.mirai.futureverse.org, https://github.com/HenrikBengtsson/future.mirai
-BugReports: https://github.com/HenrikBengtsson/future.mirai/issues
-RoxygenNote: 7.3.1
+URL: https://future.mirai.futureverse.org, https://github.com/futureverse/future.mirai
+BugReports: https://github.com/futureverse/future.mirai/issues
+RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)

@@ -19,8 +19,8 @@ TRUE
 Useful links:
 \itemize{
   \item \url{https://future.mirai.futureverse.org}
-  \item \url{https://github.com/HenrikBengtsson/future.mirai}
-  \item Report bugs at \url{https://github.com/HenrikBengtsson/future.mirai/issues}
+  \item \url{https://github.com/futureverse/future.mirai}
+  \item Report bugs at \url{https://github.com/futureverse/future.mirai/issues}
 }
 
 }

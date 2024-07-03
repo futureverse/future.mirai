@@ -25,8 +25,17 @@ if (.Platform$OS.type != "windows") {
   ## cf. https://github.com/HenrikBengtsson/future.mirai/issues/7
   nworkers <- tryCatch(nbrOfWorkers(), error = identity)
   print(nworkers)
+
+  ## If a valid result, then validate the value
   if (!inherits(nworkers, "error")) {
     message("Number of workers: ", nworkers)
+    message("Expected number of workers: ", all - 1L)
+    count <- 0L
+    while (nworkers != all - 1L && count < 5L) {
+      Sys.sleep(1.0)
+      nworkers <- tryCatch(nbrOfWorkers(), error = identity)
+      message("Number of workers: ", nworkers)
+    }
     stopifnot(nworkers == all - 1L)
   }
 
