@@ -1,36 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://future.mirai.futureverse.org/404.html</loc>
-  </url>
-  <url>
-    <loc>https://future.mirai.futureverse.org/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>https://future.mirai.futureverse.org/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://future.mirai.futureverse.org/index.html</loc>
-  </url>
-  <url>
-    <loc>https://future.mirai.futureverse.org/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://future.mirai.futureverse.org/reference/MiraiFuture.html</loc>
-  </url>
-  <url>
-    <loc>https://future.mirai.futureverse.org/reference/future.mirai.html</loc>
-  </url>
-  <url>
-    <loc>https://future.mirai.futureverse.org/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://future.mirai.futureverse.org/reference/mirai_cluster.html</loc>
-  </url>
-  <url>
-    <loc>https://future.mirai.futureverse.org/reference/mirai_multisession.html</loc>
-  </url>
-  <url>
-    <loc>https://future.mirai.futureverse.org/reference/resolved.MiraiFuture.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://future.mirai.futureverse.org/404.html</loc></url>
+<url><loc>https://future.mirai.futureverse.org/CONTRIBUTING.html</loc></url>
+<url><loc>https://future.mirai.futureverse.org/authors.html</loc></url>
+<url><loc>https://future.mirai.futureverse.org/index.html</loc></url>
+<url><loc>https://future.mirai.futureverse.org/news/index.html</loc></url>
+<url><loc>https://future.mirai.futureverse.org/reference/MiraiFuture.html</loc></url>
+<url><loc>https://future.mirai.futureverse.org/reference/future.mirai.html</loc></url>
+<url><loc>https://future.mirai.futureverse.org/reference/index.html</loc></url>
+<url><loc>https://future.mirai.futureverse.org/reference/mirai_cluster.html</loc></url>
+<url><loc>https://future.mirai.futureverse.org/reference/mirai_multisession.html</loc></url>
+<url><loc>https://future.mirai.futureverse.org/reference/resolved.MiraiFuture.html</loc></url>
 </urlset>
+

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A Future API for Parallel Processing using mirai • future.mirai</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -27,7 +27,7 @@
 </script>
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -58,13 +58,13 @@
 <li>
   <a href="https://www.futureverse.org/" class="external-link">
     <span class="fas fa-home"></span>
-     
+
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Packages
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -121,13 +121,13 @@
 <li>
   <a href="https://cloud.r-project.org/package=future.mirai" class="external-link">
     <span class="fab fa-r-project"></span>
-     
+
   </a>
 </li>
 <li>
   <a href="https://github.com/futureverse/future.mirai/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -136,7 +136,7 @@
           <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
 </div>
       </form>
-      
+
     </div>
 <!--/.nav-collapse -->
   </div>
@@ -144,20 +144,20 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="contents col-md-9">
 
 
 <div class="section level1">
-<div class="page-header"><h1 id="futuremirai-a-future-api-for-parallel-processing-using-mirai">future.mirai: A Future API for Parallel Processing using ‘mirai’<a class="anchor" aria-label="anchor" href="#futuremirai-a-future-api-for-parallel-processing-using-mirai"></a>
+<div class="page-header"><h1 id="futuremirai-a-future-api-for-parallel-processing-using-mirai">future.mirai: A ‘Future’ API for Parallel Processing using ‘mirai’<a class="anchor" aria-label="anchor" href="#futuremirai-a-future-api-for-parallel-processing-using-mirai"></a>
 </h1></div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>The <strong><a href="https://cran.r-project.org/package=future" class="external-link">future</a></strong> package provides a generic API for using futures in R. A future is a simple yet powerful mechanism to evaluate an R expression and retrieve its value at some point in time. Futures can be resolved in many different ways depending on which strategy is used. There are various types of synchronous and asynchronous futures to choose from in the <strong><a href="https://cran.r-project.org/package=future" class="external-link">future</a></strong> package.</p>
-<p>This package, <strong><a href="https://cran.r-project.org/package=future.mirai" class="external-link">future.mirai</a></strong>, provides a type of futures that utilizes the <strong><a href="https://cran.r-project.org/package=mirai" class="external-link">mirai</a></strong> package.</p>
+<p>This package, <strong><a href="https://github.com/HenrikBengtsson/future.mirai" class="external-link">future.mirai</a></strong>, provides a type of futures that utilizes the <strong><a href="https://cran.r-project.org/package=mirai" class="external-link">mirai</a></strong> package.</p>
 <p>For example,</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">library</span>(future.mirai)</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">plan</span>(mirai_multisession)</span>
@@ -178,18 +178,18 @@
 <col width="55%">
 <col width="26%">
 </colgroup>
-<thead><tr class="header">
+<thead><tr>
 <th align="left">Backend</th>
 <th align="left">Description</th>
 <th align="left">Alternative in future package</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td align="left"><code>mirai_multisession</code></td>
 <td align="left">parallel evaluation in separate R processes (on current machine)</td>
 <td align="left"><code>plan(multisession)</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"><code>mirai_cluster</code></td>
 <td align="left">parallel evaluation in mirai-configured workers</td>
 <td align="left"><code>plan(cluster)</code></td>
@@ -212,7 +212,7 @@
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">mirai_multisession</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/demo.html" class="external-link">demo</a></span><span class="op">(</span><span class="st">"mandelbrot"</span>, package <span class="op">=</span> <span class="st">"future"</span>, ask <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p>To use <code>mirai_cluster</code> futures, use:</p>
+<p>and</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.mirai.futureverse.org">future.mirai</a></span><span class="op">)</span></span>
 <span><span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/mirai/reference/daemons.html" class="external-link">daemons</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
@@ -223,7 +223,7 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>R package <strong>future.mirai</strong> is available on <a href="https://cran.r-project.org/package=future.mirai" class="external-link">CRAN</a> and can be installed in R as:</p>
+<p>R package future.mirai is available on <a href="https://cran.r-project.org/package=future.mirai" class="external-link">CRAN</a> and can be installed in R as:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"future.mirai"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
@@ -284,7 +284,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://CRAN.R-project.org/web/checks/check_results_future.mirai.html" class="external-link"><img b order="0" src="https://www.r-pkg.org/badges/version/future.mirai" alt="CRAN check status"></a></li>
+<li><a href="https://CRAN.R-project.org/web/checks/check_results_future.mirai.html" class="external-link"><img border="0" src="https://www.r-pkg.org/badges/version/future.mirai" alt="CRAN check status"></a></li>
 <li><a href="https://github.com/futureverse/future.mirai/actions?query=workflow%3AR-CMD-check" class="external-link"><img border="0" src="https://github.com/futureverse/future.mirai/actions/workflows/R-CMD-check.yaml/badge.svg?branch=develop" alt="R CMD check status"></a></li>
 <li><a href="https://github.com/futureverse/future.mirai/actions?query=workflow%3Afuture_tests" class="external-link"><img border="0" src="https://github.com/futureverse/future.mirai/actions/workflows/future_tests.yaml/badge.svg?branch=develop" alt="future.tests checks status"></a></li>
 <li><a href="https://app.codecov.io/gh/futureverse/future.mirai" class="external-link"><img border="0" src="https://codecov.io/gh/futureverse/future.mirai/branch/develop/graph/badge.svg" alt="Coverage Status"></a></li>
@@ -302,17 +302,17 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7</p> and <a href="https://github.com/HenrikBengtsson/pkgdown.extras/">pkgdown.extras</a> 0.0.0.9006.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1</p> and <a href="https://github.com/HenrikBengtsson/pkgdown.extras/">pkgdown.extras</a> 0.0.0.9007.</p>
 </div>
 
       </footer>
 </div>
 
-  
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script><script>
   docsearch({
-    
-    
+
+
     apiKey: 'aa6e02fc501886fb0f7c91ac4e300456',
     indexName: 'futureverse',
     algoliaOptions: { 'facetFilters': ['project:future.mirai'] },
