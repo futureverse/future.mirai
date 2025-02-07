@@ -98,7 +98,7 @@ demo("mandelbrot", package = "future", ask = FALSE)
 
 [mirai]: https://cran.r-project.org/package=mirai
 [future]: https://cran.r-project.org/package=future
-[future.mirai]: https://github.com/HenrikBengtsson/future.mirai
+[future.mirai]: https://github.com/futureverse/future.mirai
 [future.apply]: https://cran.r-project.org/package=future.apply
 [furrr]: https://cran.r-project.org/package=furrr
 [doFuture]: https://cran.r-project.org/package=doFuture
