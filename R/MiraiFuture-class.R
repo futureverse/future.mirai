@@ -123,7 +123,6 @@ run.MiraiFuture <- function(future, ...) {
 
   future[["state"]] <- "submitted"
 
-  expr <- getExpression(future)
   globals <- future[["globals"]]
   
   ## Sanity check
@@ -132,9 +131,17 @@ run.MiraiFuture <- function(future, ...) {
     stop(FutureError(sprintf("Detected global variables that clash with argument names of mirai::mirai(): %s", paste(sQuote(not_allowed), collapse = ", "))))
   }
 
-  args = list(.expr = expr)
-  if (length(globals) > 0) args <- c(args, globals)
-  mirai <- do.call(mirai, args = args)
+  evalFuture <- import_future("evalFuture", default = NA)
+  if (is.function(evalFuture)) {
+    getFutureData <- import_future("getFutureData", default = NA)
+    data <- getFutureData(future)
+    mirai <- mirai(future:::evalFuture(data), data = data)
+  } else {
+    expr <- getExpression(future)
+    args = list(.expr = expr)
+    if (length(globals) > 0) args <- c(args, globals)
+    mirai <- do.call(mirai, args = args)
+  }
   future[["mirai"]] <- mirai
 
   future[["state"]] <- "running"
