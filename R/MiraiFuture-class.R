@@ -23,9 +23,11 @@ MiraiFuture <- function(expr = NULL,
 {
   if(isTRUE(substitute)) expr <- substitute(expr)
 
-  if (!identical(dispatcher, "auto")) {
-    stopifnot(is.logical(dispatcher), length(dispatcher) == 1L, !is.na(dispatcher))
-  }
+  with_assert({
+    if (!identical(dispatcher, "auto")) {
+      stop_if_not(is.logical(dispatcher), length(dispatcher) == 1L, !is.na(dispatcher))
+    }
+  })
   
   if (!is.null(globals)) {
     if(!isTRUE(attr(globals, "already-done", exact = TRUE))) {
@@ -46,7 +48,9 @@ MiraiFuture <- function(expr = NULL,
               ...)
 
   if (is.function(workers)) workers <- workers()
-  if (!is.null(workers)) stop_if_not(length(workers) >= 1)
+  with_assert({
+    if (!is.null(workers)) stop_if_not(length(workers) >= 1)
+  })
  
   cluster <- NULL
   if (is.numeric(workers)) {
@@ -66,7 +70,7 @@ MiraiFuture <- function(expr = NULL,
   }
 
   future <- structure(future, class = c("MiraiFuture", class(future)))
-  future$.cluster <- cluster
+  future[[".cluster"]] <- cluster
   future
 }
 
@@ -78,7 +82,7 @@ MiraiFuture <- function(expr = NULL,
 #' @keywords internal
 #' @export
 resolved.MiraiFuture <- function(x, ...) {
-  debug <- getOption("future.mirai.debug", FALSE)
+  debug <- isTRUE(getOption("future.mirai.debug"))
   if (debug) {
     mdebugf("resolved() for %s ...", class(x)[1], debug = debug)
     on.exit(mdebugf("resolved() for %s ... done", class(x)[1], debug = debug))
@@ -86,24 +90,26 @@ resolved.MiraiFuture <- function(x, ...) {
   
   resolved <- NextMethod()
   if(resolved) {
-    mdebug("- already resolved", debug = debug)
+    if (debug) mdebug("- already resolved", debug = debug)
     return(TRUE)
   }
   
   if(x[["state"]] == "finished") {
-    mdebug("- already resolved (state == finished)", debug = debug)
+    if (debug) mdebug("- already resolved (state == finished)", debug = debug)
     return(TRUE)
   } else if(x[["state"]] == "created") { # Not yet submitted to queue (iff lazy)
-    mdebug("- just created; launching")
+    if (debug) mdebug("- just created; launching")
     x <- run(x)
     return(FALSE)
   }
 
+  if (debug) mdebug("mirai::unresolved() ...", debug = debug)
   mirai <- x[["mirai"]]
-  mdebug("mirai::unresolved() ...", debug = debug)
   res <- unresolved(mirai)
-  mstr(res, debug = debug)
-  mdebug("mirai::unresolved() ... done", debug = debug)
+  if (debug) {
+    mstr(res, debug = debug)
+    mdebug("mirai::unresolved() ... done", debug = debug)
+  }
   
   !res
 }
@@ -113,47 +119,43 @@ resolved.MiraiFuture <- function(x, ...) {
 #' @importFrom mirai mirai
 #' @importFrom future run getExpression
 #' @export
-run.MiraiFuture <- local({
-  evalFuture <- import_future("evalFuture", default = NA)
-  getFutureData <- import_future("getFutureData", default = NA)
+run.MiraiFuture <- function(future, ...) {
+  if(isTRUE(future[["state"]] != "created")) return(invisible(future))
   
-  function(future, ...) {
-    if(isTRUE(future[["state"]] != "created")) return(invisible(future))
-    
-    debug <- getOption("future.mirai.debug", FALSE)
-    if (debug) {
-      mdebugf("run() for %s ...", class(future)[1], debug = debug)
-      on.exit(mdebugf("run() for %s ... done", class(future)[1], debug = debug))
-    }
-  
-    future[["state"]] <- "submitted"
-  
-    globals <- future[["globals"]]
-  
-    if (length(globals) > 0) {
-      ## Sanity check
-      not_allowed <- intersect(names(globals), names(formals(mirai::mirai)))
-      if (length(not_allowed) > 0) {
-        stop(FutureError(sprintf("Detected global variables that clash with argument names of mirai::mirai(): %s", paste(sQuote(not_allowed), collapse = ", "))))
-      }
-    }
-  
-    if (is.function(evalFuture)) {
-      data <- getFutureData(future)
-      mirai <- mirai(future:::evalFuture(data), data = data)
-    } else {
-      expr <- getExpression(future)
-      args = list(.expr = expr)
-      if (length(globals) > 0) args <- c(args, globals)
-      mirai <- do.call(mirai, args = args)
-    }
-    future[["mirai"]] <- mirai
-  
-    future[["state"]] <- "running"
-  
-    invisible(future)
+  debug <- isTRUE(getOption("future.mirai.debug"))
+  if (debug) {
+    mdebugf("run() for %s ...", class(future)[1], debug = debug)
+    on.exit(mdebugf("run() for %s ... done", class(future)[1], debug = debug))
   }
-})
+
+  future[["state"]] <- "submitted"
+
+  globals <- future[["globals"]]
+
+  if (length(globals) > 0) {
+    ## Sanity check
+    not_allowed <- intersect(names(globals), names(formals(mirai::mirai)))
+    if (length(not_allowed) > 0) {
+      stop(FutureError(sprintf("Detected global variables that clash with argument names of mirai::mirai(): %s", paste(sQuote(not_allowed), collapse = ", "))))
+    }
+  }
+
+  if (is.function(evalFuture)) {
+    data <- getFutureData(future)
+    mirai <- mirai(future:::evalFuture(data), data = data)
+  } else {
+    expr <- getExpression(future)
+    args = list(.expr = expr)
+    if (length(globals) > 0) args <- c(args, globals)
+    mirai <- do.call(mirai, args = args)
+  }
+  future[["mirai"]] <- mirai
+
+  future[["state"]] <- "running"
+
+  invisible(future)
+}
+
 
 #' @importFrom utils packageVersion
 mirai_version <- local({
@@ -172,7 +174,7 @@ result.MiraiFuture <- function(future, ...) {
     return(future[["result"]])
   }
 
-  debug <- getOption("future.mirai.debug", FALSE)
+  debug <- isTRUE(getOption("future.mirai.debug"))
   if (debug) {
     mdebugf("result() for %s ...", class(future)[1], debug = debug)
     on.exit(mdebugf("result() for %s ... done", class(future)[1], debug = debug))
@@ -182,7 +184,7 @@ result.MiraiFuture <- function(future, ...) {
   result <- call_mirai_(mirai)$data
 
   if (inherits(result, "errorValue")) {
-    label <- future$label
+    label <- future[["label"]]
     if (is.null(label)) label <- "<none>"
     msg <- sprintf("Failed to retrieve results from %s (%s). The mirai framework reports on error value %s", class(future)[1], label, result)
     stop(FutureError(msg))

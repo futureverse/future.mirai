@@ -3,19 +3,19 @@ now <- function(x = Sys.time(), format = "[%H:%M:%OS3] ") {
   format(as.POSIXlt(x, tz = ""), format = format)
 }
 
-mdebug <- function(..., prefix = now(), debug = getOption("future.mirai.debug", FALSE)) {
+mdebug <- function(..., prefix = now(), debug = isTRUE(getOption("future.mirai.debug"))) {
   if (!debug) return()
   message(prefix, ...)
 }
 
 mdebugf <- function(..., appendLF = TRUE,
-                    prefix = now(), debug = getOption("future.mirai.debug", FALSE)) {
+                    prefix = now(), debug = isTRUE(getOption("future.mirai.debug"))) {
   if (!debug) return()
   message(prefix, sprintf(...), appendLF = appendLF)
 }
 
 #' @importFrom utils capture.output str
-mstr <- function(..., prefix = now(), debug = getOption("future.mirai.debug", FALSE)) {
+mstr <- function(..., prefix = now(), debug = isTRUE(getOption("future.mirai.debug"))) {
   if (!debug) return()
   stdout <- capture.output(str(...))
   stdout <- paste(prefix, stdout, sep = "", collapse = "\n")
@@ -23,7 +23,7 @@ mstr <- function(..., prefix = now(), debug = getOption("future.mirai.debug", FA
 }
 
 #' @importFrom utils capture.output str
-mprint <- function(..., prefix = now(), debug = getOption("future.mirai.debug", FALSE)) {
+mprint <- function(..., prefix = now(), debug = isTRUE(getOption("future.mirai.debug"))) {
   if (!debug) return()
   stdout <- capture.output(print(...))
   stdout <- paste(prefix, stdout, sep = "", collapse = "\n")
