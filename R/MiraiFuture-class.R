@@ -157,17 +157,7 @@ run.MiraiFuture <- function(future, ...) {
 }
 
 
-#' @importFrom utils packageVersion
-mirai_version <- local({
-  version <- NULL
-  function() {
-    if (is.null(version)) version <<- packageVersion("mirai")
-    version
-  }
-})
-
 #' @importFrom future result
-#' @importFrom mirai call_mirai_
 #' @export
 result.MiraiFuture <- function(future, ...) {
   if(isTRUE(future[["state"]] == "finished")) {
@@ -180,8 +170,14 @@ result.MiraiFuture <- function(future, ...) {
     on.exit(mdebugf("result() for %s ... done", class(future)[1], debug = debug))
   }
 
-  mirai <- future[["mirai"]]
-  result <- call_mirai_(mirai)$data
+  if (debug) t0 <- proc.time()
+  result <- mirai_collect_future(future)
+  if (debug) {
+    dt <- proc.time() - t0
+    dt <- dt[dt > 0]
+    dt_str <- paste(sprintf("%s=%gs", names(dt), dt), collapse = ", ")
+    mdebugf(" - collected mirai in %s", dt_str)
+  }
 
   if (inherits(result, "errorValue")) {
     label <- future[["label"]]
@@ -211,4 +207,20 @@ mirai_daemons_nworkers <- function() {
   
   if (workers == 0L) return(Inf)
   workers
+}
+
+
+#' @importFrom utils packageVersion
+mirai_version <- local({
+  version <- NULL
+  function() {
+    if (is.null(version)) version <<- packageVersion("mirai")
+    version
+  }
+})
+
+#' @importFrom mirai call_mirai_
+mirai_collect_future <- function(future) {
+  mirai <- future[["mirai"]]
+  call_mirai_(mirai)$data
 }
