@@ -27,13 +27,14 @@ MiraiFuture <- function(expr = NULL,
     stopifnot(is.logical(dispatcher), length(dispatcher) == 1L, !is.na(dispatcher))
   }
   
-  ## Record globals
-  if(!isTRUE(attr(globals, "already-done", exact = TRUE))) {
-    gp <- getGlobalsAndPackages(expr, envir = envir, persistent = FALSE, globals = globals)
-    globals <- gp[["globals"]]
-    packages <- c(packages, gp[["packages"]])
-    expr <- gp[["expr"]]
-    gp <- NULL
+  if (!is.null(globals)) {
+    if(!isTRUE(attr(globals, "already-done", exact = TRUE))) {
+      gp <- getGlobalsAndPackages(expr, envir = envir, persistent = FALSE, globals = globals)
+      globals <- gp[["globals"]]
+      packages <- c(packages, gp[["packages"]])
+      expr <- gp[["expr"]]
+      gp <- NULL
+    }
   }
 
   future <- MultiprocessFuture(
@@ -112,42 +113,47 @@ resolved.MiraiFuture <- function(x, ...) {
 #' @importFrom mirai mirai
 #' @importFrom future run getExpression
 #' @export
-run.MiraiFuture <- function(future, ...) {
-  if(isTRUE(future[["state"]] != "created")) return(invisible(future))
-  
-  debug <- getOption("future.mirai.debug", FALSE)
-  if (debug) {
-    mdebugf("run() for %s ...", class(future)[1], debug = debug)
-    on.exit(mdebugf("run() for %s ... done", class(future)[1], debug = debug))
-  }
-
-  future[["state"]] <- "submitted"
-
-  globals <- future[["globals"]]
-  
-  ## Sanity check
-  not_allowed <- intersect(names(globals), names(formals(mirai::mirai)))
-  if (length(not_allowed) > 0) {
-    stop(FutureError(sprintf("Detected global variables that clash with argument names of mirai::mirai(): %s", paste(sQuote(not_allowed), collapse = ", "))))
-  }
-
+run.MiraiFuture <- local({
   evalFuture <- import_future("evalFuture", default = NA)
-  if (is.function(evalFuture)) {
-    getFutureData <- import_future("getFutureData", default = NA)
-    data <- getFutureData(future)
-    mirai <- mirai(future:::evalFuture(data), data = data)
-  } else {
-    expr <- getExpression(future)
-    args = list(.expr = expr)
-    if (length(globals) > 0) args <- c(args, globals)
-    mirai <- do.call(mirai, args = args)
+  getFutureData <- import_future("getFutureData", default = NA)
+  
+  function(future, ...) {
+    if(isTRUE(future[["state"]] != "created")) return(invisible(future))
+    
+    debug <- getOption("future.mirai.debug", FALSE)
+    if (debug) {
+      mdebugf("run() for %s ...", class(future)[1], debug = debug)
+      on.exit(mdebugf("run() for %s ... done", class(future)[1], debug = debug))
+    }
+  
+    future[["state"]] <- "submitted"
+  
+    globals <- future[["globals"]]
+  
+    if (length(globals) > 0) {
+      ## Sanity check
+      not_allowed <- intersect(names(globals), names(formals(mirai::mirai)))
+      if (length(not_allowed) > 0) {
+        stop(FutureError(sprintf("Detected global variables that clash with argument names of mirai::mirai(): %s", paste(sQuote(not_allowed), collapse = ", "))))
+      }
+    }
+  
+    if (is.function(evalFuture)) {
+      data <- getFutureData(future)
+      mirai <- mirai(future:::evalFuture(data), data = data)
+    } else {
+      expr <- getExpression(future)
+      args = list(.expr = expr)
+      if (length(globals) > 0) args <- c(args, globals)
+      mirai <- do.call(mirai, args = args)
+    }
+    future[["mirai"]] <- mirai
+  
+    future[["state"]] <- "running"
+  
+    invisible(future)
   }
-  future[["mirai"]] <- mirai
-
-  future[["state"]] <- "running"
-
-  invisible(future)
-}
+})
 
 #' @importFrom utils packageVersion
 mirai_version <- local({
