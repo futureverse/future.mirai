@@ -8,6 +8,12 @@
 #'
 #' @example incl/mirai_cluster.R
 #'
+#' @details
+#' _WARNING_: When using this future plan, mirai workers are _not_ shutdown when
+#' switching away from this future plan. This is because it the backend requires
+#' them to be launched manually before, and it therefore needs to be manually
+#' shutdown as well.
+#'
 #' @importFrom future Future
 #' @export
 mirai_cluster <- function(..., envir = parent.frame()) {

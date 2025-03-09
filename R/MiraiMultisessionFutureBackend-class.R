@@ -20,6 +20,9 @@ mirai_multisession <- function(..., workers = availableCores(), envir = parent.f
 }
 class(mirai_multisession) <- c("mirai_multisession", "mirai_cluster", "mirai", "multiprocess", "future", "function")
 attr(mirai_multisession, "init") <- TRUE
+attr(mirai_multisession, "cleanup") <- function(...) {
+  mirai::daemons(0)
+}
 attr(mirai_multisession, "tweakable") <- "workers"
 
 
