@@ -35,7 +35,11 @@ sum_fcns$D <- function(x, y) {
 
 
 for (strategy in c("mirai_cluster", "mirai_multisession")) {
-  plan(strategy, substitute = FALSE)
+  mirai::daemons(0)
+  if (strategy == "mirai_cluster") {
+    mirai::daemons(parallelly::availableCores())
+  }
+  plan(strategy)
 
   for (name in names(sum_fcns)) {
     mprintf("** Sum function '%s' with plan('%s') ...", name, strategy)
@@ -51,6 +55,9 @@ for (strategy in c("mirai_cluster", "mirai_multisession")) {
       stopifnot(y == 6)
     }
   }
+  
+  plan("sequential")
+  mirai::daemons(0)
 }
 
 message("*** Global argument '...' in futures ... DONE")

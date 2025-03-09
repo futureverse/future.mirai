@@ -58,7 +58,7 @@ f <- future({
 print(f)
 rm(list = names(globals))
 y <- tryCatch(value(f), error = identity)
-if (!inherits(f, c("MulticoreFuture"))) {
+if (!inherits(f, "SequentialFuture")) {
   stopifnot(inherits(y, "error"))
 }
 
@@ -115,5 +115,8 @@ message("*** Globals manually specified by their names ... DONE")
 
 
 message("*** Globals - manually ... DONE")
+
+plan(sequential)
+mirai::daemons(0)
 
 source("incl/end.R")

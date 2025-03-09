@@ -126,4 +126,7 @@ message("*** Globals - subassignments w/ x$a <- value ... DONE")
 
 message("*** Globals - subassignments ... DONE")
 
+plan(sequential)
+mirai::daemons(0)
+
 source("incl/end.R")

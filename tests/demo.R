@@ -10,6 +10,8 @@ message("*** Mandelbrot demo of the 'future' package ...")
 
 plan(mirai_multisession, workers = 2)
 demo("mandelbrot", package = "future", ask = FALSE)
+plan(sequential)
+mirai::daemons(0)
 
 message("*** Demos ... DONE")
 

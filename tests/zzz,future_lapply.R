@@ -30,6 +30,9 @@ if (requireNamespace("future.apply", quietly = TRUE)) {
       str(list(y = y))
       stopifnot(identical(y, y0))
     }
+    
+    plan(sequential)
+    mirai::daemons(0)
   }
   
   
@@ -52,6 +55,9 @@ if (requireNamespace("future.apply", quietly = TRUE)) {
       str(list(y = y))
       stopifnot(identical(y, y0))
     }
+
+    plan(sequential)
+    mirai::daemons(0)
   }
   
   message("- future_lapply(x, FUN = future:::hpaste, ...) ...")
@@ -73,6 +79,9 @@ if (requireNamespace("future.apply", quietly = TRUE)) {
       str(list(y = y))
       stopifnot(identical(y, y0))
     }
+    
+    plan(sequential)
+    mirai::daemons(0)
   }
   
   
@@ -104,6 +113,9 @@ if (requireNamespace("future.apply", quietly = TRUE)) {
       str(list(y = y))
       stopifnot(identical(y, y0))
     }
+    
+    plan(sequential)
+    mirai::daemons(0)
   }
   
   
@@ -124,8 +136,12 @@ if (requireNamespace("future.apply", quietly = TRUE)) {
   
   for (strategy in strategies) {
     plan(strategy)
+    
     y <- future_lapply("abc.txt", FUN = my_ext)
     stopifnot(identical(y, y_truth))
+    
+    plan(sequential)
+    mirai::daemons(0)
   }
   
   message("*** future_lapply() ... DONE")

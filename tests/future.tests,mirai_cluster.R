@@ -6,7 +6,7 @@ if (requireNamespace("future.tests")) {
   dispatcher <- (.Platform[["OS.type"]] != "windows")
   if (isTRUE(dispatcher)) {
     mirai::daemons(0)  ## Reset any daemons running
-    mirai::daemons(2, dispatcher = TRUE)
+    mirai::daemons(parallelly::availableCores())
     future.tests::check("future.mirai::mirai_cluster", timeout = 10.0, exit_value = FALSE)
     mirai::daemons(0)  ## Reset any daemons running
   }

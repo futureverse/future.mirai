@@ -60,6 +60,9 @@ for (stdout in c(TRUE, FALSE, NA)) {
 
 message("mirai_multisession ... DONE")
 
+plan(sequential)
+mirai::daemons(0)
+
 message("*** Standard output ... DONE")
 
 source("incl/end.R")

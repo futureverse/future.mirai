@@ -96,4 +96,7 @@ stopifnot(identical(globalenv()$.Random.seed, rng0))  ## RNG changed?
 
 message("*** RNG ... DONE")
 
+plan(sequential)
+mirai::daemons(0)
+
 source("incl/end.R")

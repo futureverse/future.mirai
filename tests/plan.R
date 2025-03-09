@@ -7,10 +7,10 @@ oplan <- future::plan(future.mirai::mirai_multisession)
 print(future::plan())
 future::plan(oplan)
 print(future::plan())
+mirai::daemons(0)
 
 
 library("future.mirai")
-plan(mirai_multisession)
 
 for (type in c("mirai_multisession")) {
   mprintf("*** plan('%s') ...", type)
@@ -29,6 +29,9 @@ for (type in c("mirai_multisession")) {
   print(v)
   stopifnot(v == 0)
 
+  plan(sequential)
+  mirai::daemons(0)
+
   mprintf("*** plan('%s') ... DONE", type)
 } # for (type ...)
 
@@ -39,9 +42,17 @@ mpid <- Sys.getpid()
 print(mpid)
 
 plan(mirai_multisession)
+
 pid %<-% { Sys.getpid() }
 print(pid)
-stopifnot(pid != mpid)
+if (nbrOfWorkers() == 1L) {
+  stopifnot(pid == mpid)
+} else {
+  stopifnot(pid != mpid)
+}
+
+plan(sequential)
+mirai::daemons(0)
 
 
 message("*** plan() ... DONE")
