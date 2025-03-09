@@ -7,7 +7,6 @@ oplan <- future::plan(future.mirai::mirai_multisession)
 print(future::plan())
 future::plan(oplan)
 print(future::plan())
-mirai::daemons(0)
 
 
 library("future.mirai")
@@ -30,7 +29,6 @@ for (type in c("mirai_multisession")) {
   stopifnot(v == 0)
 
   plan(sequential)
-  mirai::daemons(0)
 
   mprintf("*** plan('%s') ... DONE", type)
 } # for (type ...)
@@ -52,7 +50,6 @@ if (nbrOfWorkers() == 1L) {
 }
 
 plan(sequential)
-mirai::daemons(0)
 
 
 message("*** plan() ... DONE")

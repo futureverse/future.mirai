@@ -46,15 +46,21 @@ tweak.mirai_cluster <- function(strategy, ..., penvir = parent.frame()) {
 #' @return An object of class `MiraiFutureBackend`.
 #'
 #' @aliases MiraiMultisessionFutureBackend
+#' @importFrom utils capture.output
 #' @importFrom mirai status
 #' @importFrom future FutureBackend SequentialFutureBackend
 #' @export
 MiraiFutureBackend <- function(...) {
+  status <- status()
+  if (status[["connections"]] == 0L) {
+    stop("Mirai futures require that at least one mirai daemon is available. mirai::status() reports:\n%s", paste(capture.output(print(status)), collapse = "\n"))
+  }
+
   ## Assert that a mirai dispatcher is in place, which is
   ## required to protect against launching too many workers
-  dispatcher <- !is.null(status()[["mirai"]])
+  dispatcher <- !is.null(status[["mirai"]])
   if (!dispatcher) {
-    stop(sprintf("Mirai futures require that the mirai daemons are configured to use a dispatcher (dispatcher = TRUE). If not, there is a risk of launching an unlimited number of mirai processes. This requirement might be relaxed in future versions of the %s package", sQuote(.packageName)))
+    stop(sprintf("Mirai futures require that the mirai daemons are configured to use a dispatcher (dispatcher = TRUE). If not, there is a risk of launching an unlimited number of mirai processes. This requirement might be relaxed in future versions of the %s package. mirai::status() reports:\n%s", sQuote(.packageName), paste(capture.output(print(status)), collapse = "\n")))
   }
 
   core <- FutureBackend(

@@ -4,9 +4,6 @@ oopts <- options(warn = 1L, mc.cores = 2L, future.debug = TRUE)
 oopts$future.delete <- getOption("future.delete")
 oplan <- future::plan()
 
-## Use local mirai_multisession futures by default
-future::plan(future.mirai::mirai_multisession)
-
 fullTest <- (Sys.getenv("_R_CHECK_FULL_") != "")
 
 all_strategies <- function() {

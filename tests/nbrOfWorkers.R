@@ -11,7 +11,6 @@ message("Number of workers: ", n)
 stopifnot(n == ncores)
 
 plan(sequential)
-mirai::daemons(0)
 
 message("*** nbrOfWorkers() ... DONE")
 

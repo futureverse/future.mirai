@@ -28,7 +28,6 @@ if (.Platform$OS.type != "windows") {
 }
 
 plan(sequential)
-mirai::daemons(0)
 
 message("*** mirai_multisession() - terminating workers ... DONE")
 

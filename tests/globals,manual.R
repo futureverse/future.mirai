@@ -117,6 +117,5 @@ message("*** Globals manually specified by their names ... DONE")
 message("*** Globals - manually ... DONE")
 
 plan(sequential)
-mirai::daemons(0)
 
 source("incl/end.R")

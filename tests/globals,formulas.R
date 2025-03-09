@@ -126,6 +126,5 @@ message("*** Globals - map(x, ~ expr) ... DONE")
 message("*** Globals - formulas ... DONE")
 
 plan(sequential)
-mirai::daemons(0)
 
 source("incl/end.R")

@@ -80,6 +80,5 @@ stopifnot(identical(y, y0))
 message("*** Tricky use cases related to globals ... DONE")
 
 plan(sequential)
-mirai::daemons(0)
 
 source("incl/end.R")

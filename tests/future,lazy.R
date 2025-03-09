@@ -7,9 +7,7 @@ strategies <- c("mirai_cluster", "mirai_multisession")
 for (strategy in strategies) {
   mprintf("- plan('%s') ...", strategy)
   mirai::daemons(0)
-  if (strategy == "mirai_cluster") {
-    mirai::daemons(parallelly::availableCores())
-  }
+  if (strategy == "mirai_cluster") mirai::daemons(parallelly::availableCores())
   plan(strategy)
 
   a <- 42
@@ -24,7 +22,7 @@ for (strategy in strategies) {
   stopifnot(v == 84)
 
   plan(sequential)
-  mirai::daemons(0)
+  if (strategy == "mirai_cluster") mirai::daemons(0)
 
   mprintf("- plan('%s') ... DONE", strategy)
 } ## for (strategy ...)

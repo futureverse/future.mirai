@@ -32,7 +32,6 @@ if (requireNamespace("future.apply", quietly = TRUE)) {
     }
     
     plan(sequential)
-    mirai::daemons(0)
   }
   
   
@@ -57,7 +56,6 @@ if (requireNamespace("future.apply", quietly = TRUE)) {
     }
 
     plan(sequential)
-    mirai::daemons(0)
   }
   
   message("- future_lapply(x, FUN = future:::hpaste, ...) ...")
@@ -81,7 +79,6 @@ if (requireNamespace("future.apply", quietly = TRUE)) {
     }
     
     plan(sequential)
-    mirai::daemons(0)
   }
   
   
@@ -115,7 +112,6 @@ if (requireNamespace("future.apply", quietly = TRUE)) {
     }
     
     plan(sequential)
-    mirai::daemons(0)
   }
   
   
@@ -141,7 +137,6 @@ if (requireNamespace("future.apply", quietly = TRUE)) {
     stopifnot(identical(y, y_truth))
     
     plan(sequential)
-    mirai::daemons(0)
   }
   
   message("*** future_lapply() ... DONE")
