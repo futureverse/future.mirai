@@ -13,10 +13,7 @@
 #' @importFrom future Future
 #' @export
 mirai_multisession <- function(..., workers = availableCores(), envir = parent.frame()) {
-  f <- Future(..., envir = envir)
-  f[["workers"]] <- workers
-  class(f) <- c("MiraiMultisessionFuture", "MiraiFuture", "MultiprocessFuture", "Future")
-  f
+  stop("INTERNAL ERROR: The future.mirai::mirai_multisession() function implements the FutureBackend and should never be called directly")
 }
 class(mirai_multisession) <- c("mirai_multisession", "mirai_cluster", "mirai", "multiprocess", "future", "function")
 attr(mirai_multisession, "init") <- TRUE

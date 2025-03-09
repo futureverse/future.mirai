@@ -17,9 +17,7 @@
 #' @importFrom future Future
 #' @export
 mirai_cluster <- function(..., envir = parent.frame()) {
-  f <- Future(..., envir = envir)
-  class(f) <- c("MiraiFuture", "MultiprocessFuture", "Future")
-  f
+  stop("INTERNAL ERROR: The future.mirai::mirai_cluster() function implements the FutureBackend and should never be called directly")
 }
 class(mirai_cluster) <- c("mirai_cluster", "mirai", "multiprocess", "future", "function")
 attr(mirai_cluster, "init") <- TRUE
