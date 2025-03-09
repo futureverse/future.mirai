@@ -1,8 +1,6 @@
-## This requires mirai (>= 0.13.2)
-if (packageVersion("mirai") >= "0.13.2") {
 library(future.mirai)
 
-mirai::daemons(1, dispatcher = FALSE)
+mirai::daemons(1, dispatcher = TRUE)
 plan(mirai_cluster)
 
 g <- function() 42
@@ -16,5 +14,3 @@ stopifnot(v == h())
 plan(sequential)
 mirai::daemons(0)  ## Reset any daemons running
 gc()
-
-}

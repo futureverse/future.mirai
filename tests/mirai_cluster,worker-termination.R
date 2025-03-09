@@ -21,31 +21,14 @@ if (.Platform$OS.type != "windows") {
   print(res)
   stopifnot(inherits(res, "FutureError"))
 
-  ## FIXME: nbrOfWorkers()/nbrOfFreeWorkers() can throw a FutureError,
-  ## cf. https://github.com/HenrikBengtsson/future.mirai/issues/7
-  nworkers <- tryCatch(nbrOfWorkers(), error = identity)
-  print(nworkers)
-
-  ## If a valid result, then validate the value
-  if (!inherits(nworkers, "error")) {
-    message("Number of workers: ", nworkers)
-    message("Expected number of workers: ", all - 1L)
-    count <- 0L
-    while (nworkers != all - 1L && count < 5L) {
-      Sys.sleep(1.0)
-      nworkers <- tryCatch(nbrOfWorkers(), error = identity)
-      message("Number of workers: ", nworkers)
-    }
-    stopifnot(nworkers == all - 1L)
-  }
-
-  nfreeworkers <- tryCatch(nbrOfFreeWorkers(), error = identity)
-  print(nfreeworkers)
-  if (!inherits(nfreeworkers, "error")) {
-    message("Number of free workers: ", nfreeworkers)
-    stopifnot(nfreeworkers == free - 1L)
-  }
+  ## When using a mirai dispatcher (dispatcher = TRUE), the
+  ## workers are relaunched
+  print(c(nbrOfWorkers = nbrOfWorkers(), nbrOfFreeWorkers = nbrOfFreeWorkers()))
+  print(mirai::status())
 }
+
+plan(sequential)
+mirai::daemons(0)
 
 message("*** mirai_multisession() - terminating workers ... DONE")
 
