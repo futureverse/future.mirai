@@ -59,7 +59,9 @@ MiraiMultisessionFutureBackend <- function(workers = availableCores(), ...) {
   } else if (!dispatcher || workers != nworkers) {
     daemons(n = 0L)  ## reset is required
     ## Dispatch is required to protect against launching too many workers
-    daemons(n = workers, dispatcher = TRUE)
+    with_stealth_rng({
+      daemons(n = workers, dispatcher = TRUE)
+    })
   }
 
   core <- MiraiFutureBackend(
