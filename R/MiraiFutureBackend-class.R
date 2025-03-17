@@ -282,7 +282,7 @@ run.MiraiFuture <- function(future, ...) {
 }
 
 
-#' @importFrom future result
+#' @importFrom future result FutureInterruptError
 #' @export
 result.MiraiFuture <- function(future, ...) {
   if(isTRUE(future[["state"]] == "finished")) {
@@ -307,6 +307,15 @@ result.MiraiFuture <- function(future, ...) {
   if (inherits(result, "errorValue")) {
     label <- future[["label"]]
     if (is.null(label)) label <- "<none>"
+
+    if (result == 20L) {
+      if (debug) mdebugf("- Detected interrupted %s whose result cannot be retrieved", sQuote(class(future)[1]))
+      msg <- sprintf("A future ('%s') of class %s was interrupted, while running", label, class(future)[1])
+      result <- FutureInterruptError(msg, future = future)
+      future[["result"]] <- result
+      stop(result)
+    }
+    
     msg <- sprintf("Failed to retrieve results from %s (%s). The mirai framework reports on error value %s", class(future)[1], label, result)
     stop(FutureError(msg))
   }
@@ -348,4 +357,15 @@ mirai_version <- local({
 mirai_collect_future <- function(future) {
   mirai <- future[["mirai"]]
   call_mirai_(mirai)$data
+}
+
+
+#' @importFrom future interruptFuture
+#' @importFrom mirai stop_mirai
+#' @export
+interruptFuture.MiraiFutureBackend <- function(backend, future, ...) {
+  mirai <- future[["mirai"]]
+  stop_mirai(mirai)
+  future[["state"]] <- "interrupted"
+  future
 }

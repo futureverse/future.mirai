@@ -1,6 +1,8 @@
 # Version (development version)
 
- * ...
+## New Features
+
+ * Now 'mirai' futures can be interrupted using `interrupt()`.
  
 
 # Version 0.2.2
