@@ -312,10 +312,10 @@ mirai_version <- local({
   }
 })
 
-#' @importFrom mirai call_mirai_
+#' @importFrom mirai call_mirai
 mirai_collect_future <- function(future) {
   mirai <- future[["mirai"]]
-  call_mirai_(mirai)$data
+  call_mirai(mirai)$data
 }
 
 
@@ -341,10 +341,10 @@ interruptFuture.MiraiFutureBackend <- function(backend, future, ...) {
 #' @example incl/mirai_cluster.R
 #'
 #' @details
-#' _WARNING_: When using this future plan, mirai workers are _not_ shutdown when
-#' switching away from this future plan. This is because it the backend requires
-#' them to be launched manually before, and it therefore needs to be manually
-#' shutdown as well.
+#' _WARNING_: When using this future plan, mirai workers are _not_ shut down
+#' when switching away from this future plan. This is because it the backend
+#' requires them to be launched manually before, and it therefore needs to be
+#' manually shutdown as well.
 #'
 #' @importFrom future Future
 #' @export
