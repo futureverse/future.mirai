@@ -1,3 +1,6 @@
+#' @tags daemons
+#' @tags detritus-files
+
 mirai::daemons(2)
 print(mirai::status())
 mirai::daemons(0)

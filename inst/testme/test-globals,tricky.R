@@ -1,3 +1,8 @@
+#' @tags globals
+#' @tags listenv
+#' @tags detritus-files
+#' @tags mirai_multisession
+
 library(future.mirai)
 library(listenv)
 

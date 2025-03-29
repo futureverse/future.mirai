@@ -1,3 +1,7 @@
+#' @tags plan
+#' @tags detritus-files
+#' @tags mirai_multisession
+
 message("*** plan() ...")
 
 message("*** future::plan(future.mirai::mirai_multisession)")
@@ -7,7 +11,7 @@ future::plan(oplan)
 print(future::plan())
 
 
-library("future.mirai")
+library(future.mirai)
 
 for (type in c("mirai_multisession")) {
   mprintf("*** plan('%s') ...", type)

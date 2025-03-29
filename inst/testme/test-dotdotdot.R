@@ -1,6 +1,9 @@
+#' @tags detritus-files
+#' @tags listenv
+#' @tags mirai_cluster mirai_multisession
+
 library(future.mirai)
 library(listenv)
-plan(sequential)
 
 message("*** Global argument '...' in futures ...")
 

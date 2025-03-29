@@ -1,3 +1,7 @@
+#' @tags globals
+#' @tags detritus-files
+#' @tags mirai_multisession
+
 library(future.mirai)
 
 plan(mirai_multisession)

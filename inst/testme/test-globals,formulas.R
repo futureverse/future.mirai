@@ -1,7 +1,11 @@
+#' @tags globals
+#' @tags detritus-files
+#' @tags mirai_multisession
+
 library(future.mirai)
 
-library("datasets") ## cars data set
-library("stats")    ## lm(), poly(), xtabs()
+library(datasets) ## cars data set
+library(stats)    ## lm(), poly(), xtabs()
 
 plan(mirai_multisession)
 

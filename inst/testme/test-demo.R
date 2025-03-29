@@ -1,3 +1,6 @@
+#' @tags detritus-files
+#' @tags mirai_multisession
+
 library(future.mirai)
 
 options(future.demo.mandelbrot.nrow = 2L)

@@ -1,5 +1,7 @@
-## This requires mirai (>= 0.13.2)
-if (packageVersion("mirai") >= "0.13.2") {
+#' @tags future.apply
+#' @tags listenv
+#' @tags detritus-files
+#' @tags mirai_multisession
 
 library(future.mirai)
 library(listenv)
@@ -140,7 +142,4 @@ if (requireNamespace("future.apply", quietly = TRUE)) {
   }
   
   message("*** future_lapply() ... DONE")
-}
-
-
 }

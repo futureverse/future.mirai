@@ -1,3 +1,7 @@
+#' @tags detritus-files
+#' @tags mirai_multisession
+#' @tags future.tests
+
 if (requireNamespace("future.tests")) {
   mirai::daemons(0)  ## Reset any daemons running
   

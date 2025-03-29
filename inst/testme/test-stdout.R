@@ -1,3 +1,7 @@
+#' @tags relays
+#' @tags detritus-files
+#' @tags mirai_multisession
+
 library(future.mirai)
 
 message("*** Standard output ...")

@@ -1,3 +1,7 @@
+#' @tags termination
+#' @tags detritus-files
+#' @tags mirai_multisession
+
 library(future.mirai)
 
 message("*** mirai_multisession() - terminating workers ...")

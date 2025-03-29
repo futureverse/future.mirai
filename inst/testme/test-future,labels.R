@@ -1,5 +1,7 @@
+#' @tags detritus-files
+#' @tags mirai_cluster mirai_multisession
+
 library(future.mirai)
-plan(sequential)
 
 message("*** Futures - labels ...")
 
