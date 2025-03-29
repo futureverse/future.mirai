@@ -20,9 +20,6 @@ getFutureData <- NULL
 stop_if_not <- stopifnot
 commaq <- NULL
 
-attr(mirai_cluster, "backend") <- MiraiFutureBackend
-attr(mirai_multisession, "backend") <- MiraiMultisessionFutureBackend
-
 .onLoad <- function(libname, pkgname) {
   ## Import private functions from 'future'
   FutureRegistry <<- import_future("FutureRegistry")

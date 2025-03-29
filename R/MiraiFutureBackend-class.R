@@ -1,38 +1,3 @@
-#' Mirai-based cluster futures
-#'
-#' @inheritParams future::Future
-#'
-#' @param \ldots Additional arguments passed to `Future()`.
-#'
-#' @return An object of class MiraiFuture.
-#'
-#' @example incl/mirai_cluster.R
-#'
-#' @details
-#' _WARNING_: When using this future plan, mirai workers are _not_ shutdown when
-#' switching away from this future plan. This is because it the backend requires
-#' them to be launched manually before, and it therefore needs to be manually
-#' shutdown as well.
-#'
-#' @importFrom future Future
-#' @export
-mirai_cluster <- function(..., envir = parent.frame()) {
-  stop("INTERNAL ERROR: The future.mirai::mirai_cluster() function implements the FutureBackend and should never be called directly")
-}
-class(mirai_cluster) <- c("mirai_cluster", "mirai", "multiprocess", "future", "function")
-attr(mirai_cluster, "init") <- TRUE
-
-
-#' @importFrom future tweak
-#' @export
-tweak.mirai_cluster <- function(strategy, ..., penvir = parent.frame()) {
-  attr(strategy, "init") <- TRUE
-  NextMethod("tweak")
-}
-
-
-
-
 #' A future backend based based on the 'mirai' framework
 #'
 #' Set up the future parameters.
@@ -62,8 +27,12 @@ MiraiFutureBackend <- function(...) {
   }
 
   core <- FutureBackend(
+    reg = "workers-mirai",
     dispatcher = dispatcher,
-    ...
+    ...,
+    timeout = getOption("future.wait.timeout", 30 * 24 * 60 * 60),
+    delta = getOption("future.wait.interval", 0.2),
+    alpha = getOption("future.wait.alpha", 1.01)
   )
   core[["futureClasses"]] <- c("MiraiFuture", "MultiprocessFuture", core[["futureClasses"]])
   core <- structure(core, class = c("MiraiFutureBackend", "MultiprocessFutureBackend", "FutureBackend", class(core)))
@@ -85,13 +54,10 @@ launchFuture.MiraiFutureBackend <- local({
       on.exit(mdebugf("launchFuture() for %s ... done", class(backend)[1], debug = debug))
     }
 
-    ## Block?
-    while (nbrOfFreeWorkers() == 0) {
-      Sys.sleep(0.1)
-    }
+    ## Wait for a free worker
+    waitForWorker(backend, debug = debug)
     
     globals <- future[["globals"]]
-  
     if (length(globals) > 0) {
       ## Sanity check
       not_allowed <- intersect(names(globals), names(formals(mirai)))
@@ -107,18 +73,45 @@ launchFuture.MiraiFutureBackend <- local({
     workers <- backend[["workers"]]
     if (!is.null(workers)) future[["workers"]] <- workers
 
-    future[["state"]] <- "submitted"
-  
     data <- getFutureData(future)
-    mirai <- mirai(future:::evalFuture(data), data = data)
     
+    future[["state"]] <- "submitted"
+    mirai <- mirai(future:::evalFuture(data), data = data)
     future[["mirai"]] <- mirai
-  
     future[["state"]] <- "running"
-  
+
+    ## Allocate future to worker
+    reg <- backend[["reg"]]
+    FutureRegistry(reg, action = "add", future = future, earlySignal = FALSE)
+
     invisible(future)
   }
 })
+
+
+#' @importFrom future stopWorkers interrupt
+#' @export
+stopWorkers.MiraiFutureBackend <- function(backend, ...) {
+  reg <- backend[["reg"]]
+  futures <- FutureRegistry(reg, action = "list", earlySignal = FALSE)
+  
+  ## Nothing to do?
+  if (length(futures) == 0L) return(backend)
+
+  ## Enable interrupts temporarily, if disabled
+  if (!isTRUE(backend[["interrupts"]])) {
+    backend[["interrupts"]] <- TRUE
+    on.exit(backend[["interrupts"]] <- FALSE)
+  }
+
+  ## Interrupt all futures, which terminates the workers
+  futures <- lapply(futures, FUN = interrupt)
+
+  ## Erase registry
+  futures <- FutureRegistry(reg, action = "reset")
+
+  backend
+}
 
 
 #' @importFrom future nbrOfWorkers FutureWarning FutureError
@@ -203,7 +196,7 @@ nbrOfFreeWorkers.MiraiFutureBackend <- function(evaluator, background = FALSE, .
 #' Check on the status of a future task.
 #' @return boolean indicating the task is finished (TRUE) or not (FALSE)
 #' @importFrom mirai unresolved
-#' @importFrom future resolved
+#' @importFrom future resolved run
 #' @keywords internal
 #' @export
 resolved.MiraiFuture <- function(x, ...) {
@@ -240,48 +233,6 @@ resolved.MiraiFuture <- function(x, ...) {
 }
 
 
-
-#' @importFrom mirai mirai
-#' @importFrom future run getExpression
-#' @export
-run.MiraiFuture <- function(future, ...) {
-  if(isTRUE(future[["state"]] != "created")) return(invisible(future))
-  
-  debug <- isTRUE(getOption("future.mirai.debug"))
-  if (debug) {
-    mdebugf("run() for %s ...", class(future)[1], debug = debug)
-    on.exit(mdebugf("run() for %s ... done", class(future)[1], debug = debug))
-  }
-
-  future[["state"]] <- "submitted"
-
-  globals <- future[["globals"]]
-
-  if (length(globals) > 0) {
-    ## Sanity check
-    not_allowed <- intersect(names(globals), names(formals(mirai::mirai)))
-    if (length(not_allowed) > 0) {
-      stop(FutureError(sprintf("Detected global variables that clash with argument names of mirai::mirai(): %s", paste(sQuote(not_allowed), collapse = ", "))))
-    }
-  }
-
-  if (is.function(evalFuture)) {
-    data <- getFutureData(future)
-    mirai <- mirai(future:::evalFuture(data), data = data)
-  } else {
-    expr <- getExpression(future)
-    args = list(.expr = expr)
-    if (length(globals) > 0) args <- c(args, globals)
-    mirai <- do.call(mirai, args = args)
-  }
-  future[["mirai"]] <- mirai
-
-  future[["state"]] <- "running"
-
-  invisible(future)
-}
-
-
 #' @importFrom future result FutureInterruptError
 #' @export
 result.MiraiFuture <- function(future, ...) {
@@ -294,6 +245,9 @@ result.MiraiFuture <- function(future, ...) {
     mdebugf("result() for %s ...", class(future)[1], debug = debug)
     on.exit(mdebugf("result() for %s ... done", class(future)[1], debug = debug))
   }
+
+  backend <- future[["backend"]]
+  reg <- backend[["reg"]]
 
   if (debug) t0 <- proc.time()
   result <- mirai_collect_future(future)
@@ -313,9 +267,12 @@ result.MiraiFuture <- function(future, ...) {
       msg <- sprintf("A future ('%s') of class %s was interrupted, while running", label, class(future)[1])
       result <- FutureInterruptError(msg, future = future)
       future[["result"]] <- result
+      FutureRegistry(reg, action = "remove", future = future)
+
       stop(result)
     }
     
+    FutureRegistry(reg, action = "remove", future = future)
     msg <- sprintf("Failed to retrieve results from %s (%s). The mirai framework reports on error value %s", class(future)[1], label, result)
     stop(FutureError(msg))
   }
@@ -323,6 +280,8 @@ result.MiraiFuture <- function(future, ...) {
   future[["result"]] <- result
   future[["state"]] <- "finished"
 
+  FutureRegistry(reg, action = "remove", future = future)
+  
   result
 }
 
@@ -368,4 +327,38 @@ interruptFuture.MiraiFutureBackend <- function(backend, future, ...) {
   stop_mirai(mirai)
   future[["state"]] <- "interrupted"
   future
+}
+
+
+#' Mirai-based cluster futures
+#'
+#' @inheritParams future::Future
+#'
+#' @param \ldots Additional arguments passed to `Future()`.
+#'
+#' @return An object of class MiraiFuture.
+#'
+#' @example incl/mirai_cluster.R
+#'
+#' @details
+#' _WARNING_: When using this future plan, mirai workers are _not_ shutdown when
+#' switching away from this future plan. This is because it the backend requires
+#' them to be launched manually before, and it therefore needs to be manually
+#' shutdown as well.
+#'
+#' @importFrom future Future
+#' @export
+mirai_cluster <- function(..., envir = parent.frame()) {
+  stop("INTERNAL ERROR: The future.mirai::mirai_cluster() function implements the FutureBackend and should never be called directly")
+}
+class(mirai_cluster) <- c("mirai_cluster", "mirai", "multiprocess", "future", "function")
+attr(mirai_cluster, "init") <- TRUE
+attr(mirai_cluster, "factory") <- MiraiFutureBackend
+
+
+#' @importFrom future tweak
+#' @export
+tweak.mirai_cluster <- function(strategy, ..., penvir = parent.frame()) {
+  attr(strategy, "init") <- TRUE
+  NextMethod("tweak")
 }
