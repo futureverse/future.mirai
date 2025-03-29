@@ -2,7 +2,7 @@
 oplan <- local({
   oopts <- options(future.debug = FALSE)
   on.exit(options(oopts))
-  future::plan(future.mirai::mirai_multisession)
+  future::plan(future::sequential)
 })
 
 all_strategies <- function() {
