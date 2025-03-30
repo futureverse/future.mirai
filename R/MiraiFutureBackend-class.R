@@ -364,8 +364,14 @@ interruptFuture.MiraiFutureBackend <- function(backend, future, ...) {
 #' @export
 tweak.mirai_cluster <- function(strategy, ..., penvir = parent.frame()) {
   attr(strategy, "init") <- TRUE
+  backend <- attr(strategy, "backend", exact = TRUE)
+  if (!is.null(backend)) {
+    stopWorkers(backend)
+    attr(strategy, "backend") <- NULL
+  }
   NextMethod("tweak")
 }
+
 
 #' Mirai-based cluster futures
 #'
