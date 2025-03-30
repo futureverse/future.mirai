@@ -18,12 +18,6 @@ An object of class MiraiFuture.
 \description{
 Mirai-based cluster futures
 }
-\details{
-\emph{WARNING}: When using this future plan, mirai workers are \emph{not} shut down
-when switching away from this future plan. This is because it the backend
-requires them to be launched manually before, and it therefore needs to be
-manually shutdown as well.
-}
 \examples{
 mirai::daemons(parallelly::availableCores())
 plan(mirai_cluster)

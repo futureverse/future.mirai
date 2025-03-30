@@ -37,6 +37,7 @@ MiraiMultisessionFutureBackend <- local({
       workers = workers,
       ...
     )
+    core[["shutdown"]] <- TRUE
     
     core[["futureClasses"]] <- c("MiraiMultisessionFuture", core[["futureClasses"]])
     core <- structure(core, class = c("MiraiMultisessionFutureBackend", "MiraiFutureBackend", "MultiprocessFutureBackend", "FutureBackend", class(core)))
@@ -96,14 +97,4 @@ attr(mirai_multisession, "init") <- TRUE
 attr(mirai_multisession, "cleanup") <- function(...) {
   mirai::daemons(0)
 }
-attr(mirai_multisession, "tweakable") <- "workers"
 attr(mirai_multisession, "factory") <- MiraiMultisessionFutureBackend
-
-
-
-#' @importFrom future tweak
-#' @export
-tweak.mirai_multisession <- function(strategy, ..., penvir = parent.frame()) {
-  attr(strategy, "init") <- TRUE
-  NextMethod("tweak")
-}

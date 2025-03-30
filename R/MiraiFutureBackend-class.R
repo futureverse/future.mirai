@@ -13,31 +13,37 @@
 #' @importFrom mirai status
 #' @importFrom future FutureBackend SequentialFutureBackend
 #' @export
-MiraiFutureBackend <- function(...) {
-  status <- status()
-  if (status[["connections"]] == 0L) {
-    stop("Mirai futures require that at least one mirai daemon is available. mirai::status() reports:\n%s", paste(capture.output(print(status)), collapse = "\n"))
+MiraiFutureBackend <- local({
+  with_stealth_rng <- import_future("with_stealth_rng")
+  
+  function(...) {
+    status <- status()
+  
+    if (status[["connections"]] == 0L) {
+      stop(FutureError(sprintf("Mirai futures require that at least one mirai daemon is available. mirai::status() reports:\n%s", paste(capture.output(print(status)), collapse = "\n"))))
+    }
+  
+    ## Assert that a mirai dispatcher is in place, which is
+    ## required to protect against launching too many workers
+    dispatcher <- !is.null(status[["mirai"]])
+    if (!dispatcher) {
+      stop(sprintf("Mirai futures require that the mirai daemons are configured to use a dispatcher (dispatcher = TRUE). If not, there is a risk of launching an unlimited number of mirai processes. This requirement might be relaxed in future versions of the %s package. mirai::status() reports:\n%s", sQuote(.packageName), paste(capture.output(print(status)), collapse = "\n")))
+    }
+  
+    core <- FutureBackend(
+      reg = "workers-mirai",
+      dispatcher = dispatcher,
+      shutdown = FALSE,
+      ...,
+      timeout = getOption("future.wait.timeout", 30 * 24 * 60 * 60),
+      delta = getOption("future.wait.interval", 0.2),
+      alpha = getOption("future.wait.alpha", 1.01)
+    )
+    core[["futureClasses"]] <- c("MiraiFuture", "MultiprocessFuture", core[["futureClasses"]])
+    core <- structure(core, class = c("MiraiFutureBackend", "MultiprocessFutureBackend", "FutureBackend", class(core)))
+    core
   }
-
-  ## Assert that a mirai dispatcher is in place, which is
-  ## required to protect against launching too many workers
-  dispatcher <- !is.null(status[["mirai"]])
-  if (!dispatcher) {
-    stop(sprintf("Mirai futures require that the mirai daemons are configured to use a dispatcher (dispatcher = TRUE). If not, there is a risk of launching an unlimited number of mirai processes. This requirement might be relaxed in future versions of the %s package. mirai::status() reports:\n%s", sQuote(.packageName), paste(capture.output(print(status)), collapse = "\n")))
-  }
-
-  core <- FutureBackend(
-    reg = "workers-mirai",
-    dispatcher = dispatcher,
-    ...,
-    timeout = getOption("future.wait.timeout", 30 * 24 * 60 * 60),
-    delta = getOption("future.wait.interval", 0.2),
-    alpha = getOption("future.wait.alpha", 1.01)
-  )
-  core[["futureClasses"]] <- c("MiraiFuture", "MultiprocessFuture", core[["futureClasses"]])
-  core <- structure(core, class = c("MiraiFutureBackend", "MultiprocessFutureBackend", "FutureBackend", class(core)))
-  core
-}
+})
 
 
 #' @importFrom mirai mirai
@@ -54,6 +60,8 @@ launchFuture.MiraiFutureBackend <- local({
       on.exit(mdebugf("launchFuture() for %s ... done", class(backend)[1], debug = debug))
     }
 
+    stop_if_not(nbrOfWorkers(backend) > 0L)
+    
     ## Wait for a free worker
     waitForWorker(backend, debug = debug)
     
@@ -74,7 +82,7 @@ launchFuture.MiraiFutureBackend <- local({
     if (!is.null(workers)) future[["workers"]] <- workers
 
     data <- getFutureData(future)
-    
+
     future[["state"]] <- "submitted"
     mirai <- mirai(future:::evalFuture(data), data = data)
     future[["mirai"]] <- mirai
@@ -92,23 +100,41 @@ launchFuture.MiraiFutureBackend <- local({
 #' @importFrom future stopWorkers interrupt
 #' @export
 stopWorkers.MiraiFutureBackend <- function(backend, ...) {
+  debug <- isTRUE(getOption("future.mirai.debug"))
+  if (debug) {
+    mdebugf("stopWorkers() for %s ...", class(backend)[1], debug = debug)
+    on.exit(mdebugf("stopWorkers() for %s ... done", class(backend)[1], debug = debug))
+  }
+    
   reg <- backend[["reg"]]
   futures <- FutureRegistry(reg, action = "list", earlySignal = FALSE)
+  if (debug) mdebugf("Number of active futures: %d", length(futures))
   
-  ## Nothing to do?
-  if (length(futures) == 0L) return(backend)
-
-  ## Enable interrupts temporarily, if disabled
-  if (!isTRUE(backend[["interrupts"]])) {
-    backend[["interrupts"]] <- TRUE
-    on.exit(backend[["interrupts"]] <- FALSE)
+  if (length(futures) > 0L) {
+    ## Enable interrupts temporarily, if disabled
+    if (!isTRUE(backend[["interrupts"]])) {
+      backend[["interrupts"]] <- TRUE
+      on.exit(backend[["interrupts"]] <- FALSE)
+    }
+  
+    ## Interrupt all futures, which terminates the workers
+    if (debug) mdebugf_push("Interrupt futures ...")
+    futures <- lapply(futures, FUN = interrupt)
+    if (debug) mdebugf_pop("Interrupt futures ... done")
+  
+    ## Erase registry
+    futures <- FutureRegistry(reg, action = "reset")
   }
 
-  ## Interrupt all futures, which terminates the workers
-  futures <- lapply(futures, FUN = interrupt)
-
-  ## Erase registry
-  futures <- FutureRegistry(reg, action = "reset")
+  ## Stop workers?
+  if (backend[["shutdown"]]) {
+    if (debug) {
+      mdebug("Mirai daemons:")
+      mprint(mirai::status())
+    }
+    mirai::daemons(n = 0L)
+    if (debug) mdebug("Mirai daemons shut down")
+  }
 
   backend
 }
@@ -124,14 +150,14 @@ nbrOfWorkers.MiraiFutureBackend <- function(evaluator) {
   workers <- res[["daemons"]]
   if (is_error_value(workers)) {
     reason <- capture.output(print(workers))
-    stop(FutureError(sprintf("mirai::status() failed to communicate with dispatcher: %s", reason)))
+    stop(FutureError(sprintf("Cannot infer number of mirai workers. mirai::status() failed to communicate with dispatcher: %s", reason)))
   }
   
   if (is.character(workers)) {
     workers <- res[["connections"]]
     stop_if_not(is.numeric(workers))
   } else if (!is.numeric(workers)) {
-    stop(FutureError(sprintf("Unknown type of mirai::daemons()$daemons: %s", typeof(workers))))
+    stop(FutureError(sprintf("Cannot infer number of mirai workers. Unknown type of mirai::daemons()$daemons: %s", typeof(workers))))
   }
 
   if (is.matrix(workers)) {
@@ -143,11 +169,12 @@ nbrOfWorkers.MiraiFutureBackend <- function(evaluator) {
   }
 
   if (length(workers) != 1L) {
-    stop(FutureError(sprintf("Length of mirai::daemons()$daemons is not one: %d", length(workers))))
+    stop(FutureError(sprintf("Cannot infer number of mirai workers. Length of mirai::daemons()$daemons is not one: %d", length(workers))))
   }
 
-  if (workers == 0L) return(Inf)
-  
+  mirai <- res[["mirai"]]
+  if (is.null(mirai)) return(0L)
+
   workers
 }
 
@@ -161,7 +188,7 @@ nbrOfFreeWorkers.MiraiFutureBackend <- function(evaluator, background = FALSE, .
   workers <- res[["daemons"]]
   if (is_error_value(workers)) {
     reason <- capture.output(print(workers))
-    stop(FutureError(sprintf("mirai::status() failed to communicate with dispatcher: %s", reason)))
+    stop(FutureError(sprintf("Cannot infer number of free mirai workers. mirai::status() failed to communicate with dispatcher: %s", reason)))
   }
   
   if (is.character(workers)) {
@@ -180,11 +207,14 @@ nbrOfFreeWorkers.MiraiFutureBackend <- function(evaluator, background = FALSE, .
   }
 
   if (length(workers) != 1L) {
-    stop(FutureError(sprintf("Length of mirai::daemons()$daemons is not one: %d", length(workers))))
+    stop(FutureError(sprintf("Cannot infer number of free mirai workers. Length of mirai::daemons()$daemons is not one: %d", length(workers))))
   }
 
   mirai <- res[["mirai"]]
-  stop_if_not(!is.null(mirai))
+  if (is.null(mirai)) {
+    stop(FutureError("Cannot infer number of free mirai workers. mirai::status() reports zero daemons. Did you call mirai::daemons(0) by mistake?"))
+  }
+  
   used <- mirai[["awaiting"]] + mirai[["executing"]]
   workers <- workers - used
   stop_if_not(is.numeric(workers), is.finite(workers), workers >= 0)
@@ -330,6 +360,13 @@ interruptFuture.MiraiFutureBackend <- function(backend, future, ...) {
 }
 
 
+#' @importFrom future tweak
+#' @export
+tweak.mirai_cluster <- function(strategy, ..., penvir = parent.frame()) {
+  attr(strategy, "init") <- TRUE
+  NextMethod("tweak")
+}
+
 #' Mirai-based cluster futures
 #'
 #' @inheritParams future::Future
@@ -340,12 +377,6 @@ interruptFuture.MiraiFutureBackend <- function(backend, future, ...) {
 #'
 #' @example incl/mirai_cluster.R
 #'
-#' @details
-#' _WARNING_: When using this future plan, mirai workers are _not_ shut down
-#' when switching away from this future plan. This is because it the backend
-#' requires them to be launched manually before, and it therefore needs to be
-#' manually shutdown as well.
-#'
 #' @importFrom future Future
 #' @export
 mirai_cluster <- function(..., envir = parent.frame()) {
@@ -354,11 +385,3 @@ mirai_cluster <- function(..., envir = parent.frame()) {
 class(mirai_cluster) <- c("mirai_cluster", "mirai", "multiprocess", "future", "function")
 attr(mirai_cluster, "init") <- TRUE
 attr(mirai_cluster, "factory") <- MiraiFutureBackend
-
-
-#' @importFrom future tweak
-#' @export
-tweak.mirai_cluster <- function(strategy, ..., penvir = parent.frame()) {
-  attr(strategy, "init") <- TRUE
-  NextMethod("tweak")
-}
