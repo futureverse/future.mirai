@@ -4,9 +4,6 @@
 
  * Now 'mirai' futures can be interrupted using `interrupt()`.
 
- * Now `future.tests::check("mirai::daemons(2);
-   plan(future.mirai::mirai_cluster)")` works.
-
 
 # Version 0.2.2
 
