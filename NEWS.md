@@ -4,6 +4,10 @@
 
  * Now 'mirai' futures can be interrupted using `interrupt()`.
 
+ * Now 'mirai_multisession' futures relay `immediateCondition`:s
+   in near real-time, e.g. `progression` contdions signals by the
+   **progressr** package.
+
 
 # Version 0.2.2
 

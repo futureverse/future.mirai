@@ -19,6 +19,9 @@ evalFuture <- NULL
 getFutureData <- NULL
 stop_if_not <- stopifnot
 commaq <- NULL
+readImmediateConditions <- NULL
+signalEarly <- NULL
+getFutureBackendConfigs <- NULL
 
 .onLoad <- function(libname, pkgname) {
   ## Import private functions from 'future'
@@ -28,6 +31,9 @@ commaq <- NULL
   getFutureData <<- import_future("getFutureData", default = NULL)
   stop_if_not <<- import_future("stop_if_not", default = stopifnot)
   commaq <<- import_future("commaq", default = NULL)
+  readImmediateConditions <<- import_future("readImmediateConditions")
+  signalEarly <<- import_future("signalEarly")
+  getFutureBackendConfigs <<- import_future("getFutureBackendConfigs")
   
   if (isTRUE(as.logical(Sys.getenv("R_FUTURE_MIRAI_PRUNE_PKG_CODE", "FALSE")))) {
     prune_pkg_code()

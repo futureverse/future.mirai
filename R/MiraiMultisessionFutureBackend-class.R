@@ -75,6 +75,68 @@ nbrOfFreeWorkers.MiraiMultisessionFutureBackend <- function(evaluator, backgroun
 }
 
 
+#' @importFrom future resolved
+#' @export
+resolved.MiraiMultisessionFutureBackend <- function(x, .signalEarly = TRUE, ...) {
+  resolved <- NextMethod()
+  if (resolved) return(TRUE)
+  
+  ## Collect and relay immediateCondition if they exists
+  conditions <- readImmediateConditions(signal = TRUE)
+  ## Record conditions as signaled
+  signaled <- c(x[[".signaledConditions"]], conditions)
+  x[[".signaledConditions"]] <- signaled
+
+  ## Signal conditions early? (happens only iff requested)
+  if (.signalEarly) signalEarly(x, ...)
+
+  resolved
+}
+
+
+
+#' @keywords internal
+#' @export
+result.MiraiMultisessionFutureBackend <- function(future, ...) {
+  result <- NextMethod()
+
+  ## Collect and relay immediateCondition if they exists
+  conditions <- readImmediateConditions()
+  ## Record conditions as signaled
+  signaled <- c(future[[".signaledConditions"]], conditions)
+  future[[".signaledConditions"]] <- signaled
+
+  result
+}
+
+
+#' @exportS3Method getFutureBackendConfigs MiraiMultisessionFutureBackend
+getFutureBackendConfigs.MiraiMultisessionFutureBackend <- local({
+  immediateConditionsPath <- import_future("immediateConditionsPath")
+  fileImmediateConditionHandler <- import_future("fileImmediateConditionHandler")
+  
+  function(future, ..., debug = isTRUE(getOption("future.debug"))) {
+    conditionClasses <- future[["conditions"]]
+    if (is.null(conditionClasses)) {
+      capture <- list()
+    } else {
+      path <- immediateConditionsPath(rootPath = tempdir())
+      capture <- list(
+        immediateConditionHandlers = list(
+          immediateCondition = function(cond) {
+            fileImmediateConditionHandler(cond, path = path)
+          }
+        )
+      )
+    }
+  
+    list(
+      capture = capture
+    )
+  }
+})
+
+
 #' Mirai-based localhost multisession futures
 #'
 #' @inheritParams future::Future
