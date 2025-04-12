@@ -1,4 +1,4 @@
-mirai::daemons(parallelly::availableCores(), dispatcher = FALSE)
+mirai::daemons(parallelly::availableCores())
 plan(mirai_cluster)
 
 # A function that returns a future, note that N uses lexical scoping...
