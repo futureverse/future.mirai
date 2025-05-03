@@ -27,7 +27,7 @@ import_future_functions <- function() {
 
   ## Until future (>= 1.49.0) is on CRAN
   cancel <<- import_future("cancel", default = NA)
-  if (is.na(cancel)) {
+  if (!is.function(cancel)) {
     interrupt <- import_future("interrupt")
     cancel <<- function(x, interrupt = TRUE, ...) {
       if (!interrupt) return(x)
