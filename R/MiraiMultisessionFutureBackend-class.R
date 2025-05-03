@@ -77,7 +77,7 @@ nbrOfFreeWorkers.MiraiMultisessionFutureBackend <- function(evaluator, backgroun
 
 #' @importFrom future resolved
 #' @export
-resolved.MiraiMultisessionFutureBackend <- function(x, .signalEarly = TRUE, ...) {
+resolved.MiraiMultisessionFuture <- function(x, .signalEarly = TRUE, ...) {
   resolved <- NextMethod()
   if (resolved) return(TRUE)
   
@@ -97,7 +97,7 @@ resolved.MiraiMultisessionFutureBackend <- function(x, .signalEarly = TRUE, ...)
 
 #' @keywords internal
 #' @export
-result.MiraiMultisessionFutureBackend <- function(future, ...) {
+result.MiraiMultisessionFuture <- function(future, ...) {
   result <- NextMethod()
 
   ## Collect and relay immediateCondition if they exists
@@ -110,8 +110,8 @@ result.MiraiMultisessionFutureBackend <- function(future, ...) {
 }
 
 
-#' @exportS3Method getFutureBackendConfigs MiraiMultisessionFutureBackend
-getFutureBackendConfigs.MiraiMultisessionFutureBackend <- local({
+#' @exportS3Method getFutureBackendConfigs MiraiMultisessionFuture
+getFutureBackendConfigs.MiraiMultisessionFuture <- local({
   immediateConditionsPath <- import_future("immediateConditionsPath")
   fileImmediateConditionHandler <- import_future("fileImmediateConditionHandler")
   
