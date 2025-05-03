@@ -21,7 +21,7 @@ Authors@R: c(
   person("Charlie", "Gao",
          role = c("ctb"),
          email = "charlie.gao@shikokuchuo.net",
-         comment = c(ORCID = "0000-0002-0750-061X")
+         comment = c(ORCID = "0000-0002-0750-061X", note = "For 'mirai'-related patches and implementing feature requests in 'mirai'")
         ))
 License: GPL (>= 3)
 Encoding: UTF-8

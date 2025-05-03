@@ -29,7 +29,7 @@ Useful links:
 
 Other contributors:
 \itemize{
-  \item Charlie Gao \email{charlie.gao@shikokuchuo.net} (\href{https://orcid.org/0000-0002-0750-061X}{ORCID}) [contributor]
+  \item Charlie Gao \email{charlie.gao@shikokuchuo.net} (\href{https://orcid.org/0000-0002-0750-061X}{ORCID}) (For 'mirai'-related patches and implementing feature requests in 'mirai') [contributor]
 }
 
 }
