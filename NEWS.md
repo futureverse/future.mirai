@@ -7,7 +7,8 @@
    resources sooner. Map-reduce API such as **future.apply**,
    **doFuture**, and **furrr** can take advantage of this by
    canceling all non-resolved futures whenever they detect an error
-   in one of the futures.
+   in one of the futures. Also, canceled futures can be `reset()` 
+   and thereafter relaunched, possibly on another future backend.
 
  * Now 'mirai_multisession' futures relay `immediateCondition`:s
    in near real-time, e.g. `progression` conditions signals by the
