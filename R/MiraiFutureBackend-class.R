@@ -375,18 +375,27 @@ tweak.mirai_cluster <- function(strategy, ..., penvir = parent.frame()) {
 
 #' Mirai-based cluster futures
 #'
+#' _WARNING: This function must never be called.
+#'  It may only be used with [future::plan()]_
+#'
 #' @inheritParams future::Future
 #'
-#' @param \ldots Additional arguments passed to `Future()`.
+#' @param \ldots Not used.
 #'
-#' @return An object of class MiraiFuture.
+#' @return Nothing.
 #'
 #' @example incl/mirai_cluster.R
 #'
-#' @importFrom future Future
+#' @importFrom future future
 #' @export
 mirai_cluster <- function(..., envir = parent.frame()) {
-  stop("INTERNAL ERROR: The future.mirai::mirai_cluster() function implements the FutureBackend and should never be called directly")
+  ## WORKAROUNDS:
+  ## (1) promises::future_promise() calls the "evaluator" function directly
+  if ("promises" %in% loadedNamespaces()) {
+    return(future(..., envir = envir))
+  }
+  
+  stop("INTERNAL ERROR: The future.mirai::mirai_cluster() function must never be called directly")
 }
 class(mirai_cluster) <- c("mirai_cluster", "mirai", "multiprocess", "future", "function")
 attr(mirai_cluster, "init") <- TRUE

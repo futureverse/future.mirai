@@ -139,20 +139,29 @@ getFutureBackendConfigs.MiraiMultisessionFutureBackend <- local({
 
 #' Mirai-based localhost multisession futures
 #'
+#' _WARNING: This function must never be called.
+#'  It may only be used with [future::plan()]_
+#'
 #' @inheritParams future::Future
 #' @inheritParams future::multisession
 #'
-#' @param \ldots Additional arguments passed to `Future()`.
+#' @param \ldots Not used.
 #'
-#' @return An object of class MiraiFuture.
+#' @return Nothing.
 #'
 #' @example incl/mirai_multisession.R
 #'
 #' @importFrom parallelly availableCores
-#' @importFrom future Future
+#' @importFrom future future
 #' @export
 mirai_multisession <- function(..., workers = availableCores(), envir = parent.frame()) {
-  stop("INTERNAL ERROR: The future.mirai::mirai_multisession() function implements the FutureBackend and should never be called directly")
+  ## WORKAROUNDS:
+  ## (1) promises::future_promise() calls the "evaluator" function directly
+  if ("promises" %in% loadedNamespaces()) {
+    return(future(..., envir = envir))
+  }
+  
+  stop("INTERNAL ERROR: The future.mirai::mirai_multisession() function must never be called directly")
 }
 class(mirai_multisession) <- c("mirai_multisession", "mirai_cluster", "mirai", "multiprocess", "future", "function")
 attr(mirai_multisession, "init") <- TRUE
