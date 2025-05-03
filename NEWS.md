@@ -6,7 +6,7 @@
    interrupts them by default, which in turn frees up compute
    resources sooner. Map-reduce API such as **future.apply**,
    **doFuture**, and **furrr** can take advantage of this by
-   cancelling all non-resolved futures whenever they detect an error
+   canceling all non-resolved futures whenever they detect an error
    in one of the futures.
 
  * Now 'mirai_multisession' futures relay `immediateCondition`:s

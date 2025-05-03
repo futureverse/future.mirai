@@ -12,29 +12,10 @@ prune_pkg_code <- function(env = topenv(parent.frame())) {
 
 with_assert <- function(expr, ...) { invisible(expr) }
 
-## To be imported from 'future', if available
-FutureRegistry <- NULL
-prune_fcn <- function(expr, ...) expr
-evalFuture <- NULL
-getFutureData <- NULL
-stop_if_not <- stopifnot
-commaq <- NULL
-readImmediateConditions <- NULL
-signalEarly <- NULL
-getFutureBackendConfigs <- NULL
 
 .onLoad <- function(libname, pkgname) {
-  ## Import private functions from 'future'
-  FutureRegistry <<- import_future("FutureRegistry")
-  prune_fcn <<- import_future("prune_fcn", default = prune_fcn)
-  evalFuture <<- import_future("evalFuture", default = NULL)
-  getFutureData <<- import_future("getFutureData", default = NULL)
-  stop_if_not <<- import_future("stop_if_not", default = stopifnot)
-  commaq <<- import_future("commaq", default = NULL)
-  readImmediateConditions <<- import_future("readImmediateConditions")
-  signalEarly <<- import_future("signalEarly")
-  getFutureBackendConfigs <<- import_future("getFutureBackendConfigs")
-  
+  import_future_functions()
+
   if (isTRUE(as.logical(Sys.getenv("R_FUTURE_MIRAI_PRUNE_PKG_CODE", "FALSE")))) {
     prune_pkg_code()
   }
@@ -50,4 +31,3 @@ getFutureBackendConfigs <- NULL
     options(future.mirai.queue = value)
   }
 }
-

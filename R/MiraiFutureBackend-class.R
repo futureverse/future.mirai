@@ -97,7 +97,7 @@ launchFuture.MiraiFutureBackend <- local({
 })
 
 
-#' @importFrom future stopWorkers interrupt
+#' @importFrom future stopWorkers
 #' @export
 stopWorkers.MiraiFutureBackend <- function(backend, ...) {
   debug <- isTRUE(getOption("future.mirai.debug"))
@@ -117,10 +117,10 @@ stopWorkers.MiraiFutureBackend <- function(backend, ...) {
       on.exit(backend[["interrupts"]] <- FALSE)
     }
   
-    ## Interrupt all futures, which terminates the workers
-    if (debug) mdebugf_push("Interrupt futures ...")
-    futures <- lapply(futures, FUN = interrupt)
-    if (debug) mdebugf_pop("Interrupt futures ... done")
+    ## Cancel and interrupt all futures, which terminates the workers
+    if (debug) mdebugf_push("Cancel and interrupt futures ...")
+    futures <- lapply(futures, FUN = cancel, interrupt = TRUE)
+    if (debug) mdebugf_pop("Cancel and interrupt futures ... done")
   
     ## Erase registry
     futures <- FutureRegistry(reg, action = "reset")
