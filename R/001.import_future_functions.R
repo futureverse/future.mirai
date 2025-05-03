@@ -26,8 +26,8 @@ import_future_functions <- function() {
   getFutureBackendConfigs <<- import_future("getFutureBackendConfigs")
 
   ## Until future (>= 1.49.0) is on CRAN
-  cancel <<- import_future("cancel", default = NULL)
-  if (is.null(cancel)) {
+  cancel <<- import_future("cancel", default = NA)
+  if (is.na(cancel)) {
     interrupt <- import_future("interrupt")
     cancel <<- function(x, interrupt = TRUE, ...) {
       if (!interrupt) return(x)
