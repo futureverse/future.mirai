@@ -25,6 +25,7 @@ import_future_functions <- function() {
   evalFuture <<- import_future("evalFuture", default = NULL)
   getFutureData <<- import_future("getFutureData", default = NULL)
   getFutureBackendConfigs <<- import_future("getFutureBackendConfigs")
+  registerS3method("getFutureBackendConfigs", "MiraiMultisessionFuture", getFutureBackendConfigs.MiraiMultisessionFuture)
 
   ## Until future (>= 1.49.0) is on CRAN
   cancel <<- import_future("cancel", default = NA)
