@@ -47,7 +47,7 @@ evaluating R expression in separate R processes running on the local
 machine or on one or more remote machines.  Centrally to **mirai** is
 its highly-optimized queueing mechanism, which is used to orchestrate
 communication between the main R process and parallel workers. A
-**mirai** cluster of workers can be configured to communicate securly
+**mirai** cluster of workers can be configured to communicate securely
 via the well-established Transport Layer Security (TLS) protocol.
 
 Another advantage with `mirai_*` futures, compared to `multisession`

@@ -2,10 +2,15 @@
 
 ## New Features
 
- * Now 'mirai' futures can be interrupted using `interrupt()`.
+ * Now 'mirai' futures can be canceled using `cancel()`, which also
+   interrupts them by default, which in turn frees up compute
+   resources sooner. Map-reduce API such as **future.apply**,
+   **doFuture**, and **furrr** can take advantage of this by
+   cancelling all non-resolved futures whenever they detect an error
+   in one of the futures.
 
  * Now 'mirai_multisession' futures relay `immediateCondition`:s
-   in near real-time, e.g. `progression` contdions signals by the
+   in near real-time, e.g. `progression` conditions signals by the
    **progressr** package.
 
 
