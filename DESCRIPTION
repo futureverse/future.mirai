@@ -1,5 +1,5 @@
 Package: future.mirai
-Version: 0.2.2-9217
+Version: 0.2.2-9218
 Depends:
     future (>= 1.40.0)
 Imports:

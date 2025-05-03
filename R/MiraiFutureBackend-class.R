@@ -289,8 +289,7 @@ result.MiraiFuture <- function(future, ...) {
   }
 
   if (inherits(result, "errorValue")) {
-    label <- future[["label"]]
-    if (is.null(label)) label <- "<none>"
+    label <- sQuoteLabel(future[["label"]])
 
     if (result == 20L) {
       if (debug) mdebugf("- Detected interrupted %s whose result cannot be retrieved", sQuote(class(future)[1]))
