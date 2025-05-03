@@ -292,12 +292,21 @@ result.MiraiFuture <- function(future, ...) {
     label <- sQuoteLabel(future[["label"]])
 
     if (result == 20L) {
-      if (debug) mdebugf("- Detected interrupted %s whose result cannot be retrieved", sQuote(class(future)[1]))
-      msg <- sprintf("A future ('%s') of class %s was interrupted, while running", label, class(future)[1])
+      state <- future[["state"]]
+      stop_if_not(state %in% c("canceled", "interrupted", "running"))
+    
+      event <- if (state %in% "running") {
+        event <- sprintf("failed for unknown reason while %s", state)
+        future[["state"]] <- "interrupted"
+      } else {
+        event <- sprintf("was %s", state)
+      }
+
+      msg <- sprintf("Future (%s) of class %s %s, while running on localhost (error code %d)", label, class(future)[1], event, result)
+      if (debug) mdebug(msg)
       result <- FutureInterruptError(msg, future = future)
       future[["result"]] <- result
       FutureRegistry(reg, action = "remove", future = future)
-
       stop(result)
     }
     
