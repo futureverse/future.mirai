@@ -3,6 +3,9 @@
 #' @tags detritus-files
 #' @tags mirai_multisession
 
+# Run this test with debug on mostly to increase test coverage
+options(future.debug = TRUE)
+
 library(future.mirai)
 library(listenv)
 
