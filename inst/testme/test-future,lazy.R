@@ -8,7 +8,7 @@ message("*** Futures - lazy ...")
 strategies <- c("mirai_cluster", "mirai_multisession")
 
 for (strategy in strategies) {
-  mprintf("- plan('%s') ...", strategy)
+  mdebugf("- plan('%s') ...", strategy)
   mirai::daemons(0)
   if (strategy == "mirai_cluster") mirai::daemons(parallelly::availableCores())
   plan(strategy)
@@ -27,7 +27,7 @@ for (strategy in strategies) {
   plan(sequential)
   if (strategy == "mirai_cluster") mirai::daemons(0)
 
-  mprintf("- plan('%s') ... DONE", strategy)
+  mdebugf("- plan('%s') ... DONE", strategy)
 } ## for (strategy ...)
 
 message("*** Futures - lazy ... DONE")

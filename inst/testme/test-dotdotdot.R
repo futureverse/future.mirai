@@ -43,7 +43,7 @@ for (strategy in c("mirai_cluster", "mirai_multisession")[1]) {
   plan(strategy)
 
   for (name in names(sum_fcns)) {
-    mprintf("** Sum function '%s' with plan('%s') ...", name, strategy)
+    mdebugf("** Sum function '%s' with plan('%s') ...", name, strategy)
     sum_fcn <- sum_fcns[[name]]
     print(sum_fcn)
     y <- tryCatch({

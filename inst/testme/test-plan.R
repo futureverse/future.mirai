@@ -14,7 +14,7 @@ print(future::plan())
 library(future.mirai)
 
 for (type in c("mirai_multisession")) {
-  mprintf("*** plan('%s') ...", type)
+  mdebugf("*** plan('%s') ...", type)
 
   plan(type)
   stopifnot(inherits(plan("next"), "mirai_multisession"))
@@ -32,7 +32,7 @@ for (type in c("mirai_multisession")) {
 
   plan(sequential)
 
-  mprintf("*** plan('%s') ... DONE", type)
+  mdebugf("*** plan('%s') ... DONE", type)
 } # for (type ...)
 
 

@@ -56,8 +56,8 @@ launchFuture.MiraiFutureBackend <- local({
   function(backend, future, ...) {
     debug <- isTRUE(getOption("future.mirai.debug"))
     if (debug) {
-      mdebugf("launchFuture() for %s ...", class(backend)[1], debug = debug)
-      on.exit(mdebugf("launchFuture() for %s ... done", class(backend)[1], debug = debug))
+      mdebugf_push("launchFuture() for %s ...", class(backend)[1])
+      on.exit(mdebug_pop())
     }
 
     stop_if_not(nbrOfWorkers(backend) > 0L)
@@ -102,8 +102,8 @@ launchFuture.MiraiFutureBackend <- local({
 stopWorkers.MiraiFutureBackend <- function(backend, ...) {
   debug <- isTRUE(getOption("future.mirai.debug"))
   if (debug) {
-    mdebugf("stopWorkers() for %s ...", class(backend)[1], debug = debug)
-    on.exit(mdebugf("stopWorkers() for %s ... done", class(backend)[1], debug = debug))
+    mdebugf_push("stopWorkers() for %s ...", class(backend)[1])
+    on.exit(mdebug_pop())
   }
     
   reg <- backend[["reg"]]
@@ -120,7 +120,7 @@ stopWorkers.MiraiFutureBackend <- function(backend, ...) {
     ## Cancel and interrupt all futures, which terminates the workers
     if (debug) mdebugf_push("Cancel and interrupt futures ...")
     futures <- lapply(futures, FUN = cancel, interrupt = TRUE)
-    if (debug) mdebugf_pop("Cancel and interrupt futures ... done")
+    if (debug) mdebugf_pop()
   
     ## Erase registry
     futures <- FutureRegistry(reg, action = "reset")
@@ -232,31 +232,31 @@ nbrOfFreeWorkers.MiraiFutureBackend <- function(evaluator, background = FALSE, .
 resolved.MiraiFuture <- function(x, ...) {
   debug <- isTRUE(getOption("future.mirai.debug"))
   if (debug) {
-    mdebugf("resolved() for %s ...", class(x)[1], debug = debug)
-    on.exit(mdebugf("resolved() for %s ... done", class(x)[1], debug = debug))
+    mdebugf_push("resolved() for %s ...", class(x)[1])
+    on.exit(mdebug_pop())
   }
   
   resolved <- NextMethod()
   if(resolved) {
-    if (debug) mdebug("- already resolved", debug = debug)
+    if (debug) mdebug("already resolved", debug = debug)
     return(TRUE)
   }
   
   if(x[["state"]] == "finished") {
-    if (debug) mdebug("- already resolved (state == finished)", debug = debug)
+    if (debug) mdebug("already resolved (state == finished)", debug = debug)
     return(TRUE)
   } else if(x[["state"]] == "created") { # Not yet submitted to queue (iff lazy)
-    if (debug) mdebug("- just created; launching")
+    if (debug) mdebug("just created; launching")
     x <- run(x)
     return(FALSE)
   }
 
-  if (debug) mdebug("mirai::unresolved() ...", debug = debug)
+  if (debug) mdebug_push("mirai::unresolved() ...")
   mirai <- x[["mirai"]]
   res <- unresolved(mirai)
   if (debug) {
     mstr(res, debug = debug)
-    mdebug("mirai::unresolved() ... done", debug = debug)
+    mdebug_pop()
   }
   
   !res
@@ -272,8 +272,8 @@ result.MiraiFuture <- function(future, ...) {
 
   debug <- isTRUE(getOption("future.mirai.debug"))
   if (debug) {
-    mdebugf("result() for %s ...", class(future)[1], debug = debug)
-    on.exit(mdebugf("result() for %s ... done", class(future)[1], debug = debug))
+    mdebugf_push("result() for %s ...", class(future)[1])
+    on.exit(mdebug_pop())
   }
 
   backend <- future[["backend"]]
@@ -285,7 +285,7 @@ result.MiraiFuture <- function(future, ...) {
     dt <- proc.time() - t0
     dt <- dt[dt > 0]
     dt_str <- paste(sprintf("%s=%gs", names(dt), dt), collapse = ", ")
-    mdebugf(" - collected mirai in %s", dt_str)
+    mdebugf("collected mirai in %s", dt_str)
   }
 
   if (inherits(result, "errorValue")) {
