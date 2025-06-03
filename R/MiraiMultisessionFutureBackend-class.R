@@ -155,12 +155,6 @@ getFutureBackendConfigs.MiraiMultisessionFuture <- local({
 #' @importFrom future future
 #' @export
 mirai_multisession <- function(..., workers = availableCores(), envir = parent.frame()) {
-  ## WORKAROUNDS:
-  ## (1) promises::future_promise() calls the "evaluator" function directly
-  if ("promises" %in% loadedNamespaces()) {
-    return(future(..., envir = envir))
-  }
-  
   stop("INTERNAL ERROR: The future.mirai::mirai_multisession() function must never be called directly")
 }
 class(mirai_multisession) <- c("mirai_multisession", "mirai_cluster", "mirai", "multiprocess", "future", "function")

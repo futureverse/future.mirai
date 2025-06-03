@@ -97,7 +97,7 @@ launchFuture.MiraiFutureBackend <- local({
 })
 
 
-#' @importFrom future stopWorkers
+#' @importFrom future cancel stopWorkers
 #' @export
 stopWorkers.MiraiFutureBackend <- function(backend, ...) {
   debug <- isTRUE(getOption("future.mirai.debug"))
@@ -397,12 +397,6 @@ tweak.mirai_cluster <- function(strategy, ..., penvir = parent.frame()) {
 #' @importFrom future future
 #' @export
 mirai_cluster <- function(..., envir = parent.frame()) {
-  ## WORKAROUNDS:
-  ## (1) promises::future_promise() calls the "evaluator" function directly
-  if ("promises" %in% loadedNamespaces()) {
-    return(future(..., envir = envir))
-  }
-  
   stop("INTERNAL ERROR: The future.mirai::mirai_cluster() function must never be called directly")
 }
 class(mirai_cluster) <- c("mirai_cluster", "mirai", "multiprocess", "future", "function")
