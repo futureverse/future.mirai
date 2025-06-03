@@ -1,7 +1,7 @@
 Package: future.mirai
-Version: 0.2.2-9226
+Version: 0.2.2-9228
 Depends:
-    future (>= 1.40.0)
+    future (>= 1.49.0)
 Imports:
     mirai (>= 2.2.0),
     parallelly,

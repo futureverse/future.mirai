@@ -8,7 +8,6 @@ FutureRegistry <- NULL
 evalFuture <- NULL
 getFutureData <- NULL
 getFutureBackendConfigs <- NULL
-cancel <- NULL
 sQuoteLabel <- NULL
 .debug <- NULL
 
@@ -21,32 +20,14 @@ import_future_functions <- function() {
   FutureRegistry <<- import_future("FutureRegistry")
   
   ## future (>= 1.40.0)
-  prune_fcn <<- import_future("prune_fcn", default = prune_fcn)
-  evalFuture <<- import_future("evalFuture", default = NULL)
-  getFutureData <<- import_future("getFutureData", default = NULL)
+  prune_fcn <<- import_future("prune_fcn")
+  evalFuture <<- import_future("evalFuture")
+  getFutureData <<- import_future("getFutureData")
   getFutureBackendConfigs <<- import_future("getFutureBackendConfigs")
   registerS3method("getFutureBackendConfigs", "MiraiMultisessionFuture", getFutureBackendConfigs.MiraiMultisessionFuture)
 
-  ## Until future (>= 1.49.0) is on CRAN
-  cancel <<- import_future("cancel", default = NA)
-  if (!is.function(cancel)) {
-    interrupt <- import_future("interrupt")
-    cancel <<- function(x, interrupt = TRUE, ...) {
-      if (!interrupt) return(x)
-      interrupt(x, ...)
-    }
-  }
-
-  ## Until future (>= 1.49.0) is on CRAN
-  sQuoteLabel <<- import_future("sQuoteLabel", default = function(label) {
-    if (is.null(label)) {
-        "NULL"
-    } else if (is.na(label)) {
-        "NA"
-    } else {
-        sQuote(label)
-    }
-  })
+  ## future (>= 1.49.0)
+  sQuoteLabel <<- import_future("sQuoteLabel")
 
   .debug <<- import_future(".debug", mode = "environment", default = new.env(parent = emptyenv()))
 }
