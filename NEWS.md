@@ -1,4 +1,4 @@
-# Version (development version)
+# Version 0.10.0
 
 ## New Features
 
