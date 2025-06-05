@@ -47,7 +47,7 @@ evaluating R expression in separate R processes running on the local
 machine or on one or more remote machines.  Centrally to **mirai** is
 its highly-optimized queueing mechanism, which is used to orchestrate
 communication between the main R process and parallel workers. A
-**mirai** cluster of workers can be configured to communicate securly
+**mirai** cluster of workers can be configured to communicate securely
 via the well-established Transport Layer Security (TLS) protocol.
 
 Another advantage with `mirai_*` futures, compared to `multisession`
@@ -90,7 +90,7 @@ demo("mandelbrot", package = "future", ask = FALSE)
 
 [mirai]: https://cran.r-project.org/package=mirai
 [future]: https://cran.r-project.org/package=future
-[future.mirai]: https://github.com/HenrikBengtsson/future.mirai
+[future.mirai]: https://github.com/futureverse/future.mirai
 [future.apply]: https://cran.r-project.org/package=future.apply
 [furrr]: https://cran.r-project.org/package=furrr
 [doFuture]: https://cran.r-project.org/package=doFuture

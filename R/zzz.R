@@ -1,9 +1,24 @@
-## To be cached by .onLoad()
-FutureRegistry <- NULL
+prune_pkg_code <- function(env = topenv(parent.frame())) {
+  void <- lapply(names(env), FUN = prune_fcn, envir = env)
+
+  fcns <- list(evalFuture, getFutureData)
+  for (fcn in fcns) {
+    if (is.function(fcn)) {
+      env <- environment(fcn)
+      void <- lapply(names(env), FUN = prune_fcn, envir = env)
+    }
+  }
+}
+
+with_assert <- function(expr, ...) { invisible(expr) }
+
 
 .onLoad <- function(libname, pkgname) {
-  ## Import private functions from 'future'
-  FutureRegistry <<- import_future("FutureRegistry")
+  import_future_functions()
+
+  if (isTRUE(as.logical(Sys.getenv("R_FUTURE_MIRAI_PRUNE_PKG_CODE", "FALSE")))) {
+    prune_pkg_code()
+  }
 
   ## Set 'debug' option by environment variable
   value <- Sys.getenv("R_FUTURE_MIRAI_DEBUG", "FALSE")
@@ -16,4 +31,3 @@ FutureRegistry <- NULL
     options(future.mirai.queue = value)
   }
 }
-

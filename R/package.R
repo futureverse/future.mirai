@@ -3,10 +3,7 @@
 #' The \pkg{future.mirai} package implements the Future API
 #' using the \pkg{mirai} package.
 #'
-#' @examples
-#' \donttest{
-#' TRUE
-#' }
+#' @example incl/mirai_multisession.R
 #'
 #' @aliases future.mirai-package
 #' @name future.mirai

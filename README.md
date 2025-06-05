@@ -1,9 +1,10 @@
+
+
 <div id="badges"><!-- pkgdown markup -->
-<a href="https://CRAN.R-project.org/web/checks/check_results_future.mirai.html"><img b
-order="0" src="https://www.r-pkg.org/badges/version/future.mirai" alt="CRAN check status"/></a> <a href="https://github.com/futureverse/future.mirai/actions?query=workflow%3AR-CMD-check"><img border="0" src="https://github.com/futureverse/future.mirai/actions/workflows/R-CMD-check.yaml/badge.svg?branch=develop" alt="R CMD check status"/></a>  <a href="https://github.com/futureverse/future.mirai/actions?query=workflow%3Afuture_tests"><img border="0" src="https://github.com/futureverse/future.mirai/actions/workflows/future_tests.yaml/badge.svg?branch=develop" alt="future.tests checks status"/></a>   <a href="https://app.codecov.io/gh/futureverse/future.mirai"><img border="0" src="https://codecov.io/gh/futureverse/future.mirai/branch/develop/graph/badge.svg" alt="Coverage Status"/></a> 
+<a href="https://CRAN.R-project.org/web/checks/check_results_future.mirai.html"><img border="0" src="https://www.r-pkg.org/badges/version/future.mirai" alt="CRAN check status"/></a> <a href="https://github.com/futureverse/future.mirai/actions?query=workflow%3AR-CMD-check"><img border="0" src="https://github.com/futureverse/future.mirai/actions/workflows/R-CMD-check.yaml/badge.svg?branch=develop" alt="R CMD check status"/></a>  <a href="https://github.com/futureverse/future.mirai/actions?query=workflow%3Afuture_tests"><img border="0" src="https://github.com/futureverse/future.mirai/actions/workflows/future_tests.yaml/badge.svg?branch=develop" alt="future.tests checks status"/></a>   <a href="https://app.codecov.io/gh/futureverse/future.mirai"><img border="0" src="https://codecov.io/gh/futureverse/future.mirai/branch/develop/graph/badge.svg" alt="Coverage Status"/></a> 
 </div>
 
-# future.mirai: A Future API for Parallel Processing using 'mirai' 
+# future.mirai: A 'Future' API for Parallel Processing using 'mirai' 
 
 ## Introduction
 
@@ -54,7 +55,7 @@ evaluating R expression in separate R processes running on the local
 machine or on one or more remote machines.  Centrally to **mirai** is
 its highly-optimized queueing mechanism, which is used to orchestrate
 communication between the main R process and parallel workers. A
-**mirai** cluster of workers can be configured to communicate securly
+**mirai** cluster of workers can be configured to communicate securely
 via the well-established Transport Layer Security (TLS) protocol.
 
 Another advantage with `mirai_*` futures, compared to `multisession`
@@ -84,7 +85,7 @@ plan(mirai_multisession)
 demo("mandelbrot", package = "future", ask = FALSE)
 ```
 
-To use `mirai_cluster` futures, use:
+and
 
 ```r
 library(future.mirai)
@@ -95,12 +96,15 @@ demo("mandelbrot", package = "future", ask = FALSE)
 ```
 
 
+[mirai]: https://cran.r-project.org/package=mirai
+[future]: https://cran.r-project.org/package=future
+[future.mirai]: https://github.com/futureverse/future.mirai
+[future.apply]: https://cran.r-project.org/package=future.apply
+[furrr]: https://cran.r-project.org/package=furrr
+[doFuture]: https://cran.r-project.org/package=doFuture
+
 ## Installation
-
-R package **future.mirai** is available on
-[CRAN](https://cran.r-project.org/package=future.mirai) and can be
-installed in R as:
-
+R package future.mirai is available on [CRAN](https://cran.r-project.org/package=future.mirai) and can be installed in R as:
 ```r
 install.packages("future.mirai")
 ```
@@ -108,21 +112,11 @@ install.packages("future.mirai")
 
 ### Pre-release version
 
-To install the pre-release version that is available in Git branch
-`develop` on GitHub, use:
-
+To install the pre-release version that is available in Git branch `develop` on GitHub, use:
 ```r
 remotes::install_github("futureverse/future.mirai", ref="develop")
 ```
-
-This will install the package from source.
-
-
-[mirai]: https://cran.r-project.org/package=mirai
-[future]: https://cran.r-project.org/package=future
-[future.mirai]: https://cran.r-project.org/package=future.mirai
-[future.apply]: https://cran.r-project.org/package=future.apply
-[furrr]: https://cran.r-project.org/package=furrr
-[doFuture]: https://cran.r-project.org/package=doFuture
+This will install the package from source.  
 
 <!-- pkgdown-drop-below -->
+
