@@ -92,6 +92,8 @@ launchFuture.MiraiFutureBackend <- local({
     reg <- backend[["reg"]]
     FutureRegistry(reg, action = "add", future = future, earlySignal = FALSE)
 
+    stopifnot(inherits(future[["mirai"]], "mirai"))
+
     invisible(future)
   }
 })
@@ -238,24 +240,27 @@ resolved.MiraiFuture <- function(x, ...) {
   
   resolved <- NextMethod()
   if(resolved) {
-    if (debug) mdebug("already resolved", debug = debug)
+    if (debug) mdebug("already resolved")
     return(TRUE)
   }
   
-  if(x[["state"]] == "finished") {
-    if (debug) mdebug("already resolved (state == finished)", debug = debug)
+  if(x[["state"]] %in% c("finished", "interrupted")) {
+    if (debug) mdebugf("already resolved (state == %s)", sQuote(x[["state"]]))
+    stopifnot(inherits(x[["mirai"]], "mirai"))
     return(TRUE)
   } else if(x[["state"]] == "created") { # Not yet submitted to queue (iff lazy)
     if (debug) mdebug("just created; launching")
     x <- run(x)
+    stopifnot(inherits(x[["mirai"]], "mirai"))
     return(FALSE)
   }
 
   if (debug) mdebug_push("mirai::unresolved() ...")
   mirai <- x[["mirai"]]
+  stopifnot(inherits(mirai, "mirai"))
   res <- unresolved(mirai)
   if (debug) {
-    mstr(res, debug = debug)
+    mstr(res)
     mdebug_pop()
   }
   
@@ -266,14 +271,19 @@ resolved.MiraiFuture <- function(x, ...) {
 #' @importFrom future result FutureInterruptError
 #' @export
 result.MiraiFuture <- function(future, ...) {
-  if(isTRUE(future[["state"]] == "finished")) {
-    return(future[["result"]])
-  }
-
   debug <- isTRUE(getOption("future.mirai.debug"))
   if (debug) {
     mdebugf_push("result() for %s ...", class(future)[1])
+    mdebugf("Future state: %s", sQuote(future[["state"]]))
     on.exit(mdebug_pop())
+  }
+
+
+  state <- future[["state"]]
+  if (state == "finished") {
+    return(future[["result"]])
+  } else if (state == "interrupted") {
+    stop(future[["result"]])
   }
 
   backend <- future[["backend"]]
@@ -286,22 +296,34 @@ result.MiraiFuture <- function(future, ...) {
     dt <- dt[dt > 0]
     dt_str <- paste(sprintf("%s=%gs", names(dt), dt), collapse = ", ")
     mdebugf("collected mirai in %s", dt_str)
+    mdebugf("mirai result class: %s", class(result)[1])
   }
 
   if (inherits(result, "errorValue")) {
-    label <- sQuoteLabel(future[["label"]])
-
-    if (result == 20L) {
-      state <- future[["state"]]
-      stop_if_not(state %in% c("canceled", "interrupted", "running"))
+    if (debug) mdebugf("mirai error value: %s", result)
     
-      event <- if (state %in% "running") {
-        event <- sprintf("failed for unknown reason while %s", state)
-        future[["state"]] <- "interrupted"
-      } else {
-        event <- sprintf("was %s", state)
+    label <- sQuoteLabel(future)
+
+    if (result %in% c(19L, 20L)) {
+      stop_if_not(state %in% c("canceled", "interrupted", "running"))
+      
+      if (result == 19L) {
+        ## "If a daemon crashes or terminates unexpectedly during evaluation,
+        ##  an 'errorValue' 19 (Connection reset) is returned."
+        ## Source: help("collect_mirai", package = "mirai")
+        event <- sprintf("was terminated while %s", state)
+      } else if (result == 20L) {
+        ## "Stops a 'mirai' if still in progress, causing it to resolve
+        ##  immediately to an 'errorValue' 20 (Operation canceled)."
+        ## Source: help("stop_mirai", package = "mirai")
+        event <- if (state %in% "running") {
+          event <- sprintf("failed for unknown reason while %s", state)
+        } else {
+          event <- sprintf("was %s", state)
+        }
       }
 
+      future[["state"]] <- "interrupted"
       msg <- sprintf("Future (%s) of class %s %s, while running on localhost (error code %d)", label, class(future)[1], event, result)
       if (debug) mdebug(msg)
       result <- FutureInterruptError(msg, future = future)
@@ -353,6 +375,7 @@ mirai_version <- local({
 #' @importFrom mirai call_mirai
 mirai_collect_future <- function(future) {
   mirai <- future[["mirai"]]
+  stopifnot(inherits(mirai, "mirai"))
   call_mirai(mirai)$data
 }
 
@@ -362,6 +385,7 @@ mirai_collect_future <- function(future) {
 #' @export
 interruptFuture.MiraiFutureBackend <- function(backend, future, ...) {
   mirai <- future[["mirai"]]
+  stopifnot(inherits(mirai, "mirai"))
   stop_mirai(mirai)
   future[["state"]] <- "interrupted"
   future
