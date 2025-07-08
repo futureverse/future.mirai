@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">future.mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0-9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0-9003</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,10 +67,15 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="version-development-version">Version (development version)<a class="anchor" aria-label="anchor" href="#version-development-version"></a></h2>
-<ul><li>…</li>
+<div class="section level3">
+<h3 id="bug-fix-development-version">Bug Fix<a class="anchor" aria-label="anchor" href="#bug-fix-development-version"></a></h3>
+<ul><li><p>If a mirai future that was terminated abruptly (e.g. via <code><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">tools::pskill()</a></code> or by the operating system), then it was not detected as such. Instead it resulted in an unexpected error that could not be recovered from. Now it is detected and a <code>FutureInterruptError</code> is signaled, which can then be handled and the future may be <code><a href="https://future.futureverse.org/reference/reset.html" class="external-link">reset()</a></code>.</p></li>
+<li><p><code><a href="https://future.futureverse.org/reference/result.html" class="external-link">result()</a></code> on an interrupted mirai future would only throw FutureInterruptError the first time. Succeeding calls would result in other errors.</p></li>
+<li><p><code><a href="https://future.futureverse.org/reference/resolved.html" class="external-link">resolved()</a></code> on a mirai future already known to be interrupted would requery the mirai object, instead of returning TRUE immediately.</p></li>
 </ul></div>
+</div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.10.0" id="version-0100">Version 0.10.0<a class="anchor" aria-label="anchor" href="#version-0100"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.10.0" id="version-0100">Version 0.10.0<a class="anchor" aria-label="anchor" href="#version-0100"></a></h2><p class="text-muted">CRAN release: 2025-06-05</p>
 <div class="section level3">
 <h3 id="new-features-0-10-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-0"></a></h3>
 <ul><li><p>Now ‘mirai’ futures can be canceled using <code><a href="https://future.futureverse.org/reference/cancel.html" class="external-link">cancel()</a></code>, which also interrupts them by default, which in turn frees up compute resources sooner. Map-reduce API such as <strong>future.apply</strong>, <strong>doFuture</strong>, and <strong>furrr</strong> can take advantage of this by canceling all non-resolved futures whenever they detect an error in one of the futures. Also, canceled futures can be <code><a href="https://future.futureverse.org/reference/reset.html" class="external-link">reset()</a></code> and thereafter relaunched, possibly on another future backend.</p></li>
