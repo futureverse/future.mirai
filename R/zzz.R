@@ -21,13 +21,21 @@ with_assert <- function(expr, ...) { invisible(expr) }
   }
 
   ## Set 'debug' option by environment variable
-  value <- Sys.getenv("R_FUTURE_MIRAI_DEBUG", "FALSE")
-  value <- isTRUE(suppressWarnings(as.logical(value)))
-  options(future.mirai.debug = value)
+  value <- getOption("future.mirai.debug")
+  if (is.null(value)) {
+    value <- Sys.getenv("R_FUTURE_MIRAI_DEBUG", NA_character_)
+    if (!is.na(value)) {
+      value <- isTRUE(suppressWarnings(as.logical(value)))
+      options(future.mirai.debug = value)
+    }
+  }
 
   ## Set 'queue' option by environment variable
-  value <- Sys.getenv("R_FUTURE_MIRAI_QUEUE", NA_character_)
-  if (!is.na(value)) {
-    options(future.mirai.queue = value)
+  value <- getOption("future.mirai.queue")
+  if (is.null(value)) {
+    value <- Sys.getenv("R_FUTURE_MIRAI_QUEUE", NA_character_)
+    if (!is.na(value)) {
+      options(future.mirai.queue = value)
+    }
   }
 }
