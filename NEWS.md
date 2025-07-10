@@ -1,3 +1,23 @@
+# Version 0.10.1
+
+## Bug Fix
+
+ * If a mirai future that was terminated abruptly (e.g. via
+   `tools::pskill()` or by the operating system), then it was not
+   detected as such. Instead it resulted in an unexpected error that
+   could not be recovered from. Now it is detected and a
+   `FutureInterruptError` is signaled, which can then be handled and
+   the future may be `reset()`.
+
+ * `result()` on an interrupted mirai future would only throw
+   FutureInterruptError the first time. Succeeding calls would result
+   in other errors.
+ 
+ * `resolved()` on a mirai future already known to be interrupted
+   would requery the mirai object, instead of returning TRUE
+   immediately.
+ 
+
 # Version 0.10.0
 
 ## New Features

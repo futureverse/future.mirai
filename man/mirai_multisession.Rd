@@ -9,7 +9,10 @@ mirai_multisession(..., workers = availableCores(), envir = parent.frame())
 \arguments{
 \item{workers}{The number of parallel processes to use.
 If a function, it is called without arguments \emph{when the future
-is created} and its value is used to configure the workers.}
+is created} and its value is used to configure the workers.
+If \code{workers == 1}, then all processing using done in the
+current/main \R session and we therefore fall back to using a
+sequential future. To override this fallback, use \code{workers = I(1)}.}
 
 \item{envir}{The \link{environment} from where global objects should be
 identified.}
