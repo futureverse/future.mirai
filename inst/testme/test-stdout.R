@@ -2,7 +2,7 @@
 #' @tags detritus-files
 #' @tags mirai_multisession
 
-library(future.mirai)
+library(future)
 
 message("*** Standard output ...")
 
@@ -17,7 +17,7 @@ truth <- paste0(paste(truth_rows, collapse = "\n"), "\n")
 print(truth)
 
 message("mirai_multisession ...")
-plan(mirai_multisession)
+plan(future.mirai::mirai_multisession)
 
 for (stdout in c(TRUE, FALSE, NA)) {
   message(sprintf("- stdout = %s", stdout))

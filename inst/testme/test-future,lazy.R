@@ -1,6 +1,7 @@
 #' @tags detritus-files
 #' @tags mirai_cluster mirai_multisession
 
+library(future)
 library(future.mirai)
 
 message("*** Futures - lazy ...")

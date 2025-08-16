@@ -11,6 +11,7 @@ future::plan(oplan)
 print(future::plan())
 
 
+library(future)
 library(future.mirai)
 
 for (type in c("mirai_multisession")) {
@@ -41,7 +42,7 @@ message("*** Assert that default backend can be overridden ...")
 mpid <- Sys.getpid()
 print(mpid)
 
-plan(mirai_multisession)
+plan(future.mirai::mirai_multisession)
 
 pid %<-% { Sys.getpid() }
 print(pid)

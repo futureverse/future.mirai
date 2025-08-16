@@ -3,10 +3,10 @@
 #' @tags detritus-files
 #' @tags mirai_multisession
 
-library(future.mirai)
+library(future)
 library(listenv)
 
-plan(mirai_multisession)
+plan(future.mirai::mirai_multisession)
 
 message("*** Tricky use cases related to globals ...")
 

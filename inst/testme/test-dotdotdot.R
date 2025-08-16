@@ -2,6 +2,7 @@
 #' @tags listenv
 #' @tags mirai_cluster mirai_multisession
 
+library(future)
 library(future.mirai)
 library(listenv)
 

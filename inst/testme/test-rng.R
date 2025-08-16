@@ -2,13 +2,13 @@
 #' @tags detritus-files
 #' @tags mirai_multisession
 
-library(future.mirai)
+library(future)
 
 options(future.debug = FALSE)
 
 message("*** RNG ...")
 
-plan(mirai_multisession, workers = 2L)
+plan(future.mirai::mirai_multisession, workers = 2L)
 
 message("- run() does not update RNG state")
 

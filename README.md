@@ -21,8 +21,8 @@ utilizes the **[mirai]** package.
 For example,
 
 ```r
-> library(future.mirai)
-> plan(mirai_multisession)
+> library(future)
+> plan(future.mirai::mirai_multisession)
 >
 > x %<-% { Sys.sleep(5); 3.14 }
 > y %<-% { Sys.sleep(5); 2.71 }
@@ -79,8 +79,8 @@ futures are evaluated_.  For instance, to use `mirai_multisession`
 futures, run the demo as:
 
 ```r
-library(future.mirai)
-plan(mirai_multisession)
+library(future)
+plan(future.mirai::mirai_multisession)
 
 demo("mandelbrot", package = "future", ask = FALSE)
 ```
@@ -88,9 +88,9 @@ demo("mandelbrot", package = "future", ask = FALSE)
 and
 
 ```r
-library(future.mirai)
+library(future)
 mirai::daemons(2)
-plan(mirai_cluster)
+plan(future.mirai::mirai_cluster)
 
 demo("mandelbrot", package = "future", ask = FALSE)
 ```

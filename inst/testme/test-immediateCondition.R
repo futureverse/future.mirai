@@ -2,6 +2,7 @@
 #' @tags sequential multisession multicore
 
 library(future)
+library(future.mirai)
 options(future.debug = FALSE)
 
 f_try <- function(f, ...) {

@@ -6,6 +6,7 @@
 # Run this test with debug on mostly to increase test coverage
 options(future.debug = TRUE)
 
+library(future)
 library(future.mirai)
 library(listenv)
 

@@ -10,7 +10,8 @@ The \pkg{future.mirai} package implements the Future API
 using the \pkg{mirai} package.
 }
 \examples{
-plan(mirai_multisession)
+library(future)
+plan(future.mirai::mirai_multisession)
 
 # A function that returns a future
 # (note that N is a global variable)
