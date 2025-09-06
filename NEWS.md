@@ -1,6 +1,9 @@
 # Version (development version)
 
- * ...
+## Documentation
+
+ * Add 'Launch mirai workers via HPC job scheduler' section to
+   `help("mirai_cluster", package = "future.mirai")`.
 
 
 # Version 0.10.1
@@ -19,7 +22,7 @@
    in other errors.
  
  * `resolved()` on a mirai future already known to be interrupted
-   would requery the mirai object, instead of returning TRUE
+   would re-query the mirai object, instead of returning TRUE
    immediately.
  
 
