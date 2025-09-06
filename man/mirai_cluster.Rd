@@ -58,7 +58,7 @@ Slurm scheduler and then use these in futureverse.
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{# Here we give each worker 200 MiB of RAM and a maximum of one hour
 # to run. Unless we specify '--cpus-per-task=N', each mirai worker
-# is allotted one CPU core, which impacts nested parallelization. 
+# is allotted one CPU core, which prevents nested parallelization. 
 # R is provided via environment module 'r' on this cluster.
 config <- mirai::cluster_config(command = "sbatch", options = "
   #SBATCH --job-name=mirai
@@ -97,16 +97,7 @@ mirai::daemons(0)
 
 If you are on SGE, you can use the following configuration:
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{# -----------------------------------------------------------
-# Configure mirai to launch R workers via the job scheduler
-# -----------------------------------------------------------
-# Here we give each worker 200 MiB of RAM and a maximum of
-# one hour to run. Unless we specify '-l pe smp N', each
-# mirai worker is allotted one CPU core, which impacts
-# nested parallelization. To make sure R is available to
-# launch the mirai workers, we load environment module
-# 'r/x.y.z', where 'x.y.z' is the current R version.
-config <- mirai::cluster_config(command = "qsub", options = "
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{config <- mirai::cluster_config(command = "qsub", options = "
   #$ -N mirai
   #$ -j y
   #$ -cwd
