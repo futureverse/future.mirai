@@ -454,8 +454,8 @@ tweak.mirai_cluster <- function(strategy, ..., penvir = parent.frame()) {
 #'
 #' ```r
 #' # Here we give each worker 200 MiB of RAM and a maximum of one hour
-#' # to run. Unless we specify '-l pe smp N', each mirai worker is
-#' # allotted one CPU core, which impacts nested parallelization. 
+#' # to run. Unless we specify '--cpus-per-task=N', each mirai worker
+#' # is allotted one CPU core, which impacts nested parallelization. 
 #' # R is provided via environment module 'r' on this cluster.
 #' config <- mirai::cluster_config(command = "sbatch", options = "
 #'   #SBATCH --job-name=mirai
