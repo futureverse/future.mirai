@@ -96,46 +96,56 @@ identified.</p></dd>
     <p>Nothing.</p>
     </div>
     <div class="section level2">
-    <h2 id="launch-mirai-workers-via-an-hpc-job-scheduler">Launch mirai workers via an HPC job scheduler<a class="anchor" aria-label="anchor" href="#launch-mirai-workers-via-an-hpc-job-scheduler"></a></h2>
+    <h2 id="launch-mirai-workers-via-hpc-job-scheduler">Launch mirai workers via HPC job scheduler<a class="anchor" aria-label="anchor" href="#launch-mirai-workers-via-hpc-job-scheduler"></a></h2>
 
 
 
-<p>If you have access to a high-performance-compute (HPC) enviroment
+<p>If you have access to a high-performance-compute (HPC) environment
 with a job scheduler, you can use <strong>future.mirai</strong> and <strong>mirai</strong>
 to run parallel workers distributed on the computer cluster.
 How to set these workers up is explained in <code><a href="https://mirai.r-lib.org/reference/cluster_config.html" class="external-link">mirai::cluster_config()</a></code>,
 which should work for our most common job schedulers, e.g. Slurm,
 Sun/Son of/Oracle/Univa/Altair Grid Engine (SGE), OpenLava,
-Load Sharing Facility (LSF), and TORQUE/PBS. Briefly, to launch a
-cluster of mirai workers on an HPC cluster, we need to:</p><ol><li><p>configure <code><a href="https://mirai.r-lib.org/reference/cluster_config.html" class="external-link">mirai::cluster_config()</a></code> for the job scheduler,</p></li>
+Load Sharing Facility (LSF), and TORQUE/PBS.</p>
+<p><em>Note: Not all compute clusters support running <strong>mirai</strong> workers
+this way. This is because <strong>mirai</strong> workers need to establish a
+TCP connection back to machine that launched the workers, but some
+systems have security policies disallowing such connections from
+being established. This is often configured in the firewall and
+can only be controlled by the admins. If your system has such
+rules, you will find that the mirai jobs are launched and running
+on the scheduler, but we will wait forever for the mirai workers
+to connect back, i.e. <code>mirai::info()[["connections"]]</code> is always
+zero in the below example.</em></p>
+<p>Briefly, to launch a cluster of mirai workers on an HPC cluster, we
+need to:</p><ol><li><p>configure <code><a href="https://mirai.r-lib.org/reference/cluster_config.html" class="external-link">mirai::cluster_config()</a></code> for the job scheduler,</p></li>
 <li><p>use configuration to launch workers using <code><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">mirai::daemons()</a></code>.</p></li>
 </ol><p>The first step is specific to each job scheduler and this is where
 you control things such as how much memory each worker gets, for
 how long the may run, which environment modules to load, and which
 environment modules to load, if any.
-The second step is the same regardless of job scheduler.</p>
-<p>Here is an example for how to run parallel mirai workers on a
+The second step is the same regardless of job scheduler.
+Here is an example for how to run parallel mirai workers on a
 Slurm scheduler and then use these in futureverse.</p>
-<p></p><div class="sourceCode r"><pre><code><span><span class="co"># Here we give each worker 200 MiB of RAM and a maximum of</span></span>
-<span><span class="co"># one hour to run. Unless we specify '-l pe smp N', each</span></span>
-<span><span class="co"># mirai worker is allotted one CPU core, which impacts</span></span>
-<span><span class="co"># nested parallelization. To make sure R is available to</span></span>
-<span><span class="co"># launch the mirai workers, we load environment module</span></span>
-<span><span class="co"># 'r/x.y.z', where 'x.y.z' is the current R version.</span></span>
-<span><span class="va">job_template</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"#SBATCH --job-name=mirai"</span>,</span>
-<span>  <span class="st">"#SBATCH --time=01:00:00"</span>,</span>
-<span>  <span class="st">"#SBATCH --mem=200M"</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"module load r/%s"</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html" class="external-link">getRversion</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<p></p><div class="sourceCode r"><pre><code><span><span class="co"># Here we give each worker 200 MiB of RAM and a maximum of one hour</span></span>
+<span><span class="co"># to run. Unless we specify '-l pe smp N', each mirai worker is</span></span>
+<span><span class="co"># allotted one CPU core, which impacts nested parallelization.</span></span>
+<span><span class="co"># R is provided via environment module 'r' on this cluster.</span></span>
+<span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://mirai.r-lib.org/reference/cluster_config.html" class="external-link">cluster_config</a></span><span class="op">(</span>command <span class="op">=</span> <span class="st">"sbatch"</span>, options <span class="op">=</span> <span class="st">"</span></span>
+<span><span class="st">  #SBATCH --job-name=mirai</span></span>
+<span><span class="st">  #SBATCH --time=01:00:00</span></span>
+<span><span class="st">  #SBATCH --mem=200M</span></span>
+<span><span class="st">  module load r</span></span>
+<span><span class="st">"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># -----------------------------------------------------------</span></span>
-<span><span class="co"># Launch eight mirai workers, via equally many jobs, and</span></span>
-<span><span class="co"># use these in futureverse</span></span>
-<span><span class="co"># -----------------------------------------------------------</span></span>
-<span><span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">daemons</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">8</span>, url <span class="op">=</span> <span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://mirai.r-lib.org/reference/host_url.html" class="external-link">host_url</a></span><span class="op">(</span><span class="op">)</span>, remote <span class="op">=</span> <span class="va">config</span><span class="op">)</span></span>
+<span><span class="co"># -------------------------------------------------------------------</span></span>
+<span><span class="co"># Launch eight mirai workers, via equally many jobs, wait for all of</span></span>
+<span><span class="co"># them to become available, and use them in futureverse</span></span>
+<span><span class="co"># -------------------------------------------------------------------</span></span>
+<span><span class="va">workers</span> <span class="op">&lt;-</span> <span class="fl">8</span></span>
+<span><span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">daemons</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">workers</span>, url <span class="op">=</span> <span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://mirai.r-lib.org/reference/host_url.html" class="external-link">host_url</a></span><span class="op">(</span><span class="op">)</span>, remote <span class="op">=</span> <span class="va">config</span><span class="op">)</span></span>
+<span><span class="kw">while</span><span class="op">(</span><span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://mirai.r-lib.org/reference/info.html" class="external-link">info</a></span><span class="op">(</span><span class="op">)</span><span class="op">[[</span><span class="st">"connections"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;</span> <span class="va">workers</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">1.0</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="fu">future.mirai</span><span class="fu">::</span><span class="va"><a href="../reference/mirai_cluster.html">mirai_cluster</a></span><span class="op">)</span></span>
-<span></span>
 <span></span>
 <span><span class="co"># Verify that futures are resolved on a compute node</span></span>
 <span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://future.futureverse.org/reference/future.html" class="external-link">future</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -151,7 +161,6 @@ Slurm scheduler and then use these in futureverse.</p>
 <span><span class="co">#&gt;   hostname    os cores  modules</span></span>
 <span><span class="co">#&gt; 1      n12 Linux     1  r/4.5.1</span></span>
 <span></span>
-<span></span>
 <span><span class="co"># Shut down parallel workers</span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span>
 <span><span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></code></pre><p></p></div>
@@ -165,20 +174,14 @@ Slurm scheduler and then use these in futureverse.</p>
 <span><span class="co"># nested parallelization. To make sure R is available to</span></span>
 <span><span class="co"># launch the mirai workers, we load environment module</span></span>
 <span><span class="co"># 'r/x.y.z', where 'x.y.z' is the current R version.</span></span>
-<span><span class="va">job_template</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"#$ -N mirai"</span>,</span>
-<span>  <span class="st">"#$ -j y"</span>,</span>
-<span>  <span class="st">"#$ -cwd"</span>,</span>
-<span>  <span class="st">"#$ -l h_rt=01:00:00"</span>,</span>
-<span>  <span class="st">"#$ -l mem_free=200M"</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"module load r/%s"</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html" class="external-link">getRversion</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://mirai.r-lib.org/reference/cluster_config.html" class="external-link">cluster_config</a></span><span class="op">(</span></span>
-<span>  command <span class="op">=</span> <span class="st">"qsub"</span>,</span>
-<span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">job_template</span>, collapse <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span>,</span>
-<span>  rscript <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="st">"bin"</span><span class="op">)</span>, <span class="st">"Rscript"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre><p></p></div>
+<span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://mirai.r-lib.org/reference/cluster_config.html" class="external-link">cluster_config</a></span><span class="op">(</span>command <span class="op">=</span> <span class="st">"qsub"</span>, options <span class="op">=</span> <span class="st">"</span></span>
+<span><span class="st">  #$ -N mirai</span></span>
+<span><span class="st">  #$ -j y</span></span>
+<span><span class="st">  #$ -cwd</span></span>
+<span><span class="st">  #$ -l h_rt=01:00:00</span></span>
+<span><span class="st">  #$ -l mem_free=200M</span></span>
+<span><span class="st">  module load r</span></span>
+<span><span class="st">"</span><span class="op">)</span></span></code></pre><p></p></div>
 <p>Everything else is the same.</p>
 <p><em>Comment</em>: <code><a href="https://mirai.r-lib.org/reference/cluster_config.html" class="external-link">mirai::cluster_config()</a></code> configures the jobs to run vanilla
 POSIX shells, i.e. <code>/bin/sh</code>. This might be too strict for some users.
