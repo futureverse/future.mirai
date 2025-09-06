@@ -129,7 +129,7 @@ Here is an example for how to run parallel mirai workers on a
 Slurm scheduler and then use these in futureverse.</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="co"># Here we give each worker 200 MiB of RAM and a maximum of one hour</span></span>
 <span><span class="co"># to run. Unless we specify '--cpus-per-task=N', each mirai worker</span></span>
-<span><span class="co"># is allotted one CPU core, which impacts nested parallelization.</span></span>
+<span><span class="co"># is allotted one CPU core, which prevents nested parallelization.</span></span>
 <span><span class="co"># R is provided via environment module 'r' on this cluster.</span></span>
 <span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://mirai.r-lib.org/reference/cluster_config.html" class="external-link">cluster_config</a></span><span class="op">(</span>command <span class="op">=</span> <span class="st">"sbatch"</span>, options <span class="op">=</span> <span class="st">"</span></span>
 <span><span class="st">  #SBATCH --job-name=mirai</span></span>
@@ -165,16 +165,7 @@ Slurm scheduler and then use these in futureverse.</p>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span>
 <span><span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></code></pre><p></p></div>
 <p>If you are on SGE, you can use the following configuration:</p>
-<p></p><div class="sourceCode r"><pre><code><span><span class="co"># -----------------------------------------------------------</span></span>
-<span><span class="co"># Configure mirai to launch R workers via the job scheduler</span></span>
-<span><span class="co"># -----------------------------------------------------------</span></span>
-<span><span class="co"># Here we give each worker 200 MiB of RAM and a maximum of</span></span>
-<span><span class="co"># one hour to run. Unless we specify '-l pe smp N', each</span></span>
-<span><span class="co"># mirai worker is allotted one CPU core, which impacts</span></span>
-<span><span class="co"># nested parallelization. To make sure R is available to</span></span>
-<span><span class="co"># launch the mirai workers, we load environment module</span></span>
-<span><span class="co"># 'r/x.y.z', where 'x.y.z' is the current R version.</span></span>
-<span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://mirai.r-lib.org/reference/cluster_config.html" class="external-link">cluster_config</a></span><span class="op">(</span>command <span class="op">=</span> <span class="st">"qsub"</span>, options <span class="op">=</span> <span class="st">"</span></span>
+<p></p><div class="sourceCode r"><pre><code><span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://mirai.r-lib.org/reference/cluster_config.html" class="external-link">cluster_config</a></span><span class="op">(</span>command <span class="op">=</span> <span class="st">"qsub"</span>, options <span class="op">=</span> <span class="st">"</span></span>
 <span><span class="st">  #$ -N mirai</span></span>
 <span><span class="st">  #$ -j y</span></span>
 <span><span class="st">  #$ -cwd</span></span>
