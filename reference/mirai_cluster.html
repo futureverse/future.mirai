@@ -128,8 +128,8 @@ The second step is the same regardless of job scheduler.
 Here is an example for how to run parallel mirai workers on a
 Slurm scheduler and then use these in futureverse.</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="co"># Here we give each worker 200 MiB of RAM and a maximum of one hour</span></span>
-<span><span class="co"># to run. Unless we specify '-l pe smp N', each mirai worker is</span></span>
-<span><span class="co"># allotted one CPU core, which impacts nested parallelization.</span></span>
+<span><span class="co"># to run. Unless we specify '--cpus-per-task=N', each mirai worker</span></span>
+<span><span class="co"># is allotted one CPU core, which impacts nested parallelization.</span></span>
 <span><span class="co"># R is provided via environment module 'r' on this cluster.</span></span>
 <span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://mirai.r-lib.org/reference/cluster_config.html" class="external-link">cluster_config</a></span><span class="op">(</span>command <span class="op">=</span> <span class="st">"sbatch"</span>, options <span class="op">=</span> <span class="st">"</span></span>
 <span><span class="st">  #SBATCH --job-name=mirai</span></span>
