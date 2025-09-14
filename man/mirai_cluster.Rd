@@ -79,10 +79,11 @@ plan(future.mirai::mirai_cluster)
 # Verify that futures are resolved on a compute node
 f <- future(\{
   data.frame(
-    hostname = Sys.info()[["nodename"]],
-          os = Sys.info()[["sysname"]],
-       cores = unname(parallelly::availableCores()),
-     modules = Sys.getenv("LOADEDMODULES")
+     hostname = Sys.info()[["nodename"]],
+           os = Sys.info()[["sysname"]],
+    osVersion = utils::osVersion,
+        cores = unname(parallelly::availableCores()),
+      modules = Sys.getenv("LOADEDMODULES")
   )
 \})
 info <- value(f)
