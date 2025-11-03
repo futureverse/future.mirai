@@ -109,7 +109,7 @@ Sun/Son of/Oracle/Univa/Altair Grid Engine (SGE), OpenLava,
 Load Sharing Facility (LSF), and TORQUE/PBS.</p>
 <p><em>Note: Not all compute clusters support running <strong>mirai</strong> workers
 this way. This is because <strong>mirai</strong> workers need to establish a
-TCP connection back to machine that launched the workers, but some
+TCP connection back to the machine that launched the workers, but some
 systems have security policies disallowing such connections from
 being established. This is often configured in the firewall and
 can only be controlled by the admins. If your system has such
@@ -122,7 +122,7 @@ need to:</p><ol><li><p>configure <code><a href="https://mirai.r-lib.org/referenc
 <li><p>use configuration to launch workers using <code><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">mirai::daemons()</a></code>.</p></li>
 </ol><p>The first step is specific to each job scheduler and this is where
 you control things such as how much memory each worker gets, for
-how long the may run, which environment modules to load, and which
+how long they may run, which environment modules to load, and which
 environment modules to load, if any.
 The second step is the same regardless of job scheduler.
 Here is an example for how to run parallel mirai workers on a
@@ -160,7 +160,7 @@ Slurm scheduler and then use these in futureverse.</p>
 <span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://future.futureverse.org/reference/value.html" class="external-link">value</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">info</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   hostname    os                osVersion cores  modules</span></span>
-<span><span class="co">#&gt; 1      n12 Linux Linux Ubuntu 24.04.3 LTS     1  r/4.5.1</span></span>
+<span><span class="co">#&gt; 1      n12 Linux Linux Ubuntu 24.04.3 LTS     1  r/4.5.2</span></span>
 <span></span>
 <span><span class="co"># Shut down parallel workers</span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span>
