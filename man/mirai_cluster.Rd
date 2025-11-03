@@ -32,7 +32,7 @@ Load Sharing Facility (LSF), and TORQUE/PBS.
 
 \emph{Note: Not all compute clusters support running \strong{mirai} workers
 this way. This is because \strong{mirai} workers need to establish a
-TCP connection back to machine that launched the workers, but some
+TCP connection back to the machine that launched the workers, but some
 systems have security policies disallowing such connections from
 being established. This is often configured in the firewall and
 can only be controlled by the admins. If your system has such
@@ -50,7 +50,7 @@ need to:
 
 The first step is specific to each job scheduler and this is where
 you control things such as how much memory each worker gets, for
-how long the may run, which environment modules to load, and which
+how long they may run, which environment modules to load, and which
 environment modules to load, if any.
 The second step is the same regardless of job scheduler.
 Here is an example for how to run parallel mirai workers on a
@@ -88,8 +88,8 @@ f <- future(\{
 \})
 info <- value(f)
 print(info)
-#>   hostname    os cores  modules
-#> 1      n12 Linux     1  r/4.5.1
+#>   hostname    os                osVersion cores  modules
+#> 1      n12 Linux Linux Ubuntu 24.04.3 LTS     1  r/4.5.2
 
 # Shut down parallel workers
 plan(sequential)
