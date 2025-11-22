@@ -17,6 +17,7 @@ jobs:
       matrix:
         future:
           - { plan: 'future.mirai::mirai_multisession' }
+          - { plan: 'mirai::daemons(2); plan(future.mirai::mirai_cluster)' }
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -62,7 +63,10 @@ jobs:
         run: |
           remotes::install_cran("future.tests")
           remotes::install_github("HenrikBengtsson/future.tests", ref="develop")
-          if (grepl("::", plan <- "${{ matrix.future.plan }}") && nzchar(pkg <- sub("::.*", "", plan))) install.packages(pkg)
+          ## Identify and install future backend package in 'plan' variable, if any
+          plan <- "${{ matrix.future.plan }}"
+          pattern <- ".*(future[.][[:alnum:]]+)::[[:alnum:]]+.*"
+          if (grepl(pattern, plan) && nzchar(pkg <- sub(pattern, "\\1", plan))) install.packages(pkg)
         shell: Rscript {0}
 
       - name: Session info
