@@ -80,7 +80,7 @@ jobs:
         run: |
           R CMD build --no-build-vignettes --no-manual . 
           R CMD INSTALL *.tar.gz 
-          Rscript -e future.tests::check --args --test-plan=${{ matrix.future.plan }}
+          Rscript -e future.tests::check --args --test-plan="${{ matrix.future.plan }}"
 
       - name: Upload check results
         if: failure()
