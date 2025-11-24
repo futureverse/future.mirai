@@ -278,12 +278,13 @@ result.MiraiFuture <- function(future, ...) {
     on.exit(mdebug_pop())
   }
 
-
   state <- future[["state"]]
   if (state == "finished") {
     return(future[["result"]])
   } else if (state == "canceled") {
-    return(future[["result"]])
+    ## Backward compatibility with future (<= 1.68.0)
+    result <- future[["result"]]
+    if (!is.null(result)) return(result)
   } else if (state == "interrupted") {
     stop(future[["result"]])
   }
