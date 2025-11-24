@@ -282,6 +282,8 @@ result.MiraiFuture <- function(future, ...) {
   state <- future[["state"]]
   if (state == "finished") {
     return(future[["result"]])
+  } else if (state == "canceled") {
+    return(future[["result"]])
   } else if (state == "interrupted") {
     stop(future[["result"]])
   }
