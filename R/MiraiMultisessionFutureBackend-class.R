@@ -1,4 +1,5 @@
 #' @importFrom mirai daemons status
+#' @importFrom parallelly availableCores
 #' @importFrom future FutureBackend SequentialFutureBackend
 #' @export
 MiraiMultisessionFutureBackend <- local({

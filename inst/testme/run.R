@@ -122,7 +122,6 @@ main <- function() {
   ## Fallback for 'testme_name'?
   if (is.null(testme_name)) {
     if (length(cmd_args) > 0) {
-      stopifnot(length(cmd_args) == 1L)
       file <- cmd_args[1]
       if (utils::file_test("-f", file)) {
         testme_name <- gsub("(^test-|[.]R$)", "", basename(file))

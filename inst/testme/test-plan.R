@@ -2,6 +2,9 @@
 #' @tags detritus-files
 #' @tags mirai_multisession
 
+options(future.debug = TRUE)
+options(future.mirai.debug = TRUE)
+
 message("*** plan() ...")
 
 message("*** future::plan(future.mirai::mirai_multisession)")
