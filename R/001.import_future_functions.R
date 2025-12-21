@@ -11,6 +11,9 @@ sQuoteLabel <- NULL
 
 ## Import private functions from 'future'
 import_future_functions <- function() {
+  ## Already done?
+  if (is.function(readImmediateConditions)) return()
+  
   readImmediateConditions <<- import_future("readImmediateConditions")
   signalEarly <<- import_future("signalEarly")
   FutureRegistry <<- import_future("FutureRegistry")
