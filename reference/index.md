@@ -3,7 +3,7 @@
 ## All functions
 
 - [`MiraiFutureBackend()`](https://future.mirai.futureverse.org/reference/MiraiFutureBackend.md)
-  : A future backend based based on the 'mirai' framework
+  : A future backend based on the 'mirai' framework
 - [`future.mirai`](https://future.mirai.futureverse.org/reference/future.mirai.md)
   [`future.mirai-package`](https://future.mirai.futureverse.org/reference/future.mirai.md)
   : future.mirai: A Future API for Parallel Processing using 'mirai'

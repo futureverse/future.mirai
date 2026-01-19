@@ -1,4 +1,4 @@
-# A future backend based based on the 'mirai' framework
+# A future backend based on the 'mirai' framework
 
 Set up the future parameters.
 
