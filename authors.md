@@ -6,7 +6,7 @@
   [](https://orcid.org/0000-0002-7579-5165)
 
 - **Charlie Gao**. Contributor.
-  [](https://orcid.org/0000-0002-0750-061X)  
+  [](https://orcid.org/0000-0002-0750-061X)\
   For 'mirai'-related patches and implementing feature requests in
   'mirai'
 

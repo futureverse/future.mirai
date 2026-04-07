@@ -41,10 +41,10 @@ as those of
 The **future.mirai** package implements a **future** backend wrapper for
 **mirai**.
 
-| Backend              | Description                                                      | Alternative in future package |
-|:---------------------|:-----------------------------------------------------------------|:------------------------------|
-| `mirai_multisession` | parallel evaluation in separate R processes (on current machine) | `plan(multisession)`          |
-| `mirai_cluster`      | parallel evaluation in mirai-configured workers                  | `plan(cluster)`               |
+| Backend | Description | Alternative in future package |
+|:---|:---|:---|
+| `mirai_multisession` | parallel evaluation in separate R processes (on current machine) | `plan(multisession)` |
+| `mirai_cluster` | parallel evaluation in mirai-configured workers | `plan(cluster)` |
 
 ### Advantages of mirai futures
 
@@ -76,6 +76,7 @@ used. *The user has full control of how futures are evaluated*. For
 instance, to use `mirai_multisession` futures, run the demo as:
 
 ``` r
+
 library(future)
 plan(future.mirai::mirai_multisession)
 
@@ -85,6 +86,7 @@ demo("mandelbrot", package = "future", ask = FALSE)
 and
 
 ``` r
+
 library(future)
 mirai::daemons(2)
 plan(future.mirai::mirai_cluster)
@@ -99,6 +101,7 @@ R package future.mirai is available on
 installed in R as:
 
 ``` r
+
 install.packages("future.mirai")
 ```
 
@@ -108,6 +111,7 @@ To install the pre-release version that is available in Git branch
 `develop` on GitHub, use:
 
 ``` r
+
 remotes::install_github("futureverse/future.mirai", ref="develop")
 ```
 
