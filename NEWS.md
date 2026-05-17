@@ -6,7 +6,7 @@
    `help("mirai_cluster", package = "future.mirai")`.
 
 
-# Version 0.10.1
+# Version 0.10.1 [2025-07-10]
 
 ## Bug Fix
 
@@ -26,7 +26,7 @@
    immediately.
  
 
-# Version 0.10.0
+# Version 0.10.0 [2025-06-05]
 
 ## New Features
 
@@ -43,7 +43,7 @@
    **progressr** package.
 
 
-# Version 0.2.2
+# Version 0.2.2 [2024-07-03]
 
 ## Miscellaneous
 
@@ -51,7 +51,7 @@
    argument `resilience` is being removed.
  
 
-# Version 0.2.1
+# Version 0.2.1 [2024-05-15]
 
 ## Bug Fix
  
@@ -61,7 +61,7 @@
    `FutureError`.
   
 
-# Version 0.2.0
+# Version 0.2.0 [2024-04-18]
 
  * First public release.
 
