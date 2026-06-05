@@ -18,11 +18,17 @@ Useful links:
 **Maintainer**: Henrik Bengtsson <henrikb@braju.com>
 ([ORCID](https://orcid.org/0000-0002-7579-5165)) \[copyright holder\]
 
+Authors:
+
+- Henrik Bengtsson <henrikb@braju.com>
+  ([ORCID](https://orcid.org/0000-0002-7579-5165)) \[copyright holder\]
+
 Other contributors:
 
 - Charlie Gao <charlie.gao@shikokuchuo.net>
-  ([ORCID](https://orcid.org/0000-0002-0750-061X)) (For 'mirai'-related
-  patches and implementing feature requests in 'mirai') \[contributor\]
+  ([ORCID](https://orcid.org/0000-0002-0750-061X)) (note: For
+  'mirai'-related patches and implementing feature requests in 'mirai')
+  \[contributor\]
 
 ## Examples
 
