@@ -1,5 +1,5 @@
 Package: future.mirai
-Version: 0.10.1-9013
+Version: 0.10.1-9014
 Depends:
     future (>= 1.49.0)
 Imports:
@@ -23,7 +23,7 @@ Authors@R: c(
          email = "charlie.gao@shikokuchuo.net",
          comment = c(ORCID = "0000-0002-0750-061X", note = "For 'mirai'-related patches and implementing feature requests in 'mirai'")
         ))
-License: GPL (>= 3)
+License: Apache License (>= 2)
 Language: en-US
 Encoding: UTF-8
 URL: https://future.mirai.futureverse.org, https://github.com/futureverse/future.mirai
