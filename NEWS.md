@@ -1,5 +1,9 @@
 # Version (development version)
 
+## Significant Changes
+
+ * Changed the package license to permissive Apache License (>= 2).
+
 ## Documentation
 
  * Add 'Launch mirai workers via HPC job scheduler' section to
