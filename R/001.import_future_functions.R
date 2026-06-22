@@ -1,6 +1,4 @@
 ## To be imported from 'future', if available
-stop_if_not <- stopifnot
-commaq <- NULL
 readImmediateConditions <- NULL
 signalEarly <- NULL
 prune_fcn <- function(expr, ...) expr
@@ -13,8 +11,9 @@ sQuoteLabel <- NULL
 
 ## Import private functions from 'future'
 import_future_functions <- function() {
-  stop_if_not <<- import_future("stop_if_not", default = stopifnot)
-  commaq <<- import_future("commaq", default = NULL)
+  ## Already done?
+  if (is.function(readImmediateConditions)) return()
+  
   readImmediateConditions <<- import_future("readImmediateConditions")
   signalEarly <<- import_future("signalEarly")
   FutureRegistry <<- import_future("FutureRegistry")

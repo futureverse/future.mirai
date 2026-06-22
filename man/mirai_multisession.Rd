@@ -27,7 +27,8 @@ Nothing.
 It may only be used with \code{\link[future:plan]{future::plan()}}}
 }
 \examples{
-plan(mirai_multisession)
+library(future)
+plan(future.mirai::mirai_multisession)
 
 # A function that returns a future
 # (note that N is a global variable)

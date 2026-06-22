@@ -3,7 +3,7 @@
 \name{MiraiFutureBackend}
 \alias{MiraiFutureBackend}
 \alias{MiraiMultisessionFutureBackend}
-\title{A future backend based based on the 'mirai' framework}
+\title{A future backend based on the 'mirai' framework}
 \usage{
 MiraiFutureBackend(...)
 }

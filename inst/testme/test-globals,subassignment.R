@@ -2,9 +2,9 @@
 #' @tags detritus-files
 #' @tags mirai_multisession
 
-library(future.mirai)
+library(future)
 
-plan(mirai_multisession)
+plan(future.mirai::mirai_multisession)
 
 oopts <- c(oopts, options(
   future.globals.resolve = TRUE,

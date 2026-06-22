@@ -2,11 +2,11 @@
 #' @tags detritus-files
 #' @tags mirai_multisession
 
-library(future.mirai)
+library(future)
 
 message("*** mirai_multisession() - terminating workers ...")
 
-plan(mirai_multisession, workers = 2L)
+plan(future.mirai::mirai_multisession, workers = 2L)
 
 all <- nbrOfWorkers()
 message("Number of workers: ", all)

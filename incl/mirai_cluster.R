@@ -1,7 +1,9 @@
+library(future)
+
 # Manually launch mirai workers
 mirai::daemons(parallelly::availableCores())
 
-plan(mirai_cluster)
+plan(future.mirai::mirai_cluster)
 
 # A function that returns a future
 # (note that N is a global variable)

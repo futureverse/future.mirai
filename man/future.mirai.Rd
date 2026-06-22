@@ -10,7 +10,8 @@ The \pkg{future.mirai} package implements the Future API
 using the \pkg{mirai} package.
 }
 \examples{
-plan(mirai_multisession)
+library(future)
+plan(future.mirai::mirai_multisession)
 
 # A function that returns a future
 # (note that N is a global variable)
@@ -40,9 +41,14 @@ Useful links:
 \author{
 \strong{Maintainer}: Henrik Bengtsson \email{henrikb@braju.com} (\href{https://orcid.org/0000-0002-7579-5165}{ORCID}) [copyright holder]
 
+Authors:
+\itemize{
+  \item Henrik Bengtsson \email{henrikb@braju.com} (\href{https://orcid.org/0000-0002-7579-5165}{ORCID}) [copyright holder]
+}
+
 Other contributors:
 \itemize{
-  \item Charlie Gao \email{charlie.gao@shikokuchuo.net} (\href{https://orcid.org/0000-0002-0750-061X}{ORCID}) (For 'mirai'-related patches and implementing feature requests in 'mirai') [contributor]
+  \item Charlie Gao \email{charlie.gao@shikokuchuo.net} (\href{https://orcid.org/0000-0002-0750-061X}{ORCID}) (note: For 'mirai'-related patches and implementing feature requests in 'mirai') [contributor]
 }
 
 }

@@ -1,4 +1,16 @@
-# Version 0.10.1
+# Version 1.0.0 [2026-06-22]
+
+## Significant Changes
+
+ * Changed the package license to permissive Apache License (>= 2).
+
+## Documentation
+
+ * Add 'Launch mirai workers via HPC job scheduler' section to
+   `help("mirai_cluster", package = "future.mirai")`.
+
+
+# Version 0.10.1 [2025-07-10]
 
 ## Bug Fix
 
@@ -14,28 +26,28 @@
    in other errors.
  
  * `resolved()` on a mirai future already known to be interrupted
-   would requery the mirai object, instead of returning TRUE
+   would re-query the mirai object, instead of returning TRUE
    immediately.
  
 
-# Version 0.10.0
+# Version 0.10.0 [2025-06-05]
 
 ## New Features
 
  * Now 'mirai' futures can be canceled using `cancel()`, which also
    interrupts them by default, which in turn frees up compute
-   resources sooner. Map-reduce API such as **future.apply**,
+   resources sooner. Map-reduce APIs such as **future.apply**,
    **doFuture**, and **furrr** can take advantage of this by
    canceling all non-resolved futures whenever they detect an error
    in one of the futures. Also, canceled futures can be `reset()` 
    and thereafter relaunched, possibly on another future backend.
 
- * Now 'mirai_multisession' futures relay `immediateCondition`:s
-   in near real-time, e.g. `progression` conditions signals by the
+ * Now 'mirai_multisession' futures relay `immediateCondition`s
+   in near real-time, e.g. `progression` conditions signaled by the
    **progressr** package.
 
 
-# Version 0.2.2
+# Version 0.2.2 [2024-07-03]
 
 ## Miscellaneous
 
@@ -43,7 +55,7 @@
    argument `resilience` is being removed.
  
 
-# Version 0.2.1
+# Version 0.2.1 [2024-05-15]
 
 ## Bug Fix
  
@@ -53,7 +65,7 @@
    `FutureError`.
   
 
-# Version 0.2.0
+# Version 0.2.0 [2024-04-18]
 
  * First public release.
 

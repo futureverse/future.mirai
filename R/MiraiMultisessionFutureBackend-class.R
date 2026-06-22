@@ -1,4 +1,5 @@
 #' @importFrom mirai daemons status
+#' @importFrom parallelly availableCores
 #' @importFrom future FutureBackend SequentialFutureBackend
 #' @export
 MiraiMultisessionFutureBackend <- local({
@@ -81,7 +82,7 @@ resolved.MiraiMultisessionFuture <- function(x, .signalEarly = TRUE, ...) {
   resolved <- NextMethod()
   if (resolved) return(TRUE)
   
-  ## Collect and relay immediateCondition if they exists
+  ## Collect and relay immediateCondition if they exist
   conditions <- readImmediateConditions(signal = TRUE)
   ## Record conditions as signaled
   signaled <- c(x[[".signaledConditions"]], conditions)
@@ -100,7 +101,7 @@ resolved.MiraiMultisessionFuture <- function(x, .signalEarly = TRUE, ...) {
 result.MiraiMultisessionFuture <- function(future, ...) {
   result <- NextMethod()
 
-  ## Collect and relay immediateCondition if they exists
+  ## Collect and relay immediateCondition if they exist
   conditions <- readImmediateConditions()
   ## Record conditions as signaled
   signaled <- c(future[[".signaledConditions"]], conditions)

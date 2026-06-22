@@ -2,6 +2,9 @@
 #' @tags detritus-files
 #' @tags mirai_multisession
 
+options(future.debug = TRUE)
+options(future.mirai.debug = TRUE)
+
 message("*** plan() ...")
 
 message("*** future::plan(future.mirai::mirai_multisession)")
@@ -11,6 +14,7 @@ future::plan(oplan)
 print(future::plan())
 
 
+library(future)
 library(future.mirai)
 
 for (type in c("mirai_multisession")) {
@@ -41,7 +45,7 @@ message("*** Assert that default backend can be overridden ...")
 mpid <- Sys.getpid()
 print(mpid)
 
-plan(mirai_multisession)
+plan(future.mirai::mirai_multisession)
 
 pid %<-% { Sys.getpid() }
 print(pid)

@@ -6,7 +6,7 @@ stop_if_not <- function(...) {
         mc <- match.call()
         call <- deparse(mc[[ii + 1]], width.cutoff = 60L)
         if (length(call) > 1L) call <- paste(call[1L], "....")
-        stopf("%s is not TRUE", sQuote(call), call. = FALSE, domain = NA)
+        stop(sprintf("%s is not TRUE", sQuote(call)), call. = FALSE, domain = NA)
     }
   }
   

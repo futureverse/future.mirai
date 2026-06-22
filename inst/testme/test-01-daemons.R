@@ -4,6 +4,8 @@
 mirai::daemons(2)
 print(mirai::status())
 
+mirai::daemons(0)
+
 ## Give daemons a chance to shutdown
 Sys.sleep(10)
 
