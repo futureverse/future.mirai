@@ -75,24 +75,20 @@ planes. The demo does not assume anything about what type of futures are
 used. *The user has full control of how futures are evaluated*. For
 instance, to use `mirai_multisession` futures, run the demo as:
 
-``` r
-
-library(future)
-plan(future.mirai::mirai_multisession)
-
-demo("mandelbrot", package = "future", ask = FALSE)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`future`](https://future.futureverse.org)`)`\
+[`plan`](https://future.futureverse.org/reference/plan.html)`(``future.mirai``::`[`mirai_multisession`](https://future.mirai.futureverse.org/reference/mirai_multisession.md)`)`\
+\
+[`demo`](https://rdrr.io/r/utils/demo.html)`(``"mandelbrot"``, package ``=`` ``"future"``, ask ``=`` ``FALSE``)`
 
 and
 
-``` r
-
-library(future)
-mirai::daemons(2)
-plan(future.mirai::mirai_cluster)
-
-demo("mandelbrot", package = "future", ask = FALSE)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`future`](https://future.futureverse.org)`)`\
+`mirai``::`[`daemons`](https://mirai.r-lib.org/reference/daemons.html)`(``2``)`\
+[`plan`](https://future.futureverse.org/reference/plan.html)`(``future.mirai``::`[`mirai_cluster`](https://future.mirai.futureverse.org/reference/mirai_cluster.md)`)`\
+\
+[`demo`](https://rdrr.io/r/utils/demo.html)`(``"mandelbrot"``, package ``=`` ``"future"``, ask ``=`` ``FALSE``)`
 
 ## Installation
 
@@ -100,19 +96,15 @@ R package future.mirai is available on
 [CRAN](https://cran.r-project.org/package=future.mirai) and can be
 installed in R as:
 
-``` r
-
-install.packages("future.mirai")
-```
+\
+[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``"future.mirai"``)`
 
 ### Pre-release version
 
 To install the pre-release version that is available in Git branch
 `develop` on GitHub, use:
 
-``` r
-
-remotes::install_github("futureverse/future.mirai", ref="develop")
-```
+\
+`remotes``::`[`install_github`](https://remotes.r-lib.org/reference/install_github.html)`(``"futureverse/future.mirai"``, ref``=``"develop"``)`
 
 This will install the package from source.
