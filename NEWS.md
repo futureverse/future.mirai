@@ -1,9 +1,10 @@
-# Version (development version)
+# Version 1.1.0 [2026-10-21]
 
-## Bug Fixes
+## Significant Changes
 
- * A `mirai_multisession` future exported extra, non-needed data to
-   each mirai worker, resulting in extra memory use and slowdowns.
+ * `mirai_multisession` futures no longer export extra, non-needed
+   data to each mirai worker, resulting in significantly lower memory
+   usage and faster launch of every future.
 
 
 # Version 1.0.0 [2026-06-22]
