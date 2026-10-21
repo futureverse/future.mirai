@@ -111,31 +111,39 @@ result.MiraiMultisessionFuture <- function(future, ...) {
 }
 
 
+## This function will be exported to the parallel workers. Because of this,
+## it is important that its enclosure is minimal. In R, function argument
+## promises retain their calling environment (which holds the 'future' object
+## and globals). To avoid serializing that calling environment, we attach
+## a clean environment containing only 'path' whose parent is the package namespace.
+make_immediate_condition_handler <- function(path) {
+  h <- function(cond) {
+    fileImmediateConditionHandler(cond, path = path)
+  }
+  env <- new.env(parent = asNamespace("future.mirai"))
+  env$path <- as.character(path)
+  environment(h) <- env
+  h
+}
+
 #' @exportS3Method getFutureBackendConfigs MiraiMultisessionFuture
-getFutureBackendConfigs.MiraiMultisessionFuture <- local({
-  immediateConditionsPath <- import_future("immediateConditionsPath")
-  fileImmediateConditionHandler <- import_future("fileImmediateConditionHandler")
-  
-  function(future, ..., debug = isTRUE(getOption("future.debug"))) {
-    conditionClasses <- future[["conditions"]]
-    if (is.null(conditionClasses)) {
-      capture <- list()
-    } else {
-      path <- immediateConditionsPath(rootPath = tempdir())
-      capture <- list(
-        immediateConditionHandlers = list(
-          immediateCondition = function(cond) {
-            fileImmediateConditionHandler(cond, path = path)
-          }
-        )
+getFutureBackendConfigs.MiraiMultisessionFuture <- function(future, ..., debug = isTRUE(getOption("future.debug"))) {
+  conditionClasses <- future[["conditions"]]
+  if (is.null(conditionClasses)) {
+    capture <- list()
+  } else {
+    path <- immediateConditionsPath(rootPath = tempdir())
+    capture <- list(
+      immediateConditionHandlers = list(
+        immediateCondition = make_immediate_condition_handler(path)
       )
-    }
-  
-    list(
-      capture = capture
     )
   }
-})
+
+  list(
+    capture = capture
+  )
+}
 
 
 #' Mirai-based localhost multisession futures

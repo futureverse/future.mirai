@@ -1,6 +1,9 @@
 # Version (development version)
 
- * ...
+## Bug Fixes
+
+ * A `mirai_multisession` future exported extra, non-needed data to
+   each mirai worker, resulting in extra memory use and slowdowns.
 
 
 # Version 1.0.0 [2026-06-22]
