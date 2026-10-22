@@ -28,16 +28,12 @@ message("- mirai_version() ... DONE")
 
 
 ## ---------------------------------------------------------
-## get_mirai_daemons() and mirai_daemons_nworkers()
+## mirai_daemons_nworkers()
 ## ---------------------------------------------------------
-message("- get_mirai_daemons() and mirai_daemons_nworkers() ...")
+message("- mirai_daemons_nworkers() ...")
 
 ## Setup daemons
 mirai::daemons(2)
-
-daemons <- get_mirai_daemons()
-message("  daemons class: ", class(daemons)[1])
-stopifnot(is.data.frame(daemons) || is.numeric(daemons))
 
 nworkers <- mirai_daemons_nworkers()
 message("  nworkers: ", nworkers)
@@ -45,7 +41,7 @@ stopifnot(is.numeric(nworkers), nworkers >= 1)
 
 mirai::daemons(0)
 
-message("- get_mirai_daemons() and mirai_daemons_nworkers() ... DONE")
+message("- mirai_daemons_nworkers() ... DONE")
 
 
 ## ---------------------------------------------------------

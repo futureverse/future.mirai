@@ -351,18 +351,16 @@ result.MiraiFuture <- function(future, ...) {
 
 
 #' @importFrom future FutureError
-#' @importFrom mirai daemons
+#' @importFrom mirai is_error_value status
+#' @importFrom utils capture.output
 mirai_daemons_nworkers <- function() {
-  workers <- get_mirai_daemons()
-  if (is.data.frame(workers)) return(nrow(workers))
-  
-  if (length(workers) != 1L) {
-    msg <- sprintf("Length of mirai::status()$daemons is not one: %d", length(workers))
-    stop(FutureError(msg))
+  status <- status()
+  res <- status[["daemons"]]
+  if (is_error_value(res)) {
+    reason <- capture.output(print(res))
+    stop(FutureError(sprintf("mirai::status() failed to communicate with dispatcher: %s", reason)))
   }
-  
-  if (workers == 0L) return(Inf)
-  workers
+  status[["connections"]]
 }
 
 
