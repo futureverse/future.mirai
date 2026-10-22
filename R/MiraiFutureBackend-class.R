@@ -11,7 +11,7 @@
 #' @aliases MiraiMultisessionFutureBackend
 #' @importFrom utils capture.output
 #' @importFrom mirai status
-#' @importFrom future FutureBackend SequentialFutureBackend
+#' @importFrom future FutureBackend FutureError SequentialFutureBackend
 #' @export
 MiraiFutureBackend <- local({
   with_stealth_rng <- import_future("with_stealth_rng")
@@ -27,7 +27,7 @@ MiraiFutureBackend <- local({
     ## required to protect against launching too many workers
     dispatcher <- !is.null(status[["mirai"]])
     if (!dispatcher) {
-      stop(sprintf("Mirai futures require that the mirai daemons are configured to use a dispatcher (dispatcher = TRUE). If not, there is a risk of launching an unlimited number of mirai processes. This requirement might be relaxed in future versions of the %s package. mirai::status() reports:\n%s", sQuote(.packageName), paste(capture.output(print(status)), collapse = "\n")))
+      stop(FutureError(sprintf("Mirai futures require that the mirai daemons are configured to use a dispatcher (dispatcher = TRUE). If not, there is a risk of launching an unlimited number of mirai processes. This requirement might be relaxed in future versions of the %s package. mirai::status() reports:\n%s", sQuote(.packageName), paste(capture.output(print(status)), collapse = "\n"))))
     }
   
     core <- FutureBackend(

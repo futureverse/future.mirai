@@ -1,9 +1,20 @@
 # Version (development version)
 
+## Significant Changes
+
+ * Significantly lowered the per-worker and the total memory use, but
+   reducing the amount of data transferred to parallel workers. This
+   should increase the performance in cases where large objects per
+   parallelized over.
+
 ## Bug Fixes
 
  * A `mirai_multisession` future exported extra, non-needed data to
    each mirai worker, resulting in extra memory use and slowdowns.
+
+ * If mirai daemons were configured without a dispatcher,
+   `MiraiFutureBackend()` signaled a plain error instead of a
+   `FutureError`.
 
 
 # Version 1.0.0 [2026-06-22]
