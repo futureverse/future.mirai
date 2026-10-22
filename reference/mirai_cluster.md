@@ -57,10 +57,10 @@ to:
 
 The first step is specific to each job scheduler and this is where you
 control things such as how much memory each worker gets, for how long
-they may run, which environment modules to load, and which environment
-modules to load, if any. The second step is the same regardless of job
-scheduler. Here is an example for how to run parallel mirai workers on a
-Slurm scheduler and then use these in futureverse.
+they may run, and which environment modules to load, if any. The second
+step is the same regardless of job scheduler. Here is an example for how
+to run parallel mirai workers on a Slurm scheduler and then use these in
+futureverse.
 
     # Here we give each worker 200 MiB of RAM and a maximum of one hour
     # to run. Unless we specify '--cpus-per-task=N', each mirai worker
@@ -118,8 +118,8 @@ Everything else is the same.
 [`mirai::cluster_config()`](https://mirai.r-lib.org/reference/cluster_config.html)
 configures the jobs to run vanilla POSIX shells, i.e. `/bin/sh`. This
 might be too strict for some users. If your setup requires your jobs to
-be run using Bash (`/bin/sh`), you can tweak the configuration `config`
-object manually to do so;
+be run using Bash (`/bin/bash`), you can tweak the configuration
+`config` object manually to do so;
 
     config$command <- "/bin/bash"
     config$args <- sub("/bin/sh", config$command, config$args)

@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">future.mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0-9007</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0-9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
-<ul><li><p><code><a href="https://future.futureverse.org/reference/nbrOfWorkers.html" class="external-link">nbrOfFreeWorkers()</a></code> would produce an error when the number of queued and executing tasks exceeded the number of available workers.</p></li>
+<ul><li><p>Waiting for an available worker with a timeout greater than 60 seconds could take much longer than that.</p></li>
+<li><p><code><a href="https://future.futureverse.org/reference/nbrOfWorkers.html" class="external-link">nbrOfFreeWorkers()</a></code> would produce an error when the number of queued and executing tasks exceeded the number of available workers.</p></li>
 <li><p><code>waitForWorker()</code> evaluated <code><a href="https://future.futureverse.org/reference/nbrOfWorkers.html" class="external-link">nbrOfWorkers()</a></code> against the current global plan rather than the current backend.</p></li>
 <li><p><code><a href="https://future.futureverse.org/reference/result.html" class="external-link">result()</a></code> on a <code>mirai_multisession</code> future dropped immediate conditions, despite already being signaled.</p></li>
 <li><p><code><a href="https://future.futureverse.org/reference/resolved.html" class="external-link">resolved()</a></code> on a <code>mirai_multisession</code> future did not signal conditions early when the future was resolved.</p></li>

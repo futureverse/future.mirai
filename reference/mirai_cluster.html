@@ -15,7 +15,7 @@ It may only be used with future::plan()"><!-- Global site tag (gtag.js) - Google
 
     <a class="navbar-brand me-2" href="../index.html">future.mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0-9007</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0-9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -124,8 +124,7 @@ need to:</p><ol><li><p>configure <code><a href="https://mirai.r-lib.org/referenc
 <li><p>use configuration to launch workers using <code><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">mirai::daemons()</a></code>.</p></li>
 </ol><p>The first step is specific to each job scheduler and this is where
 you control things such as how much memory each worker gets, for
-how long they may run, which environment modules to load, and which
-environment modules to load, if any.
+how long they may run, and which environment modules to load, if any.
 The second step is the same regardless of job scheduler.
 Here is an example for how to run parallel mirai workers on a
 Slurm scheduler and then use these in futureverse.</p>
@@ -179,7 +178,7 @@ Slurm scheduler and then use these in futureverse.</p>
 <p>Everything else is the same.</p>
 <p><em>Comment</em>: <code><a href="https://mirai.r-lib.org/reference/cluster_config.html" class="external-link">mirai::cluster_config()</a></code> configures the jobs to run vanilla
 POSIX shells, i.e. <code>/bin/sh</code>. This might be too strict for some users.
-If your setup requires your jobs to be run using Bash (<code>/bin/sh</code>), you
+If your setup requires your jobs to be run using Bash (<code>/bin/bash</code>), you
 can tweak the configuration <code>config</code> object manually to do so;</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="va">config</span><span class="op">$</span><span class="va">command</span> <span class="op">&lt;-</span> <span class="st">"/bin/bash"</span></span>
 <span><span class="va">config</span><span class="op">$</span><span class="va">args</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"/bin/sh"</span>, <span class="va">config</span><span class="op">$</span><span class="va">command</span>, <span class="va">config</span><span class="op">$</span><span class="va">args</span><span class="op">)</span></span></code></pre><p></p></div>
