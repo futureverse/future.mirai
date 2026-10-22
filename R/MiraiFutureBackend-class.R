@@ -447,8 +447,7 @@ tweak.mirai_cluster <- function(strategy, ..., penvir = parent.frame()) {
 #'
 #' The first step is specific to each job scheduler and this is where
 #' you control things such as how much memory each worker gets, for
-#' how long they may run, which environment modules to load, and which
-#' environment modules to load, if any.
+#' how long they may run, and which environment modules to load, if any.
 #' The second step is the same regardless of job scheduler.
 #' Here is an example for how to run parallel mirai workers on a
 #' Slurm scheduler and then use these in futureverse.
@@ -511,7 +510,7 @@ tweak.mirai_cluster <- function(strategy, ..., penvir = parent.frame()) {
 #'
 #' _Comment_: [mirai::cluster_config()] configures the jobs to run vanilla
 #' POSIX shells, i.e. `/bin/sh`. This might be too strict for some users.
-#' If your setup requires your jobs to be run using Bash (`/bin/sh`), you
+#' If your setup requires your jobs to be run using Bash (`/bin/bash`), you
 #' can tweak the configuration `config` object manually to do so;
 #'
 #' ```r
