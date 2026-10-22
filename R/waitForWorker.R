@@ -1,5 +1,5 @@
-#' @importFrom future FutureError
-waitForWorker <- function(backend, workers = nbrOfWorkers(), debug = FALSE) {
+#' @importFrom future FutureError nbrOfWorkers
+waitForWorker <- function(backend, workers = nbrOfWorkers(backend), debug = FALSE) {
   ## FutureRegistry to use
   reg <- backend[["reg"]]
 
