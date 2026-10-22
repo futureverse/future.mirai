@@ -15,6 +15,9 @@
  * `waitForWorker()` evaluated `nbrOfWorkers()` against the current
    global plan rather than the current backend.
 
+ * `result()` on a `mirai_multisession` future dropped immediate
+   conditions, despite already being signaled.
+
  * A `mirai_multisession` future exported extra, non-needed data to
    each mirai worker, resulting in extra memory use and slowdowns.
 

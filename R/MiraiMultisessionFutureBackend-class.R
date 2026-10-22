@@ -106,6 +106,11 @@ result.MiraiMultisessionFuture <- function(future, ...) {
   ## Record conditions as signaled
   signaled <- c(future[[".signaledConditions"]], conditions)
   future[[".signaledConditions"]] <- signaled
+  if (length(signaled) > 0L) {
+    result[["conditions"]] <- c(signaled, result[["conditions"]])
+    future[[".signaledConditions"]] <- NULL
+    future[["result"]] <- result
+  }
 
   result
 }
