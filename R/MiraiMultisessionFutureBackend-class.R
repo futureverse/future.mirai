@@ -68,7 +68,7 @@ nbrOfFreeWorkers.MiraiMultisessionFutureBackend <- function(evaluator, backgroun
   ## (1) Number of free workers per internal registry
   usedWorkers <- length(FutureRegistry(reg, action = "list",
                         earlySignal = FALSE))
-  workers <- as.integer(workers) - usedWorkers
+  workers <- max(0L, as.integer(workers) - usedWorkers)
   stop_if_not(length(workers) == 1L, !is.na(workers), workers >= 
       0L, is.finite(workers))
 

@@ -218,7 +218,7 @@ nbrOfFreeWorkers.MiraiFutureBackend <- function(evaluator, background = FALSE, .
   }
   
   used <- mirai[["awaiting"]] + mirai[["executing"]]
-  workers <- workers - used
+  workers <- max(0L, workers - used)
   stop_if_not(is.numeric(workers), is.finite(workers), workers >= 0)
   
   workers

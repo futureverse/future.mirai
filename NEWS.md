@@ -9,6 +9,9 @@
 
 ## Bug Fixes
 
+ * `nbrOfFreeWorkers()` would produce an error when the number of
+   queued and executing tasks exceeded the number of available workers.
+
  * `waitForWorker()` evaluated `nbrOfWorkers()` against the current
    global plan rather than the current backend.
 
