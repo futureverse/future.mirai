@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">future.mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0-9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0-9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,6 +78,7 @@
 <ul><li><p><code><a href="https://future.futureverse.org/reference/nbrOfWorkers.html" class="external-link">nbrOfFreeWorkers()</a></code> would produce an error when the number of queued and executing tasks exceeded the number of available workers.</p></li>
 <li><p><code>waitForWorker()</code> evaluated <code><a href="https://future.futureverse.org/reference/nbrOfWorkers.html" class="external-link">nbrOfWorkers()</a></code> against the current global plan rather than the current backend.</p></li>
 <li><p><code><a href="https://future.futureverse.org/reference/result.html" class="external-link">result()</a></code> on a <code>mirai_multisession</code> future dropped immediate conditions, despite already being signaled.</p></li>
+<li><p><code><a href="https://future.futureverse.org/reference/resolved.html" class="external-link">resolved()</a></code> on a <code>mirai_multisession</code> future did not signal conditions early when the future was resolved.</p></li>
 <li><p>A <code>mirai_multisession</code> future exported extra, non-needed data to each mirai worker, resulting in extra memory use and slowdowns.</p></li>
 <li><p>If mirai daemons were configured without a dispatcher, <code><a href="../reference/MiraiFutureBackend.html">MiraiFutureBackend()</a></code> signaled a plain error instead of a <code>FutureError</code>.</p></li>
 </ul></div>
