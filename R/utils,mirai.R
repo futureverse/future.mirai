@@ -14,6 +14,9 @@ get_mirai_daemons <- function() {
     return(status[["connections"]])
   }
   
-  as.data.frame(res)
-  
+  if (is.matrix(res)) {
+    return(as.data.frame(res))
+  }
+
+  res
 }
