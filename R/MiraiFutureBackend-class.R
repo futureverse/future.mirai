@@ -116,7 +116,7 @@ stopWorkers.MiraiFutureBackend <- function(backend, ...) {
     ## Enable interrupts temporarily, if disabled
     if (!isTRUE(backend[["interrupts"]])) {
       backend[["interrupts"]] <- TRUE
-      on.exit(backend[["interrupts"]] <- FALSE)
+      on.exit(backend[["interrupts"]] <- FALSE, add = TRUE)
     }
   
     ## Cancel and interrupt all futures, which terminates the workers

@@ -143,6 +143,7 @@ message("Resolved: ", r)
 stopifnot(!isTRUE(r))
 
 plan(sequential)
+stopifnot(length(future.mirai:::.debug$stack) == 0L)
 
 message("- stopWorkers.MiraiFutureBackend() with active futures ... DONE")
 
