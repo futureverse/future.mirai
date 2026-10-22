@@ -2,10 +2,33 @@
 
 ## Version (development version)
 
+### Significant Changes
+
+- Significantly lowered the per-worker and the total memory use, but
+  reducing the amount of data transferred to parallel workers. This
+  should increase the performance in cases where large objects per
+  parallelized over.
+
 ### Bug Fixes
+
+- [`nbrOfFreeWorkers()`](https://future.futureverse.org/reference/nbrOfWorkers.html)
+  would produce an error when the number of queued and executing tasks
+  exceeded the number of available workers.
+
+- `waitForWorker()` evaluated
+  [`nbrOfWorkers()`](https://future.futureverse.org/reference/nbrOfWorkers.html)
+  against the current global plan rather than the current backend.
+
+- [`result()`](https://future.futureverse.org/reference/result.html) on
+  a `mirai_multisession` future dropped immediate conditions, despite
+  already being signaled.
 
 - A `mirai_multisession` future exported extra, non-needed data to each
   mirai worker, resulting in extra memory use and slowdowns.
+
+- If mirai daemons were configured without a dispatcher,
+  [`MiraiFutureBackend()`](https://future.mirai.futureverse.org/reference/MiraiFutureBackend.md)
+  signaled a plain error instead of a `FutureError`.
 
 ## Version 1.0.0
 
