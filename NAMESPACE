@@ -17,30 +17,36 @@ export(MiraiFutureBackend)
 export(MiraiMultisessionFutureBackend)
 export(mirai_cluster)
 export(mirai_multisession)
-importFrom(future,FutureBackend)
-importFrom(future,FutureError)
-importFrom(future,FutureInterruptError)
-importFrom(future,FutureWarning)
-importFrom(future,SequentialFutureBackend)
-importFrom(future,cancel)
-importFrom(future,future)
-importFrom(future,interruptFuture)
-importFrom(future,launchFuture)
-importFrom(future,nbrOfFreeWorkers)
-importFrom(future,nbrOfWorkers)
-importFrom(future,resolved)
-importFrom(future,result)
-importFrom(future,run)
-importFrom(future,stopWorkers)
-importFrom(future,tweak)
-importFrom(mirai,call_mirai)
-importFrom(mirai,daemons)
-importFrom(mirai,is_error_value)
-importFrom(mirai,mirai)
-importFrom(mirai,status)
-importFrom(mirai,stop_mirai)
-importFrom(mirai,unresolved)
+importFrom(future,
+  FutureBackend,
+  FutureError,
+  FutureInterruptError,
+  FutureWarning,
+  SequentialFutureBackend,
+  cancel,
+  future,
+  interruptFuture,
+  launchFuture,
+  nbrOfFreeWorkers,
+  nbrOfWorkers,
+  resolved,
+  result,
+  run,
+  stopWorkers,
+  tweak
+)
+importFrom(mirai,
+  call_mirai,
+  daemons,
+  is_error_value,
+  mirai,
+  status,
+  stop_mirai,
+  unresolved
+)
 importFrom(parallelly,availableCores)
-importFrom(utils,capture.output)
-importFrom(utils,packageVersion)
-importFrom(utils,str)
+importFrom(utils,
+  capture.output,
+  packageVersion,
+  str
+)
