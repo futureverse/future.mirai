@@ -80,7 +80,6 @@ nbrOfFreeWorkers.MiraiMultisessionFutureBackend <- function(evaluator, backgroun
 #' @export
 resolved.MiraiMultisessionFuture <- function(x, .signalEarly = TRUE, ...) {
   resolved <- NextMethod()
-  if (resolved) return(TRUE)
   
   ## Collect and relay immediateCondition if they exist
   conditions <- readImmediateConditions(signal = TRUE)
@@ -89,7 +88,7 @@ resolved.MiraiMultisessionFuture <- function(x, .signalEarly = TRUE, ...) {
   x[[".signaledConditions"]] <- signaled
 
   ## Signal conditions early? (happens only iff requested)
-  if (.signalEarly) signalEarly(x, ...)
+  if (resolved && .signalEarly) signalEarly(x, ...)
 
   resolved
 }

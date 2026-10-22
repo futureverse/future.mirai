@@ -18,6 +18,9 @@
  * `result()` on a `mirai_multisession` future dropped immediate
    conditions, despite already being signaled.
 
+ * `resolved()` on a `mirai_multisession` future did not signal
+   conditions early when the future was resolved.
+
  * A `mirai_multisession` future exported extra, non-needed data to
    each mirai worker, resulting in extra memory use and slowdowns.
 
