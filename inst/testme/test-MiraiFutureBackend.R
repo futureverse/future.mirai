@@ -241,4 +241,24 @@ plan(sequential)
 message("- nbrOfFreeWorkers.MiraiFutureBackend() ... DONE")
 
 
+## ---------------------------------------------------------
+## waitForWorker() timeout
+## ---------------------------------------------------------
+message("- waitForWorker() timeout ...")
+
+ovalue <- options(future.wait.timeout = 0.5)
+plan(future.mirai::mirai_multisession, workers = I(1L))
+
+f1 <- future({ Sys.sleep(2); 42 })
+
+res <- tryCatch(future(1), error = identity)
+print(res)
+stopifnot(inherits(res, "FutureError"))
+
+plan(sequential)
+options(ovalue)
+
+message("- waitForWorker() timeout ... DONE")
+
+
 message("*** MiraiFutureBackend ... DONE")

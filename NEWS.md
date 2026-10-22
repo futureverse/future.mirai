@@ -9,6 +9,9 @@
 
 ## Bug Fixes
 
+ * Waiting for an available worker with a timeout greater than 60
+   seconds could take much longer than that.
+
  * `nbrOfFreeWorkers()` would produce an error when the number of
    queued and executing tasks exceeded the number of available workers.
 
