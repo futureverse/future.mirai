@@ -47,8 +47,7 @@ MiraiMultisessionFutureBackend <- local({
 
 
 
-#' @importFrom future nbrOfWorkers FutureWarning FutureError
-#' @importFrom mirai is_error_value status
+#' @importFrom future nbrOfWorkers
 #' @export
 nbrOfWorkers.MiraiMultisessionFutureBackend <- function(evaluator) {
   backend <- evaluator
