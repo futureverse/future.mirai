@@ -31,6 +31,9 @@
    `MiraiFutureBackend()` signaled a plain error instead of a
    `FutureError`.
 
+ * If `result()` on a mirai future detected a mirai `errorValue` not
+   explicitly handled, the future's internal state was never updated.
+
 
 # Version 1.0.0 [2026-06-22]
 

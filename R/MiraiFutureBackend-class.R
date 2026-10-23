@@ -285,7 +285,7 @@ result.MiraiFuture <- function(future, ...) {
     ## Backward compatibility with future (<= 1.68.0)
     result <- future[["result"]]
     if (!is.null(result)) return(result)
-  } else if (state == "interrupted") {
+  } else if (state %in% c("failed", "interrupted")) {
     stop(future[["result"]])
   }
 
@@ -335,9 +335,13 @@ result.MiraiFuture <- function(future, ...) {
       stop(result)
     }
     
-    FutureRegistry(reg, action = "remove", future = future)
+    future[["state"]] <- "failed"
     msg <- sprintf("Failed to retrieve results from %s (%s). The mirai framework reports on error value %s", class(future)[1], label, result)
-    stop(FutureError(msg))
+    if (debug) mdebug(msg)
+    result <- FutureError(msg, future = future)
+    future[["result"]] <- result
+    FutureRegistry(reg, action = "remove", future = future)
+    stop(result)
   }
 
   future[["result"]] <- result
