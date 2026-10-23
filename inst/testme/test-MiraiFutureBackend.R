@@ -143,7 +143,9 @@ message("Resolved: ", r)
 stopifnot(!isTRUE(r))
 
 plan(sequential)
-stopifnot(length(future.mirai:::.debug$stack) == 0L)
+if (packageVersion("future") >= "1.80.0-9008") {
+  stopifnot(length(future.mirai:::.debug$stack) == 0L)
+}
 
 message("- stopWorkers.MiraiFutureBackend() with active futures ... DONE")
 
