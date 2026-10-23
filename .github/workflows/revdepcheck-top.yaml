@@ -39,7 +39,15 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install system dependencies
-        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libglpk-dev
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libglpk-dev \
+            libgdal-dev \
+            libgeos-dev \
+            libproj-dev \
+            libudunits2-dev \
+            libnetcdf-dev
 
       - uses: r-lib/actions/setup-pandoc@v2
 
