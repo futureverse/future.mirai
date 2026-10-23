@@ -7,6 +7,9 @@
    should increase the performance in cases where large objects per
    parallelized over.
 
+ * Global variables named `.args`, `.expr`, `.timeout`, or `.compute`
+   are now allowed also with mirai futures.
+
 ## Bug Fixes
 
  * Waiting for an available worker with a timeout greater than 60
@@ -33,6 +36,10 @@
 
  * If `result()` on a mirai future detected a mirai `errorValue` not
    explicitly handled, the future's internal state was never updated.
+
+ * Global variables named `.args`, `.expr`, `.timeout`, or `.compute`
+   produced a "clash with argument names of mirai::mirai()" error for
+   legacy reasons in **future** (< 1.40.0) [2025-04-10].
 
 
 # Version 1.0.0 [2026-06-22]

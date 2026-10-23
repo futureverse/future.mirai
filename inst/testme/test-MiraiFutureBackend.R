@@ -36,26 +36,24 @@ message("- tweak.mirai_cluster() ... DONE")
 
 
 ## ---------------------------------------------------------
-## Global variables that clash with mirai::mirai() formals
+## Global variables named after mirai::mirai() formals
 ## ---------------------------------------------------------
-message("- globals that clash with mirai::mirai() formals ...")
+message("- globals named after mirai::mirai() formals ...")
 
 plan(future.mirai::mirai_multisession, workers = 2)
 
-## '.args' is a formal argument of mirai::mirai()
-## This should produce an error
-res <- tryCatch({
-  .args <- 42
-  f <- future(.args)
-  value(f)
-}, error = identity)
-print(res)
-stopifnot(inherits(res, "FutureError"))
-stopifnot(grepl("clash with argument names of mirai::mirai", conditionMessage(res)))
+## '.args' is a formal argument of mirai::mirai(), but globals are
+## passed via a single 'data' argument rather than being spread as
+## named arguments to mirai(), so a global named '.args' (or '.expr',
+## '.timeout', '.compute') must *not* clash and must resolve fine.
+.args <- 42
+f <- future(.args)
+v <- value(f)
+stopifnot(v == 42)
 
 plan(sequential)
 
-message("- globals that clash with mirai::mirai() formals ... DONE")
+message("- globals named after mirai::mirai() formals ... DONE")
 
 
 ## ---------------------------------------------------------

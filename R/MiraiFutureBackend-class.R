@@ -57,15 +57,6 @@ launchFuture.MiraiFutureBackend <- function(backend, future, ...) {
   ## Wait for a free worker
   waitForWorker(backend, debug = debug)
   
-  globals <- future[["globals"]]
-  if (length(globals) > 0) {
-    ## Sanity check
-    not_allowed <- intersect(names(globals), names(formals(mirai)))
-    if (length(not_allowed) > 0) {
-      stop(FutureError(sprintf("Detected global variables that clash with argument names of mirai::mirai(): %s", paste(sQuote(not_allowed), collapse = ", "))))
-    }
-  }
-
   ## Record 'backend' in future for now
   future[["backend"]] <- backend
 
