@@ -41,6 +41,10 @@
    produced a "clash with argument names of mirai::mirai()" error for
    legacy reasons in **future** (< 1.40.0) [2025-04-10].
 
+ * Switching to a new plan (e.g. `plan(sequential)`) while mirai
+   futures were still running could produce a confusing error when
+   querying such an interrupted future later on.
+
 
 # Version 1.0.0 [2026-06-22]
 

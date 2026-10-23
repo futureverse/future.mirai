@@ -107,10 +107,18 @@ r <- resolved(f)
 message("Resolved: ", r)
 stopifnot(!isTRUE(r))
 
+## Forces stopWorkers()
 plan(sequential)
+
 if (packageVersion("future") >= "1.80.0-9008") {
   stopifnot(length(future.mirai:::.debug$stack) == 0L)
 }
+
+## Assert FutureInterruptError
+res <- tryCatch(value(f), error = identity)
+print(res)
+stopifnot(inherits(res, "FutureInterruptError"))
+stopifnot(!grepl("INTERNAL ERROR", conditionMessage(res)))
 
 message("- stopWorkers.MiraiFutureBackend() with active futures ... DONE")
 

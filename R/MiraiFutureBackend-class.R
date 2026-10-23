@@ -271,24 +271,33 @@ result.MiraiFuture <- function(future, ...) {
       if (debug) mdebug(msg)
       result <- FutureInterruptError(msg, future = future)
       future[["result"]] <- result
-      FutureRegistry(reg, action = "remove", future = future)
+      ## stopWorkers() may already have erased the registry
+      if (FutureRegistry(reg, action = "contains", future = future)) {
+        FutureRegistry(reg, action = "remove", future = future)
+      }
       stop(result)
     }
-    
+
     future[["state"]] <- "failed"
     msg <- sprintf("Failed to retrieve results from %s (%s). The mirai framework reports on error value %s", class(future)[1], label, result)
     if (debug) mdebug(msg)
     result <- FutureError(msg, future = future)
     future[["result"]] <- result
-    FutureRegistry(reg, action = "remove", future = future)
+    ## stopWorkers() may already have erased the registry
+    if (FutureRegistry(reg, action = "contains", future = future)) {
+      FutureRegistry(reg, action = "remove", future = future)
+    }
     stop(result)
   }
 
   future[["result"]] <- result
   future[["state"]] <- "finished"
 
-  FutureRegistry(reg, action = "remove", future = future)
-  
+  ## stopWorkers() may already have erased the registry
+  if (FutureRegistry(reg, action = "contains", future = future)) {
+    FutureRegistry(reg, action = "remove", future = future)
+  }
+
   result
 }
 
