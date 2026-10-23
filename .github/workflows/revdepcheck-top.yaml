@@ -73,6 +73,16 @@ jobs:
           install.packages(".", repos=NULL, type="source")
         shell: Rscript {0}
 
+      ## rtemis Suggests Bioconductor packages ('Biobase', 'hopach') not
+      ## available from CRAN/RSPM, which otherwise trigger an "unavailable
+      ## package" NOTE in "checking dependencies in R code"
+      - name: Install Bioconductor dependencies for rtemis
+        if: matrix.config.pkg == 'rtemis'
+        run: |
+          install.packages("BiocManager")
+          BiocManager::install(c("Biobase", "hopach"), update = FALSE, ask = FALSE)
+        shell: Rscript {0}
+
       - name: Session info
         run: |
           options(width = 100)
