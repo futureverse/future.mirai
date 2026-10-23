@@ -334,15 +334,6 @@ mirai_daemons_nworkers <- function() {
 }
 
 
-#' @importFrom utils packageVersion
-mirai_version <- local({
-  version <- NULL
-  function() {
-    if (is.null(version)) version <<- packageVersion("mirai")
-    version
-  }
-})
-
 #' @importFrom mirai call_mirai
 mirai_collect_future <- function(future) {
   mirai <- future[["mirai"]]

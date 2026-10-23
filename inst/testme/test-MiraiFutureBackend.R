@@ -12,22 +12,6 @@ message("*** MiraiFutureBackend ...")
 
 
 ## ---------------------------------------------------------
-## mirai_version()
-## ---------------------------------------------------------
-message("- mirai_version() ...")
-
-v <- mirai_version()
-stopifnot(inherits(v, "package_version"))
-message("  mirai version: ", v)
-
-## Second call should use cached value
-v2 <- mirai_version()
-stopifnot(identical(v, v2))
-
-message("- mirai_version() ... DONE")
-
-
-## ---------------------------------------------------------
 ## mirai_daemons_nworkers()
 ## ---------------------------------------------------------
 message("- mirai_daemons_nworkers() ...")
