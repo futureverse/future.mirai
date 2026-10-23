@@ -30,11 +30,16 @@ jobs:
       ## R CMD check
       _R_CHECK_MATRIX_DATA_: true
       _R_CHECK_CRAN_INCOMING_: false
+      ## Some revdeps Suggest packages not available from CRAN (e.g. 'cmdstanr')
+      _R_CHECK_FORCE_SUGGESTS_: false
       ## Specific to futures
       R_FUTURE_RNG_ONMISUSE: error
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libglpk-dev
 
       - uses: r-lib/actions/setup-pandoc@v2
 
