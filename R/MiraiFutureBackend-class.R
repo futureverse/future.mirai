@@ -45,54 +45,49 @@ MiraiFutureBackend <- function(...) {
 #' @importFrom mirai mirai
 #' @importFrom future launchFuture
 #' @export
-launchFuture.MiraiFutureBackend <- local({
-  evalFuture <- import_future("evalFuture")
-  getFutureData <- import_future("getFutureData")
-  
-  function(backend, future, ...) {
-    debug <- isTRUE(getOption("future.mirai.debug"))
-    if (debug) {
-      mdebugf_push("launchFuture() for %s ...", class(backend)[1])
-      on.exit(mdebug_pop())
-    }
-
-    stop_if_not(nbrOfWorkers(backend) > 0L)
-    
-    ## Wait for a free worker
-    waitForWorker(backend, debug = debug)
-    
-    globals <- future[["globals"]]
-    if (length(globals) > 0) {
-      ## Sanity check
-      not_allowed <- intersect(names(globals), names(formals(mirai)))
-      if (length(not_allowed) > 0) {
-        stop(FutureError(sprintf("Detected global variables that clash with argument names of mirai::mirai(): %s", paste(sQuote(not_allowed), collapse = ", "))))
-      }
-    }
-
-    ## Record 'backend' in future for now
-    future[["backend"]] <- backend
-
-    ## Is there 'workers' field?
-    workers <- backend[["workers"]]
-    if (!is.null(workers)) future[["workers"]] <- workers
-
-    data <- getFutureData(future)
-
-    future[["state"]] <- "submitted"
-    mirai <- mirai(future:::evalFuture(data), data = data)
-    future[["mirai"]] <- mirai
-    future[["state"]] <- "running"
-
-    ## Allocate future to worker
-    reg <- backend[["reg"]]
-    FutureRegistry(reg, action = "add", future = future, earlySignal = FALSE)
-
-    stopifnot(inherits(future[["mirai"]], "mirai"))
-
-    invisible(future)
+launchFuture.MiraiFutureBackend <- function(backend, future, ...) {
+  debug <- isTRUE(getOption("future.mirai.debug"))
+  if (debug) {
+    mdebugf_push("launchFuture() for %s ...", class(backend)[1])
+    on.exit(mdebug_pop())
   }
-})
+
+  stop_if_not(nbrOfWorkers(backend) > 0L)
+  
+  ## Wait for a free worker
+  waitForWorker(backend, debug = debug)
+  
+  globals <- future[["globals"]]
+  if (length(globals) > 0) {
+    ## Sanity check
+    not_allowed <- intersect(names(globals), names(formals(mirai)))
+    if (length(not_allowed) > 0) {
+      stop(FutureError(sprintf("Detected global variables that clash with argument names of mirai::mirai(): %s", paste(sQuote(not_allowed), collapse = ", "))))
+    }
+  }
+
+  ## Record 'backend' in future for now
+  future[["backend"]] <- backend
+
+  ## Is there 'workers' field?
+  workers <- backend[["workers"]]
+  if (!is.null(workers)) future[["workers"]] <- workers
+
+  data <- getFutureData(future)
+
+  future[["state"]] <- "submitted"
+  mirai <- mirai(future:::evalFuture(data), data = data)
+  future[["mirai"]] <- mirai
+  future[["state"]] <- "running"
+
+  ## Allocate future to worker
+  reg <- backend[["reg"]]
+  FutureRegistry(reg, action = "add", future = future, earlySignal = FALSE)
+
+  stopifnot(inherits(future[["mirai"]], "mirai"))
+
+  invisible(future)
+}
 
 
 #' @importFrom future cancel stopWorkers
