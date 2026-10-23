@@ -13,37 +13,33 @@
 #' @importFrom mirai status
 #' @importFrom future FutureBackend FutureError SequentialFutureBackend
 #' @export
-MiraiFutureBackend <- local({
-  with_stealth_rng <- import_future("with_stealth_rng")
-  
-  function(...) {
-    status <- status()
-  
-    if (status[["connections"]] == 0L) {
-      stop(FutureError(sprintf("Mirai futures require that at least one mirai daemon is available. mirai::status() reports:\n%s", paste(capture.output(print(status)), collapse = "\n"))))
-    }
-  
-    ## Assert that a mirai dispatcher is in place, which is
-    ## required to protect against launching too many workers
-    dispatcher <- !is.null(status[["mirai"]])
-    if (!dispatcher) {
-      stop(FutureError(sprintf("Mirai futures require that the mirai daemons are configured to use a dispatcher (dispatcher = TRUE). If not, there is a risk of launching an unlimited number of mirai processes. This requirement might be relaxed in future versions of the %s package. mirai::status() reports:\n%s", sQuote(.packageName), paste(capture.output(print(status)), collapse = "\n"))))
-    }
-  
-    core <- FutureBackend(
-      reg = "workers-mirai",
-      dispatcher = dispatcher,
-      shutdown = FALSE,
-      ...,
-      timeout = getOption("future.wait.timeout", 30 * 24 * 60 * 60),
-      delta = getOption("future.wait.interval", 0.2),
-      alpha = getOption("future.wait.alpha", 1.01)
-    )
-    core[["futureClasses"]] <- c("MiraiFuture", "MultiprocessFuture", core[["futureClasses"]])
-    core <- structure(core, class = c("MiraiFutureBackend", "MultiprocessFutureBackend", "FutureBackend", class(core)))
-    core
+MiraiFutureBackend <- function(...) {
+  status <- status()
+
+  if (status[["connections"]] == 0L) {
+    stop(FutureError(sprintf("Mirai futures require that at least one mirai daemon is available. mirai::status() reports:\n%s", paste(capture.output(print(status)), collapse = "\n"))))
   }
-})
+
+  ## Assert that a mirai dispatcher is in place, which is
+  ## required to protect against launching too many workers
+  dispatcher <- !is.null(status[["mirai"]])
+  if (!dispatcher) {
+    stop(FutureError(sprintf("Mirai futures require that the mirai daemons are configured to use a dispatcher (dispatcher = TRUE). If not, there is a risk of launching an unlimited number of mirai processes. This requirement might be relaxed in future versions of the %s package. mirai::status() reports:\n%s", sQuote(.packageName), paste(capture.output(print(status)), collapse = "\n"))))
+  }
+
+  core <- FutureBackend(
+    reg = "workers-mirai",
+    dispatcher = dispatcher,
+    shutdown = FALSE,
+    ...,
+    timeout = getOption("future.wait.timeout", 30 * 24 * 60 * 60),
+    delta = getOption("future.wait.interval", 0.2),
+    alpha = getOption("future.wait.alpha", 1.01)
+  )
+  core[["futureClasses"]] <- c("MiraiFuture", "MultiprocessFuture", core[["futureClasses"]])
+  core <- structure(core, class = c("MiraiFutureBackend", "MultiprocessFutureBackend", "FutureBackend", class(core)))
+  core
+}
 
 
 #' @importFrom mirai mirai
