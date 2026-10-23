@@ -24,9 +24,7 @@ MiraiMultisessionFutureBackend <- local({
     
     ## Do we need to change the number of mirai workers?
     nworkers <- mirai_daemons_nworkers()
-    if (is.infinite(workers) && nworkers < +Inf) {
-      daemons(n = 0L)
-    } else if (!dispatcher || workers != nworkers) {
+    if (!dispatcher || workers != nworkers) {
       daemons(n = 0L)  ## reset is required
       ## Dispatch is required to protect against launching too many workers
       with_stealth_rng({
