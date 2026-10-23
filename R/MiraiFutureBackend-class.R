@@ -319,8 +319,8 @@ result.MiraiFuture <- function(future, ...) {
 #' @importFrom future FutureError
 #' @importFrom mirai is_error_value status
 #' @importFrom utils capture.output
-mirai_daemons_nworkers <- function() {
-  status <- status()
+mirai_daemons_nworkers <- function(status = NULL) {
+  if (is.null(status)) status <- status()
   res <- status[["daemons"]]
   if (is_error_value(res)) {
     reason <- capture.output(print(res))
