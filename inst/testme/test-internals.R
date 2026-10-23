@@ -17,7 +17,5 @@ stopifnot(inherits(void, "error"))
 with_assert(TRUE)
 
 options(future.mirai.debug = NULL)
-options(future.mirai.queue = NULL)
 Sys.setenv(R_FUTURE_MIRAI_DEBUG = "FALSE")
-Sys.setenv(R_FUTURE_MIRAI_QUEUE = "FALSE")
 .onLoad("future.mirai", "future.mirai")
