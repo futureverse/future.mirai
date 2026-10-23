@@ -137,8 +137,6 @@ stopWorkers.MiraiFutureBackend <- function(backend, ...) {
 #' @importFrom mirai is_error_value status
 #' @export
 nbrOfWorkers.MiraiFutureBackend <- function(evaluator) {
-  backend <- evaluator
-  
   res <- status()
   daemons <- res[["daemons"]]
   if (is_error_value(daemons)) {
@@ -159,8 +157,6 @@ nbrOfWorkers.MiraiFutureBackend <- function(evaluator) {
 #' @importFrom mirai is_error_value status
 #' @export
 nbrOfFreeWorkers.MiraiFutureBackend <- function(evaluator, background = FALSE, ...) {
-  backend <- evaluator
-
   res <- status()
   daemons <- res[["daemons"]]
   if (is_error_value(daemons)) {
@@ -277,9 +273,9 @@ result.MiraiFuture <- function(future, ...) {
         ##  immediately to an 'errorValue' 20 (Operation canceled)."
         ## Source: help("stop_mirai", package = "mirai")
         event <- if (state %in% "running") {
-          event <- sprintf("failed for unknown reason while %s", state)
+          sprintf("failed for unknown reason while %s", state)
         } else {
-          event <- sprintf("was %s", state)
+          sprintf("was %s", state)
         }
       }
 
