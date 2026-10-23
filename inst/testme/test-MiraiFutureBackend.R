@@ -12,23 +12,6 @@ message("*** MiraiFutureBackend ...")
 
 
 ## ---------------------------------------------------------
-## mirai_daemons_nworkers()
-## ---------------------------------------------------------
-message("- mirai_daemons_nworkers() ...")
-
-## Setup daemons
-mirai::daemons(2)
-
-nworkers <- mirai_daemons_nworkers()
-message("  nworkers: ", nworkers)
-stopifnot(is.numeric(nworkers), nworkers >= 1)
-
-mirai::daemons(0)
-
-message("- mirai_daemons_nworkers() ... DONE")
-
-
-## ---------------------------------------------------------
 ## tweak.mirai_cluster()
 ## ---------------------------------------------------------
 message("- tweak.mirai_cluster() ...")

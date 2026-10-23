@@ -24,7 +24,7 @@ MiraiMultisessionFutureBackend <- local({
     dispatcher <- !is.null(status[["mirai"]])
     
     ## Do we need to change the number of mirai workers?
-    nworkers <- mirai_daemons_nworkers(status)
+    nworkers <- status[["connections"]]
     if (!dispatcher || workers != nworkers) {
       daemons(n = 0L)  ## reset is required
       ## Dispatch is required to protect against launching too many workers
