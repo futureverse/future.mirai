@@ -192,16 +192,12 @@ resolved.MiraiFuture <- function(x, ...) {
   }
   
   resolved <- NextMethod()
-  if(resolved) {
+  if (resolved) {
     if (debug) mdebug("already resolved")
     return(TRUE)
   }
   
-  if(x[["state"]] %in% c("finished", "interrupted")) {
-    if (debug) mdebugf("already resolved (state == %s)", sQuote(x[["state"]]))
-    stopifnot(inherits(x[["mirai"]], "mirai"))
-    return(TRUE)
-  } else if(x[["state"]] == "created") { # Not yet submitted to queue (iff lazy)
+  if (x[["state"]] == "created") { # Not yet submitted to queue (iff lazy)
     if (debug) mdebug("just created; launching")
     x <- run(x)
     stopifnot(inherits(x[["mirai"]], "mirai"))
