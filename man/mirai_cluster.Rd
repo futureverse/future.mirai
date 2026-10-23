@@ -50,8 +50,7 @@ need to:
 
 The first step is specific to each job scheduler and this is where
 you control things such as how much memory each worker gets, for
-how long they may run, which environment modules to load, and which
-environment modules to load, if any.
+how long they may run, and which environment modules to load, if any.
 The second step is the same regardless of job scheduler.
 Here is an example for how to run parallel mirai workers on a
 Slurm scheduler and then use these in futureverse.
@@ -112,7 +111,7 @@ Everything else is the same.
 
 \emph{Comment}: \code{\link[mirai:cluster_config]{mirai::cluster_config()}} configures the jobs to run vanilla
 POSIX shells, i.e. \verb{/bin/sh}. This might be too strict for some users.
-If your setup requires your jobs to be run using Bash (\verb{/bin/sh}), you
+If your setup requires your jobs to be run using Bash (\verb{/bin/bash}), you
 can tweak the configuration \code{config} object manually to do so;
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{config$command <- "/bin/bash"

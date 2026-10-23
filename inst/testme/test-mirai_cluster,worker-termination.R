@@ -12,7 +12,7 @@ all <- nbrOfWorkers()
 message("Number of workers: ", all)
 stopifnot(all == 2L)
 free <- nbrOfFreeWorkers()
-message("Number of free workers: ", all)
+message("Number of free workers: ", free)
 stopifnot(free == 2L)
 
 ## Don't test on MS Windows, because that will leave behind a

@@ -6,6 +6,41 @@
    data to each mirai worker, resulting in significantly lower memory
    usage and faster launch of every future.
 
+ * Global variables named `.args`, `.expr`, `.timeout`, or `.compute`
+   are now allowed also with mirai futures.
+
+## Bug Fixes
+
+ * Waiting for an available worker with a timeout greater than 60
+   seconds could take much longer than that.
+
+ * `nbrOfFreeWorkers()` would produce an error when the number of
+   queued and executing tasks exceeded the number of available workers.
+
+ * `waitForWorker()` evaluated `nbrOfWorkers()` against the current
+   global plan rather than the current backend.
+
+ * `result()` on a `mirai_multisession` future dropped immediate
+   conditions, despite already being signaled.
+
+ * `resolved()` on a `mirai_multisession` future did not signal
+   conditions early when the future was resolved.
+
+ * If mirai daemons were configured without a dispatcher,
+   `MiraiFutureBackend()` signaled a plain error instead of a
+   `FutureError`.
+
+ * If `result()` on a mirai future detected a mirai `errorValue` not
+   explicitly handled, the future's internal state was never updated.
+
+ * Global variables named `.args`, `.expr`, `.timeout`, or `.compute`
+   produced a "clash with argument names of mirai::mirai()" error for
+   legacy reasons in **future** (< 1.40.0) [2025-04-10].
+
+ * Switching to a new plan (e.g. `plan(sequential)`) while mirai
+   futures were still running could produce a confusing error when
+   querying such an interrupted future later on.
+
 
 # Version 1.0.0 [2026-06-22]
 
