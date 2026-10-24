@@ -1,13 +1,15 @@
 # Changelog
 
-## Version (development version)
+## Version 1.1.0
 
 ### Significant Changes
 
-- Significantly lowered the per-worker and the total memory use, but
-  reducing the amount of data transferred to parallel workers. This
-  should increase the performance in cases where large objects per
-  parallelized over.
+- `mirai_multisession` futures no longer export extra, non-needed data
+  to each mirai worker, resulting in significantly lower memory usage
+  and faster launch of every future.
+
+- Global variables named `.args`, `.expr`, `.timeout`, or `.compute` are
+  now allowed also with mirai futures.
 
 ### Bug Fixes
 
@@ -30,12 +32,21 @@
   on a `mirai_multisession` future did not signal conditions early when
   the future was resolved.
 
-- A `mirai_multisession` future exported extra, non-needed data to each
-  mirai worker, resulting in extra memory use and slowdowns.
-
 - If mirai daemons were configured without a dispatcher,
   [`MiraiFutureBackend()`](https://future.mirai.futureverse.org/reference/MiraiFutureBackend.md)
   signaled a plain error instead of a `FutureError`.
+
+- If [`result()`](https://future.futureverse.org/reference/result.html)
+  on a mirai future detected a mirai `errorValue` not explicitly
+  handled, the future’s internal state was never updated.
+
+- Global variables named `.args`, `.expr`, `.timeout`, or `.compute`
+  produced a “clash with argument names of mirai::mirai()” error for
+  legacy reasons in **future** (\< 1.40.0) \[2025-04-10\].
+
+- Switching to a new plan (e.g. `plan(sequential)`) while mirai futures
+  were still running could produce a confusing error when querying such
+  an interrupted future later on.
 
 ## Version 1.0.0
 

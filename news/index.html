@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">future.mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0-9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,20 +68,23 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="version-development-version">Version (development version)<a class="anchor" aria-label="anchor" href="#version-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.1.0" id="version-110">Version 1.1.0<a class="anchor" aria-label="anchor" href="#version-110"></a></h2>
 <div class="section level3">
-<h3 id="significant-changes-development-version">Significant Changes<a class="anchor" aria-label="anchor" href="#significant-changes-development-version"></a></h3>
-<ul><li>Significantly lowered the per-worker and the total memory use, but reducing the amount of data transferred to parallel workers. This should increase the performance in cases where large objects per parallelized over.</li>
+<h3 id="significant-changes-1-1-0">Significant Changes<a class="anchor" aria-label="anchor" href="#significant-changes-1-1-0"></a></h3>
+<ul><li><p><code>mirai_multisession</code> futures no longer export extra, non-needed data to each mirai worker, resulting in significantly lower memory usage and faster launch of every future.</p></li>
+<li><p>Global variables named <code>.args</code>, <code>.expr</code>, <code>.timeout</code>, or <code>.compute</code> are now allowed also with mirai futures.</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<h3 id="bug-fixes-1-1-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-1-0"></a></h3>
 <ul><li><p>Waiting for an available worker with a timeout greater than 60 seconds could take much longer than that.</p></li>
 <li><p><code><a href="https://future.futureverse.org/reference/nbrOfWorkers.html" class="external-link">nbrOfFreeWorkers()</a></code> would produce an error when the number of queued and executing tasks exceeded the number of available workers.</p></li>
 <li><p><code>waitForWorker()</code> evaluated <code><a href="https://future.futureverse.org/reference/nbrOfWorkers.html" class="external-link">nbrOfWorkers()</a></code> against the current global plan rather than the current backend.</p></li>
 <li><p><code><a href="https://future.futureverse.org/reference/result.html" class="external-link">result()</a></code> on a <code>mirai_multisession</code> future dropped immediate conditions, despite already being signaled.</p></li>
 <li><p><code><a href="https://future.futureverse.org/reference/resolved.html" class="external-link">resolved()</a></code> on a <code>mirai_multisession</code> future did not signal conditions early when the future was resolved.</p></li>
-<li><p>A <code>mirai_multisession</code> future exported extra, non-needed data to each mirai worker, resulting in extra memory use and slowdowns.</p></li>
 <li><p>If mirai daemons were configured without a dispatcher, <code><a href="../reference/MiraiFutureBackend.html">MiraiFutureBackend()</a></code> signaled a plain error instead of a <code>FutureError</code>.</p></li>
+<li><p>If <code><a href="https://future.futureverse.org/reference/result.html" class="external-link">result()</a></code> on a mirai future detected a mirai <code>errorValue</code> not explicitly handled, the future’s internal state was never updated.</p></li>
+<li><p>Global variables named <code>.args</code>, <code>.expr</code>, <code>.timeout</code>, or <code>.compute</code> produced a “clash with argument names of mirai::mirai()” error for legacy reasons in <strong>future</strong> (&lt; 1.40.0) [2025-04-10].</p></li>
+<li><p>Switching to a new plan (e.g. <code>plan(sequential)</code>) while mirai futures were still running could produce a confusing error when querying such an interrupted future later on.</p></li>
 </ul></div>
 </div>
     <div class="section level2">
