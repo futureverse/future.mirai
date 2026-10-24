@@ -1,11 +1,10 @@
-# Version (development version)
+# Version 1.1.0 [2026-10-21]
 
 ## Significant Changes
 
- * Significantly lowered the per-worker and the total memory use, but
-   reducing the amount of data transferred to parallel workers. This
-   should increase the performance in cases where large objects per
-   parallelized over.
+ * `mirai_multisession` futures no longer export extra, non-needed
+   data to each mirai worker, resulting in significantly lower memory
+   usage and faster launch of every future.
 
  * Global variables named `.args`, `.expr`, `.timeout`, or `.compute`
    are now allowed also with mirai futures.
@@ -26,9 +25,6 @@
 
  * `resolved()` on a `mirai_multisession` future did not signal
    conditions early when the future was resolved.
-
- * A `mirai_multisession` future exported extra, non-needed data to
-   each mirai worker, resulting in extra memory use and slowdowns.
 
  * If mirai daemons were configured without a dispatcher,
    `MiraiFutureBackend()` signaled a plain error instead of a

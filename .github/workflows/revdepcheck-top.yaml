@@ -5,7 +5,7 @@ name: revdepcheck-top
 
 jobs:
   R-CMD-check:
-    timeout-minutes: 45
+    timeout-minutes: 120
 
     runs-on: ubuntu-latest
 
@@ -30,11 +30,26 @@ jobs:
       ## R CMD check
       _R_CHECK_MATRIX_DATA_: true
       _R_CHECK_CRAN_INCOMING_: false
+      ## Some revdeps Suggest packages not available from CRAN (e.g. 'cmdstanr')
+      _R_CHECK_FORCE_SUGGESTS_: false
       ## Specific to futures
       R_FUTURE_RNG_ONMISUSE: error
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libglpk-dev \
+            libgdal-dev \
+            libgeos-dev \
+            libproj-dev \
+            libudunits2-dev \
+            libnetcdf-dev
+
+      - uses: r-lib/actions/setup-tinytex@v2
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -56,6 +71,16 @@ jobs:
         run: |
           remotes::install_deps(dependencies = TRUE)
           install.packages(".", repos=NULL, type="source")
+        shell: Rscript {0}
+
+      ## rtemis Suggests Bioconductor packages ('Biobase', 'hopach') not
+      ## available from CRAN/RSPM, which otherwise trigger an "unavailable
+      ## package" NOTE in "checking dependencies in R code"
+      - name: Install Bioconductor dependencies for rtemis
+        if: matrix.config.pkg == 'rtemis'
+        run: |
+          install.packages("BiocManager")
+          BiocManager::install(c("Biobase", "hopach"), update = FALSE, ask = FALSE)
         shell: Rscript {0}
 
       - name: Session info
