@@ -1,5 +1,5 @@
 Package: future.mirai
-Version: 1.0.0
+Version: 1.1.0
 Depends:
     future (>= 1.49.0)
 Imports:
@@ -29,4 +29,4 @@ Encoding: UTF-8
 URL: https://future.mirai.futureverse.org, https://github.com/futureverse/future.mirai
 BugReports: https://github.com/futureverse/future.mirai/issues
 Roxygen: list(markdown = TRUE)
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.1

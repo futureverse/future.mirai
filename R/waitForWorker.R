@@ -1,5 +1,5 @@
-#' @importFrom future FutureError
-waitForWorker <- function(backend, workers = nbrOfWorkers(), debug = FALSE) {
+#' @importFrom future FutureError nbrOfWorkers
+waitForWorker <- function(backend, workers = nbrOfWorkers(backend), debug = FALSE) {
   ## FutureRegistry to use
   reg <- backend[["reg"]]
 
@@ -28,7 +28,7 @@ waitForWorker <- function(backend, workers = nbrOfWorkers(), debug = FALSE) {
     FutureRegistry(reg, action = "collect-first")
 
     iter <- iter + 1L
-    dt <- difftime(Sys.time(), t0)
+    dt <- difftime(Sys.time(), t0, units = "secs")
   }
 
   if (!finished) {

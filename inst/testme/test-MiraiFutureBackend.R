@@ -12,43 +12,6 @@ message("*** MiraiFutureBackend ...")
 
 
 ## ---------------------------------------------------------
-## mirai_version()
-## ---------------------------------------------------------
-message("- mirai_version() ...")
-
-v <- mirai_version()
-stopifnot(inherits(v, "package_version"))
-message("  mirai version: ", v)
-
-## Second call should use cached value
-v2 <- mirai_version()
-stopifnot(identical(v, v2))
-
-message("- mirai_version() ... DONE")
-
-
-## ---------------------------------------------------------
-## get_mirai_daemons() and mirai_daemons_nworkers()
-## ---------------------------------------------------------
-message("- get_mirai_daemons() and mirai_daemons_nworkers() ...")
-
-## Setup daemons
-mirai::daemons(2)
-
-daemons <- get_mirai_daemons()
-message("  daemons class: ", class(daemons)[1])
-stopifnot(is.data.frame(daemons) || is.numeric(daemons))
-
-nworkers <- mirai_daemons_nworkers()
-message("  nworkers: ", nworkers)
-stopifnot(is.numeric(nworkers), nworkers >= 1)
-
-mirai::daemons(0)
-
-message("- get_mirai_daemons() and mirai_daemons_nworkers() ... DONE")
-
-
-## ---------------------------------------------------------
 ## tweak.mirai_cluster()
 ## ---------------------------------------------------------
 message("- tweak.mirai_cluster() ...")
@@ -73,26 +36,24 @@ message("- tweak.mirai_cluster() ... DONE")
 
 
 ## ---------------------------------------------------------
-## Global variables that clash with mirai::mirai() formals
+## Global variables named after mirai::mirai() formals
 ## ---------------------------------------------------------
-message("- globals that clash with mirai::mirai() formals ...")
+message("- globals named after mirai::mirai() formals ...")
 
 plan(future.mirai::mirai_multisession, workers = 2)
 
-## '.args' is a formal argument of mirai::mirai()
-## This should produce an error
-res <- tryCatch({
-  .args <- 42
-  f <- future(.args)
-  value(f)
-}, error = identity)
-print(res)
-stopifnot(inherits(res, "FutureError"))
-stopifnot(grepl("clash with argument names of mirai::mirai", conditionMessage(res)))
+## '.args' is a formal argument of mirai::mirai(), but globals are
+## passed via a single 'data' argument rather than being spread as
+## named arguments to mirai(), so a global named '.args' (or '.expr',
+## '.timeout', '.compute') must *not* clash and must resolve fine.
+.args <- 42
+f <- future(.args)
+v <- value(f)
+stopifnot(v == 42)
 
 plan(sequential)
 
-message("- globals that clash with mirai::mirai() formals ... DONE")
+message("- globals named after mirai::mirai() formals ... DONE")
 
 
 ## ---------------------------------------------------------
@@ -146,7 +107,18 @@ r <- resolved(f)
 message("Resolved: ", r)
 stopifnot(!isTRUE(r))
 
+## Forces stopWorkers()
 plan(sequential)
+
+if (packageVersion("future") >= "1.80.0-9008") {
+  stopifnot(length(future.mirai:::.debug$stack) == 0L)
+}
+
+## Assert FutureInterruptError
+res <- tryCatch(value(f), error = identity)
+print(res)
+stopifnot(inherits(res, "FutureInterruptError"))
+stopifnot(!grepl("INTERNAL ERROR", conditionMessage(res)))
 
 message("- stopWorkers.MiraiFutureBackend() with active futures ... DONE")
 
@@ -243,6 +215,26 @@ stopifnot(free_after == nbrOfWorkers())
 plan(sequential)
 
 message("- nbrOfFreeWorkers.MiraiFutureBackend() ... DONE")
+
+
+## ---------------------------------------------------------
+## waitForWorker() timeout
+## ---------------------------------------------------------
+message("- waitForWorker() timeout ...")
+
+ovalue <- options(future.wait.timeout = 0.5)
+plan(future.mirai::mirai_multisession, workers = I(1L))
+
+f1 <- future({ Sys.sleep(2); 42 })
+
+res <- tryCatch(future(1), error = identity)
+print(res)
+stopifnot(inherits(res, "FutureError"))
+
+plan(sequential)
+options(ovalue)
+
+message("- waitForWorker() timeout ... DONE")
 
 
 message("*** MiraiFutureBackend ... DONE")

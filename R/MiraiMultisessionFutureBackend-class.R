@@ -2,55 +2,49 @@
 #' @importFrom parallelly availableCores
 #' @importFrom future FutureBackend SequentialFutureBackend
 #' @export
-MiraiMultisessionFutureBackend <- local({
-  with_stealth_rng <- import_future("with_stealth_rng")
+MiraiMultisessionFutureBackend <- function(workers = availableCores(), ...) {
+  if (is.function(workers)) workers <- workers()
+  stop_if_not(is.numeric(workers))
+  workers <- structure(as.integer(workers), class = class(workers))
+  stop_if_not(length(workers) == 1, is.finite(workers), workers >= 1)
   
-  function(workers = availableCores(), ...) {
-    if (is.function(workers)) workers <- workers()
-    stop_if_not(is.numeric(workers))
-    workers <- structure(as.integer(workers), class = class(workers))
-    stop_if_not(length(workers) == 1, is.finite(workers), workers >= 1)
-    
-    ## Fall back to sequential futures if only a single additional R process
-    ## can be spawned off, i.e. then use the current main R process.
-    ## Sequential futures best reflect how multicore futures handle globals.
-    if (workers == 1L && !inherits(workers, "AsIs")) {
-      ## covr: skip=1
-      return(SequentialFutureBackend(...))
-    }
-
-    ## Inquire about current mirai daemons
-    dispatcher <- !is.null(status()[["mirai"]])
-    
-    ## Do we need to change the number of mirai workers?
-    nworkers <- mirai_daemons_nworkers()
-    if (is.infinite(workers) && nworkers < +Inf) {
-      daemons(n = 0L)
-    } else if (!dispatcher || workers != nworkers) {
-      daemons(n = 0L)  ## reset is required
-      ## Dispatch is required to protect against launching too many workers
-      with_stealth_rng({
-        daemons(n = workers, dispatcher = TRUE)
-      })
-    }
-  
-    core <- MiraiFutureBackend(
-      workers = workers,
-      ...
-    )
-    core[["shutdown"]] <- TRUE
-    
-    core[["futureClasses"]] <- c("MiraiMultisessionFuture", core[["futureClasses"]])
-    core <- structure(core, class = c("MiraiMultisessionFutureBackend", "MiraiFutureBackend", "MultiprocessFutureBackend", "FutureBackend", class(core)))
-  
-    core
+  ## Fall back to sequential futures if only a single additional R process
+  ## can be spawned off, i.e. then use the current main R process.
+  ## Sequential futures best reflect how multicore futures handle globals.
+  if (workers == 1L && !inherits(workers, "AsIs")) {
+    ## covr: skip=1
+    return(SequentialFutureBackend(...))
   }
-})
+
+  ## Inquire about current mirai daemons
+  status <- status()
+  dispatcher <- !is.null(status[["mirai"]])
+  
+  ## Do we need to change the number of mirai workers?
+  nworkers <- status[["connections"]]
+  if (!dispatcher || workers != nworkers) {
+    daemons(n = 0L)  ## reset is required
+    ## Dispatch is required to protect against launching too many workers
+    with_stealth_rng({
+      daemons(n = workers, dispatcher = TRUE)
+    })
+  }
+
+  core <- MiraiFutureBackend(
+    workers = workers,
+    ...
+  )
+  core[["shutdown"]] <- TRUE
+  
+  core[["futureClasses"]] <- c("MiraiMultisessionFuture", core[["futureClasses"]])
+  core <- structure(core, class = c("MiraiMultisessionFutureBackend", "MiraiFutureBackend", "MultiprocessFutureBackend", "FutureBackend", class(core)))
+
+  core
+}
 
 
 
-#' @importFrom future nbrOfWorkers FutureWarning FutureError
-#' @importFrom mirai is_error_value status
+#' @importFrom future nbrOfWorkers
 #' @export
 nbrOfWorkers.MiraiMultisessionFutureBackend <- function(evaluator) {
   backend <- evaluator
@@ -68,7 +62,7 @@ nbrOfFreeWorkers.MiraiMultisessionFutureBackend <- function(evaluator, backgroun
   ## (1) Number of free workers per internal registry
   usedWorkers <- length(FutureRegistry(reg, action = "list",
                         earlySignal = FALSE))
-  workers <- as.integer(workers) - usedWorkers
+  workers <- max(0L, as.integer(workers) - usedWorkers)
   stop_if_not(length(workers) == 1L, !is.na(workers), workers >= 
       0L, is.finite(workers))
 
@@ -80,7 +74,6 @@ nbrOfFreeWorkers.MiraiMultisessionFutureBackend <- function(evaluator, backgroun
 #' @export
 resolved.MiraiMultisessionFuture <- function(x, .signalEarly = TRUE, ...) {
   resolved <- NextMethod()
-  if (resolved) return(TRUE)
   
   ## Collect and relay immediateCondition if they exist
   conditions <- readImmediateConditions(signal = TRUE)
@@ -89,7 +82,7 @@ resolved.MiraiMultisessionFuture <- function(x, .signalEarly = TRUE, ...) {
   x[[".signaledConditions"]] <- signaled
 
   ## Signal conditions early? (happens only iff requested)
-  if (.signalEarly) signalEarly(x, ...)
+  if (resolved && .signalEarly) signalEarly(x, ...)
 
   resolved
 }
@@ -106,36 +99,49 @@ result.MiraiMultisessionFuture <- function(future, ...) {
   ## Record conditions as signaled
   signaled <- c(future[[".signaledConditions"]], conditions)
   future[[".signaledConditions"]] <- signaled
+  if (length(signaled) > 0L) {
+    result[["conditions"]] <- c(signaled, result[["conditions"]])
+    future[[".signaledConditions"]] <- NULL
+    future[["result"]] <- result
+  }
 
   result
 }
 
 
+## This function will be exported to the parallel workers. Because of this,
+## it is important that its enclosure is minimal. In R, function argument
+## promises retain their calling environment (which holds the 'future' object
+## and globals). To avoid serializing that calling environment, we attach
+## a clean environment containing only 'path' whose parent is the package namespace.
+make_immediate_condition_handler <- function(path) {
+  h <- function(cond) {
+    fileImmediateConditionHandler(cond, path = path)
+  }
+  env <- new.env(parent = asNamespace("future.mirai"))
+  env$path <- as.character(path)
+  environment(h) <- env
+  h
+}
+
 #' @exportS3Method getFutureBackendConfigs MiraiMultisessionFuture
-getFutureBackendConfigs.MiraiMultisessionFuture <- local({
-  immediateConditionsPath <- import_future("immediateConditionsPath")
-  fileImmediateConditionHandler <- import_future("fileImmediateConditionHandler")
-  
-  function(future, ..., debug = isTRUE(getOption("future.debug"))) {
-    conditionClasses <- future[["conditions"]]
-    if (is.null(conditionClasses)) {
-      capture <- list()
-    } else {
-      path <- immediateConditionsPath(rootPath = tempdir())
-      capture <- list(
-        immediateConditionHandlers = list(
-          immediateCondition = function(cond) {
-            fileImmediateConditionHandler(cond, path = path)
-          }
-        )
+getFutureBackendConfigs.MiraiMultisessionFuture <- function(future, ..., debug = isTRUE(getOption("future.debug"))) {
+  conditionClasses <- future[["conditions"]]
+  if (is.null(conditionClasses)) {
+    capture <- list()
+  } else {
+    path <- immediateConditionsPath(rootPath = tempdir())
+    capture <- list(
+      immediateConditionHandlers = list(
+        immediateCondition = make_immediate_condition_handler(path)
       )
-    }
-  
-    list(
-      capture = capture
     )
   }
-})
+
+  list(
+    capture = capture
+  )
+}
 
 
 #' Mirai-based localhost multisession futures

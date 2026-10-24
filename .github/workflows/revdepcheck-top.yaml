@@ -1,0 +1,113 @@
+on:
+  workflow_dispatch:
+
+name: revdepcheck-top
+
+jobs:
+  R-CMD-check:
+    timeout-minutes: 120
+
+    runs-on: ubuntu-latest
+
+    name: ${{ matrix.config.pkg }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { r: "release", pkg: "brms",             error_on: note }
+          - { r: "release", pkg: "bsitar",           error_on: note }
+          - { r: "release", pkg: "chopin",           error_on: note }
+          - { r: "release", pkg: "marcxmlr",         error_on: note }
+          - { r: "release", pkg: "rtemis",           error_on: note }
+          - { r: "release", pkg: "spanishoddata",    error_on: note }
+          - { r: "release", pkg: "summarisebig",     error_on: note }
+          - { r: "release", pkg: "xmlrectr",         error_on: note }
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      ## R CMD check
+      _R_CHECK_MATRIX_DATA_: true
+      _R_CHECK_CRAN_INCOMING_: false
+      ## Some revdeps Suggest packages not available from CRAN (e.g. 'cmdstanr')
+      _R_CHECK_FORCE_SUGGESTS_: false
+      ## Specific to futures
+      R_FUTURE_RNG_ONMISUSE: error
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libglpk-dev \
+            libgdal-dev \
+            libgeos-dev \
+            libproj-dev \
+            libudunits2-dev \
+            libnetcdf-dev
+
+      - uses: r-lib/actions/setup-tinytex@v2
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            any::rcmdcheck
+            any::remotes
+            any::sessioninfo
+            any::covr
+          needs: check
+
+      - name: Install dependencies
+        run: |
+          remotes::install_deps(dependencies = TRUE)
+          install.packages(".", repos=NULL, type="source")
+        shell: Rscript {0}
+
+      ## rtemis Suggests Bioconductor packages ('Biobase', 'hopach') not
+      ## available from CRAN/RSPM, which otherwise trigger an "unavailable
+      ## package" NOTE in "checking dependencies in R code"
+      - name: Install Bioconductor dependencies for rtemis
+        if: matrix.config.pkg == 'rtemis'
+        run: |
+          install.packages("BiocManager")
+          BiocManager::install(c("Biobase", "hopach"), update = FALSE, ask = FALSE)
+        shell: Rscript {0}
+
+      - name: Session info
+        run: |
+          options(width = 100)
+          pkgs <- installed.packages()[, "Package"]
+          sessioninfo::session_info(pkgs, include_base = TRUE)
+        shell: Rscript {0}
+
+      - name: Check reverse dependency package
+        run: |
+          pkgname <- "${{ matrix.config.pkg }}"
+          install.packages(pkgname, dependencies = TRUE)
+          url <- remotes:::download_version_url(pkgname, version=NULL, repos="https://cloud.r-project.org", type="source")
+          tarball <- basename(url)
+          utils::download.file(url, destfile = tarball, mode = "wb")
+          rcmdcheck::rcmdcheck(
+            tarball,
+            args = c("--no-manual", "--as-cran"),
+            error_on = "${{ matrix.config.error_on }}",
+            check_dir = "check"
+          )
+        shell: Rscript {0}
+
+      - name: Upload check results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ runner.os }}-r${{ matrix.config.r }}-revdep${{ matrix.config.pkg }}-results
+          path: check

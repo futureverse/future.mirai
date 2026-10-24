@@ -41,6 +41,29 @@ print(c(
 print(value(f))
 
 plan(sequential)
+mirai::daemons(0)
+
+
+message("*** nbrOfFreeWorkers() when tasks exceed workers ...")
+
+mirai::daemons(1, dispatcher = TRUE)
+plan(future.mirai::mirai_cluster)
+stopifnot(nbrOfWorkers() == 1L)
+stopifnot(nbrOfFreeWorkers() == 1L)
+
+## Launch more tasks than daemon workers (tasks queued at dispatcher)
+m1 <- mirai::mirai(Sys.sleep(1.0))
+m2 <- mirai::mirai(Sys.sleep(1.0))
+Sys.sleep(0.1)
+free <- nbrOfFreeWorkers()
+message("Number of free workers: ", free)
+stopifnot(free == 0L)
+
+plan(sequential)
+mirai::daemons(0)
+
+message("*** nbrOfFreeWorkers() when tasks exceed workers ... DONE")
+
 
 message("*** nbrOfWorkers() ... DONE")
 

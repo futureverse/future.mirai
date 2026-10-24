@@ -6,6 +6,9 @@ FutureRegistry <- NULL
 evalFuture <- NULL
 getFutureData <- NULL
 getFutureBackendConfigs <- NULL
+fileImmediateConditionHandler <- NULL
+immediateConditionsPath <- NULL
+with_stealth_rng <- NULL
 sQuoteLabel <- NULL
 .debug <- NULL
 
@@ -24,6 +27,9 @@ import_future_functions <- function() {
   getFutureData <<- import_future("getFutureData")
   getFutureBackendConfigs <<- import_future("getFutureBackendConfigs")
   registerS3method("getFutureBackendConfigs", "MiraiMultisessionFuture", getFutureBackendConfigs.MiraiMultisessionFuture)
+  fileImmediateConditionHandler <<- import_future("fileImmediateConditionHandler")
+  immediateConditionsPath <<- import_future("immediateConditionsPath")
+  with_stealth_rng <<- import_future("with_stealth_rng")
 
   ## future (>= 1.49.0)
   sQuoteLabel <<- import_future("sQuoteLabel")

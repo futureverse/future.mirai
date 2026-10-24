@@ -29,13 +29,4 @@ with_assert <- function(expr, ...) { invisible(expr) }
       options(future.mirai.debug = value)
     }
   }
-
-  ## Set 'queue' option by environment variable
-  value <- getOption("future.mirai.queue")
-  if (is.null(value)) {
-    value <- Sys.getenv("R_FUTURE_MIRAI_QUEUE", NA_character_)
-    if (!is.na(value)) {
-      options(future.mirai.queue = value)
-    }
-  }
 }
