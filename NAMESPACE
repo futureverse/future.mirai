@@ -21,7 +21,6 @@ importFrom(future,
   FutureBackend,
   FutureError,
   FutureInterruptError,
-  FutureWarning,
   SequentialFutureBackend,
   cancel,
   future,
@@ -47,6 +46,5 @@ importFrom(mirai,
 importFrom(parallelly,availableCores)
 importFrom(utils,
   capture.output,
-  packageVersion,
   str
 )

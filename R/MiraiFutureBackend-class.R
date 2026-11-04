@@ -221,10 +221,6 @@ result.MiraiFuture <- function(future, ...) {
   state <- future[["state"]]
   if (state == "finished") {
     return(future[["result"]])
-  } else if (state == "canceled") {
-    ## Backward compatibility with future (<= 1.68.0)
-    result <- future[["result"]]
-    if (!is.null(result)) return(result)
   } else if (state %in% c("failed", "interrupted")) {
     stop(future[["result"]])
   }

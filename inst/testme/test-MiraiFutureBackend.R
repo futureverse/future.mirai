@@ -110,7 +110,7 @@ stopifnot(!isTRUE(r))
 ## Forces stopWorkers()
 plan(sequential)
 
-if (packageVersion("future") >= "1.80.0-9008") {
+if (utils::packageVersion("future") >= "1.80.0-9008") {
   stopifnot(length(future.mirai:::.debug$stack) == 0L)
 }
 

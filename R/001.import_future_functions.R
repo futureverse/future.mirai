@@ -1,4 +1,4 @@
-## To be imported from 'future', if available
+## To be imported from 'future'
 readImmediateConditions <- NULL
 signalEarly <- NULL
 prune_fcn <- function(expr, ...) expr
@@ -34,5 +34,5 @@ import_future_functions <- function() {
   ## future (>= 1.49.0)
   sQuoteLabel <<- import_future("sQuoteLabel")
 
-  .debug <<- import_future(".debug", mode = "environment", default = new.env(parent = emptyenv()))
+  .debug <<- import_future(".debug", mode = "environment")
 }
