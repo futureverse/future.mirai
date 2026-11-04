@@ -1,38 +1,24 @@
-## To be imported from 'future'
-readImmediateConditions <- NULL
-signalEarly <- NULL
-prune_fcn <- function(expr, ...) expr
-FutureRegistry <- NULL
-evalFuture <- NULL
-getFutureData <- NULL
-getFutureBackendConfigs <- NULL
-fileImmediateConditionHandler <- NULL
-immediateConditionsPath <- NULL
-with_stealth_rng <- NULL
-sQuoteLabel <- NULL
+## Private functions imported from 'future'
+readImmediateConditions <- import_future("readImmediateConditions")
+signalEarly <- import_future("signalEarly")
+prune_fcn <- import_future("prune_fcn")
+FutureRegistry <- import_future("FutureRegistry")
+evalFuture <- import_future("evalFuture")
+getFutureData <- import_future("getFutureData")
+getFutureBackendConfigs <- import_future("getFutureBackendConfigs")
+fileImmediateConditionHandler <- import_future("fileImmediateConditionHandler")
+immediateConditionsPath <- import_future("immediateConditionsPath")
+with_stealth_rng <- import_future("with_stealth_rng")
+sQuoteLabel <- import_future("sQuoteLabel")
+
+## An environment must be imported when the package is loaded, otherwise
+## we would get a copy and not share the state with 'future'
 .debug <- NULL
 
-## Import private functions from 'future'
 import_future_functions <- function() {
-  ## Already done?
-  if (is.function(readImmediateConditions)) return()
-  
-  readImmediateConditions <<- import_future("readImmediateConditions")
-  signalEarly <<- import_future("signalEarly")
-  FutureRegistry <<- import_future("FutureRegistry")
-  
-  ## future (>= 1.40.0)
-  prune_fcn <<- import_future("prune_fcn")
-  evalFuture <<- import_future("evalFuture")
-  getFutureData <<- import_future("getFutureData")
-  getFutureBackendConfigs <<- import_future("getFutureBackendConfigs")
-  registerS3method("getFutureBackendConfigs", "MiraiMultisessionFuture", getFutureBackendConfigs.MiraiMultisessionFuture)
-  fileImmediateConditionHandler <<- import_future("fileImmediateConditionHandler")
-  immediateConditionsPath <<- import_future("immediateConditionsPath")
-  with_stealth_rng <<- import_future("with_stealth_rng")
-
-  ## future (>= 1.49.0)
-  sQuoteLabel <<- import_future("sQuoteLabel")
-
   .debug <<- import_future(".debug", mode = "environment")
+
+  ## The generic is a private function in 'future', so the S3method()
+  ## entry in NAMESPACE is not enough to register the method
+  registerS3method("getFutureBackendConfigs", "MiraiMultisessionFuture", getFutureBackendConfigs.MiraiMultisessionFuture)
 }
