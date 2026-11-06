@@ -5,7 +5,6 @@ message("Internal import functions ...")
 import_from <- future.mirai:::import_from
 import_future <- future.mirai:::import_future
 with_assert <- future.mirai:::with_assert
-.onLoad <- future.mirai:::.onLoad
 
 void <- import_future("future")
 stopifnot(is.function(void))
@@ -18,4 +17,3 @@ with_assert(TRUE)
 
 options(future.mirai.debug = NULL)
 Sys.setenv(R_FUTURE_MIRAI_DEBUG = "FALSE")
-.onLoad("future.mirai", "future.mirai")
