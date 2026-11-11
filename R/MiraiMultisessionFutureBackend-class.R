@@ -37,7 +37,7 @@ MiraiMultisessionFutureBackend <- function(workers = availableCores(), ...) {
   core[["shutdown"]] <- TRUE
   
   core[["futureClasses"]] <- c("MiraiMultisessionFuture", core[["futureClasses"]])
-  core <- structure(core, class = c("MiraiMultisessionFutureBackend", "MiraiFutureBackend", "MultiprocessFutureBackend", "FutureBackend", class(core)))
+  core <- structure(core, class = c("MiraiMultisessionFutureBackend", class(core)))
 
   core
 }

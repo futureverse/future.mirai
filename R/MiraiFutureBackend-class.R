@@ -37,7 +37,7 @@ MiraiFutureBackend <- function(...) {
     alpha = getOption("future.wait.alpha", 1.01)
   )
   core[["futureClasses"]] <- c("MiraiFuture", "MultiprocessFuture", core[["futureClasses"]])
-  core <- structure(core, class = c("MiraiFutureBackend", "MultiprocessFutureBackend", "FutureBackend", class(core)))
+  core <- structure(core, class = c("MiraiFutureBackend", "MultiprocessFutureBackend", class(core)))
   core
 }
 
