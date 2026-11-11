@@ -62,7 +62,7 @@ jobs:
       - name: Install 'future.tests' and any backend R packages
         run: |
           remotes::install_cran("future.tests")
-          remotes::install_github("HenrikBengtsson/future.tests", ref="develop")
+          remotes::install_github("futureverse/future.tests", ref="develop")
           ## Identify and install future backend package in 'plan' variable, if any
           plan <- "${{ matrix.future.plan }}"
           pattern <- ".*(future[.][[:alnum:]]+)::[[:alnum:]]+.*"
