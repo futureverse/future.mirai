@@ -1,7 +1,7 @@
 
 
 <div id="badges"><!-- pkgdown markup -->
-<a href="https://CRAN.R-project.org/web/checks/check_results_future.mirai.html"><img border="0" src="https://www.r-pkg.org/badges/version/future.mirai" alt="CRAN check status"/></a> <a href="https://github.com/futureverse/future.mirai/actions?query=workflow%3AR-CMD-check"><img border="0" src="https://github.com/futureverse/future.mirai/actions/workflows/R-CMD-check.yaml/badge.svg?branch=develop" alt="R CMD check status"/></a>  <a href="https://github.com/futureverse/future.mirai/actions?query=workflow%3Afuture_tests"><img border="0" src="https://github.com/futureverse/future.mirai/actions/workflows/future_tests.yaml/badge.svg?branch=develop" alt="future.tests checks status"/></a>   <a href="https://app.codecov.io/gh/futureverse/future.mirai"><img border="0" src="https://codecov.io/gh/futureverse/future.mirai/branch/develop/graph/badge.svg" alt="Coverage Status"/></a> 
+<a href="https://CRAN.R-project.org/web/checks/check_results_future.mirai.html"><img border="0" src="https://www.r-pkg.org/badges/version/future.mirai" alt="CRAN check status"/></a> <a href="https://github.com/futureverse/future.mirai/actions?query=workflow%3AR-CMD-check"><img border="0" src="https://github.com/futureverse/future.mirai/actions/workflows/R-CMD-check.yaml/badge.svg?branch=develop" alt="R CMD check status"/></a> <a href="https://github.com/futureverse/future.mirai/actions?query=workflow%3Arevdepcheck-top"><img border="0" src="https://github.com/futureverse/future.mirai/actions/workflows/revdepcheck-top.yaml/badge.svg?branch=develop" alt="Top reverse-dependency checks status"/></a> <a href="https://github.com/futureverse/future.mirai/actions?query=workflow%3Afuture_tests"><img border="0" src="https://github.com/futureverse/future.mirai/actions/workflows/future_tests.yaml/badge.svg?branch=develop" alt="future.tests checks status"/></a>   <a href="https://app.codecov.io/gh/futureverse/future.mirai"><img border="0" src="https://codecov.io/gh/futureverse/future.mirai/branch/develop/graph/badge.svg" alt="Coverage Status"/></a> 
 </div>
 
 # future.mirai: A 'Future' API for Parallel Processing using 'mirai' 
@@ -21,13 +21,13 @@ utilizes the **[mirai]** package.
 For example,
 
 ```r
-> library(future)
-> plan(future.mirai::mirai_multisession)
->
-> x %<-% { Sys.sleep(5); 3.14 }
-> y %<-% { Sys.sleep(5); 2.71 }
-> x + y
-[1] 5.85
+library(future)
+plan(future.mirai::mirai_multisession)
+
+x %<-% { Sys.sleep(5); 3.14 }
+y %<-% { Sys.sleep(5); 2.71 }
+x + y
+#> [1] 5.85
 ```
 
 This is obviously a toy example to illustrate what futures look like
