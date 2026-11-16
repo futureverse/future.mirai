@@ -2,7 +2,6 @@
 readImmediateConditions <- import_future("readImmediateConditions")
 signalEarly <- import_future("signalEarly")
 prune_fcn <- import_future("prune_fcn")
-FutureRegistry <- import_future("FutureRegistry")
 evalFuture <- import_future("evalFuture")
 getFutureData <- import_future("getFutureData")
 getFutureBackendConfigs <- import_future("getFutureBackendConfigs")
@@ -15,8 +14,13 @@ sQuoteLabel <- import_future("sQuoteLabel")
 ## we would get a copy and not share the state with 'future'
 .debug <- NULL
 
+## Same for FutureRegistry(), whose state lives in its closure. It must
+## be shared with 'future', e.g. so that listFutures() sees our futures
+FutureRegistry <- NULL
+
 import_future_functions <- function() {
   .debug <<- import_future(".debug", mode = "environment")
+  FutureRegistry <<- import_future("FutureRegistry")
 
   ## The generic is a private function in 'future', so the S3method()
   ## entry in NAMESPACE is not enough to register the method

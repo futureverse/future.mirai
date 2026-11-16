@@ -1,6 +1,8 @@
 # Version (development version)
 
- * ...
+## Bug Fixes
+
+ * `listFutures()` did not list the active futures of the backend.
 
 
 # Version 1.1.0 [2026-10-21]
