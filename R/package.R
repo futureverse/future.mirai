@@ -1,4 +1,4 @@
-#' future.mirai: A Future API for Parallel Processing using 'mirai'
+#' future.mirai: Parallel Future Backend using 'mirai'
 #'
 #' The \pkg{future.mirai} package implements the Future API
 #' using the \pkg{mirai} package.

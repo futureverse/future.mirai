@@ -10,8 +10,19 @@ Suggests:
     future.tests,
     future.apply,
     listenv
-Title: A 'Future' API for Parallel Processing using 'mirai'
-Description: Implementation of the 'Future' API <doi:10.32614/RJ-2021-048> on top of the 'mirai' package <doi:10.5281/zenodo.7912722>. By using this package, you get to take advantage of the benefits of 'mirai' plus everything else that 'future' and the 'Futureverse' adds on top of it. It allows you to process futures, as defined by the 'future' package, in parallel out of the box, on your local machine or across remote machines. Contrary to back-ends relying on the 'parallel' package (e.g. 'multisession') and socket connections, 'mirai_cluster' and 'mirai_multisession', provided here, can run more than 125 parallel R processes. As a reminder, regardless which future backend is used by the user, the code does not have to change, it gives identical results, and behaves exactly the same.
+Title: Parallel Future Backend using 'mirai'
+Description: Implementation of the Future API <doi:10.32614/RJ-2021-048> on
+    top of the 'mirai' package <doi:10.5281/zenodo.7912722>. The backend is
+    fully compliant with the Future API, as validated by the 'future.tests'
+    conformance test suite, meaning that code using futures gives identical
+    results and behaves the same regardless of which future backend is used.
+    Futures are resolved in parallel by 'mirai' daemons on the local machine
+    or across remote machines, and, contrary to backends relying on the
+    'parallel' package and socket connections, it can run more than 125
+    parallel R processes. A common use is to parallelize existing map-reduce
+    calls via the 'futurize' package <doi:10.48550/arXiv.2601.17578>, e.g.
+    'plan(future.mirai::mirai_multisession)' followed by 'lapply(xs, fcn) |>
+    futurize()' or 'purrr::map(xs, fcn) |> futurize()'.
 Authors@R: c(
   person("Henrik", "Bengtsson",
          role = c("aut", "cre", "cph"),
