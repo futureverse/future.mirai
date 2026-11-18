@@ -1,96 +1,99 @@
 ## Introduction
 
-The **[future]** package provides a generic API for using futures in
-R.  A future is a simple yet powerful mechanism to evaluate an R
-expression and retrieve its value at some point in time.  Futures can
-be resolved in many different ways depending on which strategy is
-used.  There are various types of synchronous and asynchronous futures
-to choose from in the **[future]** package.
-
-This package, **[future.mirai]**, provides a type of futures that
-utilizes the **[mirai]** package.
-
-For example,
+The **[future.mirai]** package is a backend for the **[future]**
+framework, also known as the [Futureverse]. The Futureverse makes it
+easy to parallelize existing R code - often with only a minor change
+of code. Most users interact with it via higher-level packages such
+as **[futurize]**, **[future.apply]**, **[furrr]**, and
+**[doFuture]**, and you choose _where_ and _how_ the code runs by
+setting a future backend with `plan()`. This package adds the
+`mirai_multisession` and `mirai_cluster` backends, which run futures
+in parallel using the **[mirai]** package.
 
 ```r
-library(future)
-plan(future.mirai::mirai_multisession)
+library(futurize)
+plan(future.mirai::mirai_multisession)  # parallelize on the current machine
 
-x %<-% { Sys.sleep(5); 3.14 }
-y %<-% { Sys.sleep(5); 2.71 }
-x + y
-#> [1] 5.85
+# A slow function
+slow_fcn <- function(x) {
+  Sys.sleep(1.0)
+  x^2
+}
+
+# Example data
+xs <- 1:10
+
+# Sequential and parallel base R apply
+ys <- lapply(xs, slow_fcn)
+ys <- lapply(xs, slow_fcn) |> futurize()
+
+# Sequential and parallel purrr map
+library(purrr)
+ys <- xs |>  map(slow_fcn)
+ys <- xs |>  map(slow_fcn) |> futurize()
+
+# Sequential and parallel foreach calls
+library(foreach)
+ys <- foreach(x = xs) %do% slow_fcn(x)
+ys <- foreach(x = xs) %do% slow_fcn(x) |> futurize()
 ```
 
-This is obviously a toy example to illustrate what futures look like
-and how to work with them.  For further examples on how to use
-futures, see the vignettes of the **[future]** package as well as
-those of **[future.apply]**, **[furrr]**, and **[doFuture]**.
+The only thing that differs from using [any other future backend](https://www.futureverse.org/backends.html) is
+the `plan()` call. The code does not have to change, it gives
+identical results, and it behaves exactly the same.
 
 
-## Using the future.mirai backend
-
-The **future.mirai** package implements a **future** backend wrapper
-for **mirai**.
-
+## The mirai backends
 
 | Backend              | Description                                                      | Alternative in future package
 |:---------------------|:-----------------------------------------------------------------|:------------------------------
 | `mirai_multisession` | parallel evaluation in separate R processes (on current machine) | `plan(multisession)`
 | `mirai_cluster`      | parallel evaluation in mirai-configured workers                  | `plan(cluster)`
 
-
-### Advantages of mirai futures
-
-The **mirai** package provides a low-level future-like mechanism for
-evaluating R expression in separate R processes running on the local
-machine or on one or more remote machines.  Central to **mirai** is
-its highly-optimized queueing mechanism, which is used to orchestrate
-communication between the main R process and parallel workers. A
-**mirai** cluster of workers can be configured to communicate securely
-via the well-established Transport Layer Security (TLS) protocol.
-
-Another advantage with `mirai_*` futures, compared to `multisession`
-and `cluster` futures, is that we can use more than 125 parallel
-workers.  The current limit of 125 workers for `multisession` and
-`cluster` futures stems from how the underlying **parallel** package
-uses one R connection per parallel worker and R has a limit of 125 R
-connections per session.  In R (>= 4.4.0), we can increase this limit
-when we launch R, e.g. `R --max-connections=200`. For R (< 4.4.0), R
-has to be rebuilt from source after adjusting the source code.  The
-**mirai** package does not rely on R connections for parallel workers
-and therefore does not suffer from this limit.
-
-
-## Demos
-
-The **[future]** package provides a demo using futures for calculating
-a set of Mandelbrot planes.  The demo does not assume anything about
-what type of futures are used.  _The user has full control of how
-futures are evaluated_.  For instance, to use `mirai_multisession`
-futures, run the demo as:
+With `mirai_multisession`, the parallel workers are launched for you
+on the local machine. With `mirai_cluster`, you launch the workers
+yourself using `mirai::daemons()`, which means they can also run on
+remote machines or on a high-performance compute (HPC) cluster, e.g.
 
 ```r
-library(future)
-plan(future.mirai::mirai_multisession)
-
-demo("mandelbrot", package = "future", ask = FALSE)
-```
-
-and
-
-```r
-library(future)
 mirai::daemons(2)
 plan(future.mirai::mirai_cluster)
-
-demo("mandelbrot", package = "future", ask = FALSE)
 ```
 
 
-[mirai]: https://cran.r-project.org/package=mirai
-[future]: https://cran.r-project.org/package=future
-[future.mirai]: https://github.com/futureverse/future.mirai
-[future.apply]: https://cran.r-project.org/package=future.apply
-[furrr]: https://cran.r-project.org/package=furrr
-[doFuture]: https://cran.r-project.org/package=doFuture
+### Advantages
+
+* Communication between the main R process and the parallel workers
+  is orchestrated by the highly-optimized queueing mechanism of
+  **mirai**.
+
+* A **mirai** cluster of workers can be configured to communicate
+  securely via the Transport Layer Security (TLS) protocol.
+
+* More than 125 parallel workers can be used. The `multisession` and
+  `cluster` backends use one R connection per worker, and R has a
+  default limit of 125 connections per session. **mirai** does not
+  use R connections, so this limit does not apply.
+
+
+### Limitations
+
+* The `mirai_cluster` backend requires that the **mirai** daemons are
+  configured to use a dispatcher, which is the default in
+  `mirai::daemons()`.
+
+* Remote workers must be able to establish a TCP connection back to
+  the machine that launched them. Some HPC clusters have firewall
+  rules that block this, in which case the workers never connect.
+  For such systems, consider **[future.batchtools]** instead.
+
+
+[Futureverse]: https://www.futureverse.org
+[future]: https://future.futureverse.org
+[future.mirai]: https://future.mirai.futureverse.org
+[future.apply]: https://future.apply.futureverse.org
+[future.batchtools]: https://future.batchtools.futureverse.org
+[furrr]: https://furrr.futureverse.org
+[doFuture]: https://doFuture.futureverse.org
+[futurize]: https://futurize.futureverse.org
+[mirai]: https://mirai.r-lib.org
