@@ -2,7 +2,10 @@
 
 ## Version (development version)
 
-- …
+### Bug Fixes
+
+- [`listFutures()`](https://future.futureverse.org/reference/FutureBackend-class.html)
+  did not list the active futures of the backend.
 
 ## Version 1.1.0
 

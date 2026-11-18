@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>A Future API for Parallel Processing using mirai • future.mirai</title>
+<title>Parallel Future Backend using mirai • future.mirai</title>
 <script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="A Future API for Parallel Processing using mirai">
-<meta name="description" content="Implementation of the Future API &lt;doi:10.32614/RJ-2021-048&gt; on top of the mirai package &lt;doi:10.5281/zenodo.7912722&gt;. By using this package, you get to take advantage of the benefits of mirai plus everything else that future and the Futureverse adds on top of it. It allows you to process futures, as defined by the future package, in parallel out of the box, on your local machine or across remote machines. Contrary to back-ends relying on the parallel package (e.g. multisession) and socket connections, mirai_cluster and mirai_multisession, provided here, can run more than 125 parallel R processes. As a reminder, regardless which future backend is used by the user, the code does not have to change, it gives identical results, and behaves exactly the same.">
-<meta property="og:description" content="Implementation of the Future API &lt;doi:10.32614/RJ-2021-048&gt; on top of the mirai package &lt;doi:10.5281/zenodo.7912722&gt;. By using this package, you get to take advantage of the benefits of mirai plus everything else that future and the Futureverse adds on top of it. It allows you to process futures, as defined by the future package, in parallel out of the box, on your local machine or across remote machines. Contrary to back-ends relying on the parallel package (e.g. multisession) and socket connections, mirai_cluster and mirai_multisession, provided here, can run more than 125 parallel R processes. As a reminder, regardless which future backend is used by the user, the code does not have to change, it gives identical results, and behaves exactly the same.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Parallel Future Backend using mirai">
+<meta name="description" content="Implementation of the Future API &lt;doi:10.32614/RJ-2021-048&gt; on top of the mirai package &lt;doi:10.5281/zenodo.7912722&gt;. The backend is fully compliant with the Future API, as validated by the future.tests conformance test suite, meaning that code using futures gives identical results and behaves the same regardless of which future backend is used. Futures are resolved in parallel by mirai daemons on the local machine or across remote machines, and, contrary to backends relying on the parallel package and socket connections, it can run more than 125 parallel R processes. A common use is to parallelize existing map-reduce calls via the futurize package &lt;doi:10.48550/arXiv.2601.17578&gt;, e.g. plan(future.mirai::mirai_multisession) followed by lapply(xs, fcn) |&gt; futurize() or purrr::map(xs, fcn) |&gt; futurize().">
+<meta property="og:description" content="Implementation of the Future API &lt;doi:10.32614/RJ-2021-048&gt; on top of the mirai package &lt;doi:10.5281/zenodo.7912722&gt;. The backend is fully compliant with the Future API, as validated by the future.tests conformance test suite, meaning that code using futures gives identical results and behaves the same regardless of which future backend is used. Futures are resolved in parallel by mirai daemons on the local machine or across remote machines, and, contrary to backends relying on the parallel package and socket connections, it can run more than 125 parallel R processes. A common use is to parallelize existing map-reduce calls via the futurize package &lt;doi:10.48550/arXiv.2601.17578&gt;, e.g. plan(future.mirai::mirai_multisession) followed by lapply(xs, fcn) |&gt; futurize() or purrr::map(xs, fcn) |&gt; futurize().">
 <!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-SB3EQSD9FR"></script><script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="index.html">future.mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0-9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0-9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,28 +88,43 @@
 <div class="row">
   <main id="main" class="col-md-9">
 <div class="section level1">
-<div class="page-header"><h1 id="futuremirai-a-future-api-for-parallel-processing-using-mirai">future.mirai: A ‘Future’ API for Parallel Processing using ‘mirai’<a class="anchor" aria-label="anchor" href="#futuremirai-a-future-api-for-parallel-processing-using-mirai"></a>
+<div class="page-header"><h1 id="futuremirai-parallel-future-backend-using-mirai">future.mirai: Parallel Future Backend using ‘mirai’<a class="anchor" aria-label="anchor" href="#futuremirai-parallel-future-backend-using-mirai"></a>
 </h1></div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The <strong><a href="https://cran.r-project.org/package=future" class="external-link">future</a></strong> package provides a generic API for using futures in R. A future is a simple yet powerful mechanism to evaluate an R expression and retrieve its value at some point in time. Futures can be resolved in many different ways depending on which strategy is used. There are various types of synchronous and asynchronous futures to choose from in the <strong><a href="https://cran.r-project.org/package=future" class="external-link">future</a></strong> package.</p>
-<p>This package, <strong><a href="https://github.com/futureverse/future.mirai" class="external-link">future.mirai</a></strong>, provides a type of futures that utilizes the <strong><a href="https://cran.r-project.org/package=mirai" class="external-link">mirai</a></strong> package.</p>
-<p>For example,</p>
+<p>The <strong><a href="https://future.mirai.futureverse.org">future.mirai</a></strong> package is a backend for the <strong><a href="https://future.futureverse.org" class="external-link">future</a></strong> framework, also known as the <a href="https://www.futureverse.org" class="external-link">Futureverse</a>. The Futureverse makes it easy to parallelize existing R code - often with only a minor change of code. Most users interact with it via higher-level packages such as <strong><a href="https://futurize.futureverse.org" class="external-link">futurize</a></strong>, <strong><a href="https://future.apply.futureverse.org" class="external-link">future.apply</a></strong>, <strong><a href="https://furrr.futureverse.org" class="external-link">furrr</a></strong>, and <strong><a href="https://doFuture.futureverse.org" class="external-link">doFuture</a></strong>, and you choose <em>where</em> and <em>how</em> the code runs by setting a future backend with <code><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan()</a></code>. This package adds the <code>mirai_multisession</code> and <code>mirai_cluster</code> backends, which run futures in parallel using the <strong><a href="https://mirai.r-lib.org" class="external-link">mirai</a></strong> package.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="fu">future.mirai</span><span class="fu">::</span><span class="va"><a href="reference/mirai_multisession.html">mirai_multisession</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://futurize.futureverse.org" class="external-link">futurize</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="fu">future.mirai</span><span class="fu">::</span><span class="va"><a href="reference/mirai_multisession.html">mirai_multisession</a></span><span class="op">)</span>  <span class="co"># parallelize on the current machine</span></span>
 <span></span>
-<span><span class="va">x</span> <span class="op"><a href="https://future.futureverse.org/reference/futureAssign.html" class="external-link">%&lt;-%</a></span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>; <span class="fl">3.14</span> <span class="op">}</span></span>
-<span><span class="va">y</span> <span class="op"><a href="https://future.futureverse.org/reference/futureAssign.html" class="external-link">%&lt;-%</a></span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>; <span class="fl">2.71</span> <span class="op">}</span></span>
-<span><span class="va">x</span> <span class="op">+</span> <span class="va">y</span></span>
-<span><span class="co">#&gt; [1] 5.85</span></span></code></pre></div>
-<p>This is obviously a toy example to illustrate what futures look like and how to work with them. For further examples on how to use futures, see the vignettes of the <strong><a href="https://cran.r-project.org/package=future" class="external-link">future</a></strong> package as well as those of <strong><a href="https://cran.r-project.org/package=future.apply" class="external-link">future.apply</a></strong>, <strong><a href="https://cran.r-project.org/package=furrr" class="external-link">furrr</a></strong>, and <strong><a href="https://cran.r-project.org/package=doFuture" class="external-link">doFuture</a></strong>.</p>
+<span><span class="co"># A slow function</span></span>
+<span><span class="va">slow_fcn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">1.0</span><span class="op">)</span></span>
+<span>  <span class="va">x</span><span class="op">^</span><span class="fl">2</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># Example data</span></span>
+<span><span class="va">xs</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span></span>
+<span></span>
+<span><span class="co"># Sequential and parallel base R apply</span></span>
+<span><span class="va">ys</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">xs</span>, <span class="va">slow_fcn</span><span class="op">)</span></span>
+<span><span class="va">ys</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">xs</span>, <span class="va">slow_fcn</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://futurize.futureverse.org/reference/futurize.html" class="external-link">futurize</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Sequential and parallel purrr map</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span></span>
+<span><span class="va">ys</span> <span class="op">&lt;-</span> <span class="va">xs</span> <span class="op">|&gt;</span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">slow_fcn</span><span class="op">)</span></span>
+<span><span class="va">ys</span> <span class="op">&lt;-</span> <span class="va">xs</span> <span class="op">|&gt;</span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">slow_fcn</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://futurize.futureverse.org/reference/futurize.html" class="external-link">futurize</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Sequential and parallel foreach calls</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RevolutionAnalytics/foreach" class="external-link">foreach</a></span><span class="op">)</span></span>
+<span><span class="va">ys</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">xs</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%do%</a></span> <span class="fu">slow_fcn</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">ys</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">xs</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%do%</a></span> <span class="fu">slow_fcn</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://futurize.futureverse.org/reference/futurize.html" class="external-link">futurize</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>The only thing that differs from using <a href="https://www.futureverse.org/backends.html" class="external-link">any other future backend</a> is the <code><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan()</a></code> call. The code does not have to change, it gives identical results, and it behaves exactly the same.</p>
 </div>
 <div class="section level2">
-<h2 id="using-the-futuremirai-backend">Using the future.mirai backend<a class="anchor" aria-label="anchor" href="#using-the-futuremirai-backend"></a>
+<h2 id="the-mirai-backends">The mirai backends<a class="anchor" aria-label="anchor" href="#the-mirai-backends"></a>
 </h2>
-<p>The <strong>future.mirai</strong> package implements a <strong>future</strong> backend wrapper for <strong>mirai</strong>.</p>
 <table class="table">
 <colgroup>
 <col width="18%">
@@ -134,43 +149,40 @@
 </tr>
 </tbody>
 </table>
-<div class="section level3">
-<h3 id="advantages-of-mirai-futures">Advantages of mirai futures<a class="anchor" aria-label="anchor" href="#advantages-of-mirai-futures"></a>
-</h3>
-<p>The <strong>mirai</strong> package provides a low-level future-like mechanism for evaluating R expression in separate R processes running on the local machine or on one or more remote machines. Central to <strong>mirai</strong> is its highly-optimized queueing mechanism, which is used to orchestrate communication between the main R process and parallel workers. A <strong>mirai</strong> cluster of workers can be configured to communicate securely via the well-established Transport Layer Security (TLS) protocol.</p>
-<p>Another advantage with <code>mirai_*</code> futures, compared to <code>multisession</code> and <code>cluster</code> futures, is that we can use more than 125 parallel workers. The current limit of 125 workers for <code>multisession</code> and <code>cluster</code> futures stems from how the underlying <strong>parallel</strong> package uses one R connection per parallel worker and R has a limit of 125 R connections per session. In R (&gt;= 4.4.0), we can increase this limit when we launch R, e.g. <code>R --max-connections=200</code>. For R (&lt; 4.4.0), R has to be rebuilt from source after adjusting the source code. The <strong>mirai</strong> package does not rely on R connections for parallel workers and therefore does not suffer from this limit.</p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="demos">Demos<a class="anchor" aria-label="anchor" href="#demos"></a>
-</h2>
-<p>The <strong><a href="https://cran.r-project.org/package=future" class="external-link">future</a></strong> package provides a demo using futures for calculating a set of Mandelbrot planes. The demo does not assume anything about what type of futures are used. <em>The user has full control of how futures are evaluated</em>. For instance, to use <code>mirai_multisession</code> futures, run the demo as:</p>
+<p>With <code>mirai_multisession</code>, the parallel workers are launched for you on the local machine. With <code>mirai_cluster</code>, you launch the workers yourself using <code><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">mirai::daemons()</a></code>, which means they can also run on remote machines or on a high-performance compute (HPC) cluster, e.g.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="fu">future.mirai</span><span class="fu">::</span><span class="va"><a href="reference/mirai_multisession.html">mirai_multisession</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/demo.html" class="external-link">demo</a></span><span class="op">(</span><span class="st">"mandelbrot"</span>, package <span class="op">=</span> <span class="st">"future"</span>, ask <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p>and</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span>
-<span><span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">daemons</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="fu">future.mirai</span><span class="fu">::</span><span class="va"><a href="reference/mirai_cluster.html">mirai_cluster</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/demo.html" class="external-link">demo</a></span><span class="op">(</span><span class="st">"mandelbrot"</span>, package <span class="op">=</span> <span class="st">"future"</span>, ask <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">daemons</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="fu">future.mirai</span><span class="fu">::</span><span class="va"><a href="reference/mirai_cluster.html">mirai_cluster</a></span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="advantages">Advantages<a class="anchor" aria-label="anchor" href="#advantages"></a>
+</h3>
+<ul>
+<li><p>Communication between the main R process and the parallel workers is orchestrated by the highly-optimized queueing mechanism of <strong>mirai</strong>.</p></li>
+<li><p>A <strong>mirai</strong> cluster of workers can be configured to communicate securely via the Transport Layer Security (TLS) protocol.</p></li>
+<li><p>More than 125 parallel workers can be used. The <code>multisession</code> and <code>cluster</code> backends use one R connection per worker, and R has a default limit of 125 connections per session. <strong>mirai</strong> does not use R connections, so this limit does not apply.</p></li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="limitations">Limitations<a class="anchor" aria-label="anchor" href="#limitations"></a>
+</h3>
+<ul>
+<li><p>The <code>mirai_cluster</code> backend requires that the <strong>mirai</strong> daemons are configured to use a dispatcher, which is the default in <code><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">mirai::daemons()</a></code>.</p></li>
+<li><p>Remote workers must be able to establish a TCP connection back to the machine that launched them. Some HPC clusters have firewall rules that block this, in which case the workers never connect. For such systems, consider <strong><a href="https://future.batchtools.futureverse.org" class="external-link">future.batchtools</a></strong> instead.</p></li>
+</ul>
+</div>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>R package future.mirai is available on <a href="https://cran.r-project.org/package=future.mirai" class="external-link">CRAN</a> and can be installed in R as:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"future.mirai"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="pre-release-version">Pre-release version<a class="anchor" aria-label="anchor" href="#pre-release-version"></a>
 </h3>
-<p>To install the pre-release version that is available in Git branch <code>develop</code> on GitHub, use:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"futureverse/future.mirai"</span>, ref<span class="op">=</span><span class="st">"develop"</span><span class="op">)</span></span></code></pre></div>
-<p>This will install the package from source.</p>
+<p>To install the pre-release version, use:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"future.mirai"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://futureverse-devel.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 </div>
