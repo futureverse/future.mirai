@@ -1,7 +1,40 @@
 # future.mirai: Parallel Future Backend using 'mirai'
 
 The future.mirai package implements the Future API using the mirai
-package.
+package. The Future API is defined by the future package.
+
+## Details
+
+To use mirai futures, attach future, and select the type of future you
+wish to use, e.g. `plan(future.mirai::mirai_multisession)`.
+
+## Example
+
+    library(futurize)                       # also attaches 'future'
+    plan(future.mirai::mirai_multisession)  # parallelize on the current machine
+
+    # A slow function
+    slow_fcn <- function(x) {
+      Sys.sleep(1.0)
+      x^2
+    }
+
+    # Example data
+    xs <- 1:10
+
+    # Sequential and parallel base R apply
+    ys <- lapply(xs, slow_fcn)
+    ys <- lapply(xs, slow_fcn) |> futurize()
+
+    # Sequential and parallel purrr map
+    library(purrr)
+    ys <- xs |> map(slow_fcn)
+    ys <- xs |> map(slow_fcn) |> futurize()
+
+    # Sequential and parallel foreach calls
+    library(foreach)
+    ys <- foreach(x = xs) %do% slow_fcn(x)
+    ys <- foreach(x = xs) %do% slow_fcn(x) |> futurize()
 
 ## See also
 
@@ -29,27 +62,3 @@ Other contributors:
   ([ORCID](https://orcid.org/0000-0002-0750-061X)) (note: For
   'mirai'-related patches and implementing feature requests in 'mirai')
   \[contributor\]
-
-## Examples
-
-``` r
-library(future)
-plan(future.mirai::mirai_multisession)
-
-# A function that returns a future
-# (note that N is a global variable)
-f <- function() future({
-  4 * sum((runif(N) ^ 2 + runif(N) ^ 2) < 1) / N
-}, seed = TRUE)
-
-# Run a simple sampling approximation of pi in parallel using  M * N points:
-N <- 1e6  # samples per worker
-M <- 10   # iterations
-pi_est <- Reduce(sum, Map(value, replicate(M, f()))) / M
-print(pi_est)
-#> [1] 3.141674
-
-## Switch back to sequential processing, which also
-## shuts down the automatically launched mirai workers 
-plan(sequential)
-```

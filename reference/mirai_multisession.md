@@ -49,7 +49,7 @@ N <- 1e6  # samples per worker
 M <- 10   # iterations
 pi_est <- Reduce(sum, Map(value, replicate(M, f()))) / M
 print(pi_est)
-#> [1] 3.142363
+#> [1] 3.141466
 
 ## Switch back to sequential processing, which also
 ## shuts down the automatically launched mirai workers 
