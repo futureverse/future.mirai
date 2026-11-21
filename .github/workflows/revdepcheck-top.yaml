@@ -47,7 +47,8 @@ jobs:
             libgeos-dev \
             libproj-dev \
             libudunits2-dev \
-            libnetcdf-dev
+            libnetcdf-dev \
+            libgsl-dev
 
       - uses: r-lib/actions/setup-tinytex@v2
 
@@ -89,6 +90,9 @@ jobs:
         if: matrix.config.pkg == 'brms'
         run: |
           remotes::install_version("rtdists", repos = "https://cloud.r-project.org")
+          ## Fail early, because R_REMOTES_NO_ERRORS_FROM_WARNINGS=true
+          ## turns installation errors into warnings
+          stopifnot(requireNamespace("rtdists", quietly = TRUE))
         shell: Rscript {0}
 
       - name: Session info
