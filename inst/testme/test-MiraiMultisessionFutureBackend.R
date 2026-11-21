@@ -90,6 +90,55 @@ message("- future(..., conditions = NULL) ... DONE")
 
 
 ## ---------------------------------------------------------
+## Relaying of immediateCondition:s
+## ---------------------------------------------------------
+message("- Relaying of immediateCondition:s ...")
+
+plan(future.mirai::mirai_multisession, workers = 2)
+
+f <- future({
+  m <- simpleMessage("IM\n")
+  class(m) <- c(class(m), "immediateCondition")
+  message(m)
+  message("M")
+  42L
+})
+
+## Wait for the future to be resolved; immediate conditions are
+## relayed by resolved()
+msgs <- character(0L)
+withCallingHandlers({
+  while (!resolved(f)) Sys.sleep(0.1)
+}, message = function(c) {
+  msgs <<- c(msgs, conditionMessage(c))
+  invokeRestart("muffleMessage")
+})
+print(msgs)
+stopifnot(identical(msgs, "IM\n"))
+
+## The relayed immediate conditions are part of the result
+r <- result(f)
+classes <- lapply(r[["conditions"]], FUN = function(c) class(c[["condition"]]))
+str(classes)
+stopifnot(sum(vapply(classes, FUN = function(x) "immediateCondition" %in% x, FUN.VALUE = FALSE)) == 1L)
+
+## value() does not relay immediate conditions a second time
+msgs <- character(0L)
+withCallingHandlers({
+  v <- value(f)
+}, message = function(c) {
+  msgs <<- c(msgs, conditionMessage(c))
+  invokeRestart("muffleMessage")
+})
+print(msgs)
+stopifnot(identical(v, 42L), identical(msgs, "M\n"))
+
+plan(sequential)
+
+message("- Relaying of immediateCondition:s ... DONE")
+
+
+## ---------------------------------------------------------
 ## result() on an interrupted future re-signals the error
 ## ---------------------------------------------------------
 message("- result() on interrupted future ...")
