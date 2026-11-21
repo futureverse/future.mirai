@@ -83,6 +83,14 @@ jobs:
           BiocManager::install(c("Biobase", "hopach"), update = FALSE, ask = FALSE)
         shell: Rscript {0}
 
+      ## brms Suggests 'rtdists', which has been archived on CRAN, and
+      ## tests.distributions.R requires it also when NOT_CRAN is not 'true'
+      - name: Install archived CRAN dependencies for brms
+        if: matrix.config.pkg == 'brms'
+        run: |
+          remotes::install_version("rtdists", repos = "https://cloud.r-project.org")
+        shell: Rscript {0}
+
       - name: Session info
         run: |
           options(width = 100)
@@ -100,6 +108,9 @@ jobs:
           rcmdcheck::rcmdcheck(
             tarball,
             args = c("--no-manual", "--as-cran"),
+            ## Mimic CRAN; NOT_CRAN=true (set by setup-r) enables tests and
+            ## vignettes that need non-CRAN packages, e.g. brms and 'cmdstanr'
+            env = c(NOT_CRAN = "false"),
             error_on = "${{ matrix.config.error_on }}",
             check_dir = "check"
           )
