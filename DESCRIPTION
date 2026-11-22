@@ -1,5 +1,5 @@
 Package: future.mirai
-Version: 1.1.0-9012
+Version: 1.1.0-9013
 Depends:
     future (>= 1.80.0)
 Imports:
@@ -21,8 +21,8 @@ Description: Implementation of the Future API <doi:10.32614/RJ-2021-048> on
     'parallel' package and socket connections, it can run more than 125
     parallel R processes. A common use is to parallelize existing map-reduce
     calls via the 'futurize' package <doi:10.48550/arXiv.2601.17578>, e.g.
-    'plan(future.mirai::mirai_multisession)' followed by 'lapply(xs, fcn) |>
-    futurize()' or 'purrr::map(xs, fcn) |> futurize()'.
+    'plan(future.mirai::mirai_multisession)' followed by
+    'lapply(xs, fcn) |> futurize()' or 'purrr::map(xs, fcn) |> futurize()'.
 Authors@R: c(
   person("Henrik", "Bengtsson",
          role = c("aut", "cre", "cph"),
