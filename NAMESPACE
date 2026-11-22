@@ -44,7 +44,4 @@ importFrom(mirai,
   unresolved
 )
 importFrom(parallelly,availableCores)
-importFrom(utils,
-  capture.output,
-  str
-)
+importFrom(utils,capture.output)
