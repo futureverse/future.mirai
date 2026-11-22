@@ -5,7 +5,6 @@
 library(future)
 library(future.mirai)
 
-options(future.mirai.debug = TRUE)
 options(future.debug = TRUE)
 
 message("*** MiraiFutureBackend ...")

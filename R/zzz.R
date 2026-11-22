@@ -19,14 +19,4 @@ with_assert <- function(expr, ...) { invisible(expr) }
   if (isTRUE(as.logical(Sys.getenv("R_FUTURE_MIRAI_PRUNE_PKG_CODE", "FALSE")))) {
     prune_pkg_code()
   }
-
-  ## Set 'debug' option by environment variable
-  value <- getOption("future.mirai.debug")
-  if (is.null(value)) {
-    value <- Sys.getenv("R_FUTURE_MIRAI_DEBUG", NA_character_)
-    if (!is.na(value)) {
-      value <- isTRUE(suppressWarnings(as.logical(value)))
-      options(future.mirai.debug = value)
-    }
-  }
 }

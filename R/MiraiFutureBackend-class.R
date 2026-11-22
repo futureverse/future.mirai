@@ -46,7 +46,7 @@ MiraiFutureBackend <- function(...) {
 #' @importFrom future launchFuture
 #' @export
 launchFuture.MiraiFutureBackend <- function(backend, future, ...) {
-  debug <- isTRUE(getOption("future.mirai.debug"))
+  debug <- isTRUE(getOption("future.debug"))
   if (debug) {
     mdebugf_push("launchFuture() for %s ...", class(backend)[1])
     on.exit(mdebug_pop())
@@ -84,7 +84,7 @@ launchFuture.MiraiFutureBackend <- function(backend, future, ...) {
 #' @importFrom future cancel stopWorkers
 #' @export
 stopWorkers.MiraiFutureBackend <- function(backend, ...) {
-  debug <- isTRUE(getOption("future.mirai.debug"))
+  debug <- isTRUE(getOption("future.debug"))
   if (debug) {
     mdebugf_push("stopWorkers() for %s ...", class(backend)[1])
     on.exit(mdebug_pop())
@@ -176,7 +176,7 @@ nbrOfFreeWorkers.MiraiFutureBackend <- function(evaluator, background = FALSE, .
 #' @keywords internal
 #' @export
 resolved.MiraiFuture <- function(x, ...) {
-  debug <- isTRUE(getOption("future.mirai.debug"))
+  debug <- isTRUE(getOption("future.debug"))
   if (debug) {
     mdebugf_push("resolved() for %s ...", class(x)[1])
     on.exit(mdebug_pop())
@@ -211,7 +211,7 @@ resolved.MiraiFuture <- function(x, ...) {
 #' @importFrom future result FutureInterruptError
 #' @export
 result.MiraiFuture <- function(future, ...) {
-  debug <- isTRUE(getOption("future.mirai.debug"))
+  debug <- isTRUE(getOption("future.debug"))
   if (debug) {
     mdebugf_push("result() for %s ...", class(future)[1])
     mdebugf("Future state: %s", sQuote(future[["state"]]))

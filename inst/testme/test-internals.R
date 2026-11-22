@@ -15,5 +15,3 @@ stopifnot(inherits(void, "error"))
 
 with_assert(TRUE)
 
-options(future.mirai.debug = NULL)
-Sys.setenv(R_FUTURE_MIRAI_DEBUG = "FALSE")

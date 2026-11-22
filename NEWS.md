@@ -1,5 +1,12 @@
 # Version (development version)
 
+## Miscellaneous
+
+ * Debug output is now controlled by R option `future.debug`, or
+   environment variable `R_FUTURE_DEBUG`, as for other future
+   backends. R option `future.mirai.debug` and environment variable
+   `R_FUTURE_MIRAI_DEBUG` are no longer used.
+
 ## Bug Fixes
 
  * `listFutures()` did not list the active futures of the backend.
